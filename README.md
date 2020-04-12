@@ -8,7 +8,7 @@ It is designed to be used within your pipelines in various environments such as 
 
 Define your expected GA [tracking plan](tracking_plan.json) for a given test case. Example : tracking a click on a video:
 
-```json
+```JSON
 {
     "my_test_case": [
         {
