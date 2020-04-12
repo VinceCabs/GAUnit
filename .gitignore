@@ -1,0 +1,24 @@
+# Python and VS Code
+.venv
+.vscode
+**/__pycache__
+*.pyc
+
+# Webdrivers
+**chromedriver*
+**geckodriver*
+
+# Robot Framework
+log.html
+output.xml
+report.html
+
+# Pickle files
+*.p
+
+# Project related
+**/.mitmproxy
+*.log
+*_log.json
+hits.json
+.wip
