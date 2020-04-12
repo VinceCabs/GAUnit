@@ -2,7 +2,7 @@
 
 GAUnit is a Python library for testing Google Analytics implementations with Selenium or RobotFramework test cases.
 
-It is designed to be used within your pipelines in various environment such as traditional websites, Single Page Applications or Mobile Apps.
+It is designed to be used within your pipelines in various environments such as traditional websites, Single Page Applications or Mobile Apps.
 
 ## Usage
 
@@ -38,11 +38,12 @@ from gaunit.GAChecker import GAChecker
 gc = GAChecker()
 gc.set_test_case("my_test_case")
 
-# run your Selenium test here
+# Run your Selenium test here
+# (configure proxy at 127.0.0.1:8080)
 # ...
 
-checklist = gc.GAUnit()
-print(checklist)  # [True, False] oups! page view is fine but tracking the video play button is not properly implemented.
+checklist = gc.check_tracking()
+print(checklist)  # [True, False] oups! pageview is fine but video "play" button is not properly tracked.
 
 ```
 
@@ -50,10 +51,24 @@ You can also use GAUnit within unittest or RobotFramework test cases. We provide
 
 ## Installation
 
-GAUnit uses [mitmproxy](https://mitmproxy.org/) to log Google Analytics hits because of its ease of use in an HTTPS environment.
+You will need Python 3.6+ installed.
 
-- Follow mitmproxy [installation instructions](https://docs.mitmproxy.org/stable/overview-installation/) 
-- If your website uses HTTPS, you must [install mitmproxy certificates](https://docs.mitmproxy.org/stable/concepts-certificates/). If you do this for the first time, trust me, it is easier to do than you might think! (mainly thanks to mitmproxy)
+GAUnit uses [mitmproxy](https://mitmproxy.org/) to log Google Analytics hits. mitmproxy is easy to use and works like charm with HTTPS.
+
+- Follow mitmproxy [installation instructions](https://docs.mitmproxy.org/stable/overview-installation/).
+  - If your website uses HTTPS, you must [install mitmproxy certificates](https://docs.mitmproxy.org/stable/concepts-certificates/). If you do this for the first time, trust me, it is easier to do than you might think!
+
+If you've never used Selenium with ChromeDriver, you might need to install both :
+
+- Install Selenium
+
+```sh
+pip3 install selenium  # Linux
+pip install selenium  # Windows
+```
+
+- Follow ChromeDriver [installation instruction](https://chromedriver.chromium.org/getting-started) (make sure ChromeDriver is in your path or in your working directory).
+
 
 ## Why GAUnit?
 
