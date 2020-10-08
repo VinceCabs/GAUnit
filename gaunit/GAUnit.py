@@ -94,20 +94,21 @@ class GAUnit:
         self, tracking: list, hits: list, ordered=True
     ) -> list:
         chklst = []
-        # TODO prevent False everywhere if tracker missing
         # TODO add return : formatted string with results
         # search strategy: if ordered = True, hits have to be in the same order as in tracking plan.
         if ordered:
             pos = 0  # position of last checked hit
             for t in tracking:
                 check = False
+                pointer = pos
                 for hit in hits[pos:]:
                     if ordered:
                         # if we want hits to respect tracking plan order (default)
-                        pos += 1
+                        pointer += 1
                     if t.items() <= hit.items():
                         # tracker is present : all params are there
                         check = True
+                        pos = pointer
                         break
                     # tracker is not here
                 chklst.append(check)
