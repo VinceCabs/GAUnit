@@ -6,7 +6,7 @@ It is designed to be used within your pipelines in various environments such as 
 
 ## Usage
 
-Define your expected GA [tracking plan](tracking_plan.json) for a given test case. Example : tracking a click on a video:
+Define your expected GA [tracking plan](tracking_plan.json) for a given test case. Example : tracking the "play" button on a video:
 
 ```JSON
 {
@@ -23,52 +23,47 @@ Define your expected GA [tracking plan](tracking_plan.json) for a given test cas
 }
 ```
 
-Launch GAUnit proxy:
-
-```sh
-sh ./launch_proxy.sh
-```
-
 Run your test wih Python and check it against your expected tracking plan:
 
 ```python
-from gaunit.GAChecker import GAChecker
+from gaunit.GAUnit import GAUnit
+import browsermobproxy
 
 # Instantiate GAUnit and set your test case name
-gc = GAChecker()
-gc.set_test_case("my_test_case")
+g = GAUnit()
 
-# Run your Selenium test here
-# (configure proxy at 127.0.0.1:8080)
+# Run your Selenium test here with browsermob-proxy and export har
 # ...
 
-checklist = gc.check_tracking()
+checklist = g.check_tracking_from_har("my_test_case.har")
 print(checklist)  # [True, False] oups! pageview is fine but video "play" button is not properly tracked.
-
 ```
 
-You can also use GAUnit within unittest or RobotFramework test cases. We provide a unit test case [sample](test_home_engie.py) to help you getting started (WIP : we will soon add more samples).
+See a full working example [here](./test_home_engie.py). You can also use GAUnit within unittest or RobotFramework test cases (WIP : we will soon add samples).
 
 ## Installation
 
 You will need Python 3.6+ installed.
 
-GAUnit uses [mitmproxy](https://mitmproxy.org/) to log Google Analytics hits. mitmproxy is easy to use and works like charm with HTTPS.
-
-- Follow mitmproxy [installation instructions](https://docs.mitmproxy.org/stable/overview-installation/).
-  - If your website uses HTTPS, you must [install mitmproxy certificates](https://docs.mitmproxy.org/stable/concepts-certificates/). If you do this for the first time, trust me, it is easier to do than you might think!
-
-If you've never used Selenium with ChromeDriver, you might need to install both :
-
-- Install Selenium
+- install Python packages :
 
 ```sh
-pip3 install selenium  # Linux
-pip install selenium  # Windows
+pip3 install -r requirements.txt  # Linux
+pip install -r requirements.txt  # Windows
 ```
 
-- Follow ChromeDriver [installation instruction](https://chromedriver.chromium.org/getting-started) (make sure ChromeDriver is in your path or in your working directory).
+- Download **browsermob-proxy** [latest release](https://github.com/lightbody/browsermob-proxy/releases) (note: you'll need [Java](https://www.oracle.com/java/technologies/javase-jre8-downloads.html)).
+  - Add `bin/` directory to your %PATH
 
+- Download a **webdriver**. To run the [example](./test_home_engie.py), get Geckodriver [latest release](https://chromedriver.chromium.org/getting-started) 
+  - add it to your %PATH or copy it in your working directory
+
+## Run your first test
+
+```sh
+python3 test_home_engie.py  # Linux
+python test_home_engie.py  # Windows
+```
 
 ## Why GAUnit?
 
@@ -76,7 +71,7 @@ Testing your Google Analytics implementation is often time consuming and, let's 
 
 But most of all, if your tracking is not reliable as your application evolves, your reportings won't be either. People in your company will loose confidence in your reportings when they have to take important business decisions. You will provide great reportings if you integrate tracking in your DevOps pipelines (and thus, in you Quality Assurance plan).
 
-[Some great tools](https://www.simoahava.com/analytics/automated-tests-for-google-tag-managers-datalayer/) let you automatically test your DataLayer, but sometimes it is not enough: you not only want to test `pageview`s, but also `event`s like clicks and Ecommerce. You might want to test tracking in various environments like Single Page Application, AMP or Mobile Applications. GA Unit lets you do just that.
+[Some great tools](https://www.simoahava.com/analytics/automated-tests-for-google-tag-managers-datalayer/) let you automatically test your DataLayer, but sometimes it is not enough: you not only want to test `pageview`s, but also `event`s like clicks and Ecommerce. You might want to test tracking in various environments like Single Page Application, AMP or Mobile Applications. GAUnit lets you do just that.
 
 ## Contributing
 
@@ -88,7 +83,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENCE) file
 
 ## Acknowledgments
 
-GAUnit was inspired by [WAUnit](https://github.com/joaolcorreia/WAUnit). We decided to create a new library for compatibility with Python 3 and latest versions of mitmproxy.
+GAUnit was inspired by [WAUnit](https://github.com/joaolcorreia/WAUnit). We decided to create a new library commpatible with Python 3 and easier to set up.
 
 ## Roadmap
 

@@ -1,79 +1,41 @@
-import unittest
+from browsermobproxy import Server
 from selenium import webdriver
-from selenium.webdriver.common.proxy import Proxy, ProxyType
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.firefox.options import Options
-import time
-import os
-import json
-import logging
-import pickle
-from gaunit.GAChecker import GAChecker
-from gaunit.GALogger import GALogger
 
-logging.basicConfig(level=logging.INFO)
+from gaunit.GAUnit import GAUnit
 
 
-class test_engie(unittest.TestCase):
-    def setUp(self):
+def run():
 
-        proxy = "127.0.0.1:8080"
+    # set up proxy
+    server = Server()
+    server.start()
+    proxy = server.create_proxy()
 
-        options = webdriver.ChromeOptions()
-        options.add_argument("--proxy-server=%s" % proxy)
-        driver = webdriver.Chrome(options=options)
-        driver.set_window_size(920, 860)
-        self.driver = driver
-        self.gc = GAChecker()
+    # set up webdriver
+    profile = webdriver.FirefoxProfile()
+    profile.set_proxy(proxy.selenium_proxy())
+    driver = webdriver.Firefox(firefox_profile=profile)
+    driver.implicitly_wait(10)
 
-        # cleaning files from previous tests
-        if os.path.isfile(self.gc.hits_file):
-            os.remove(self.gc.hits_file)
-        if os.path.isfile(self.gc.pickle_file):
-            os.remove(self.gc.pickle_file)
+    # instantiate GAUnit
+    g = GAUnit(config_file="config.json")
 
-        # TODO : launch GALogger daemon
+    # start test case
+    test_case = "home_engie"
+    proxy.new_har(test_case)
+    driver.get("https://particuliers.engie.fr?env_work=acc")
+    driver.find_element_by_id(
+        "engie_fournisseur_d_electricite_et_de_gaz_naturel_headerhp_souscrire_a_une_offre_d_energie"
+    ).click()  # clic on "souscrire" button
 
-    def test_engie_home(self):
+    # export har
+    har = proxy.har
+    checklist = g.check_tracking_from_har(test_case, har)
+    print(checklist)  # [True, True, True] tracking is correct !
 
-        # update test_case for GALogger
-        test_case = "home_engie"
-        self.gc.set_test_case(test_case)
-
-        # browse scenario
-        #TODO testing stage acc/preprod/prod/etc. in a test config file ?
-        self.driver.get("https://particuliers.engie.fr?env_work=acc")
-        time.sleep(2)
-        self.driver.find_element_by_id(
-            "engie_fournisseur_d_electricite_et_de_gaz_naturel_headerhp_souscrire_a_une_offre_d_energie"
-        ).click()  # clic on "souscrire" button
-        time.sleep(2)
-
-        # check hits against tracking plan
-        checklist = self.gc.check_tracking()
-        self.assertNotIn(False, checklist)
-
-    def test_demenagement(self):
-
-        # update test_case for GALogger
-        test_case = "demenagement"
-        self.gc.set_test_case(test_case)
-
-        # browse scenario
-        self.driver.get("https://particuliers.engie.fr/demenagement.html?env_work=acc")
-        time.sleep(2)
-
-        # check hits against tracking plan
-        checklist = self.gc.check_tracking()
-        self.assertNotIn(False, checklist)
-
-    def tearDown(self):
-        self.driver.quit()
-        self.gc.clear_test_case()
-        if os.path.isfile(self.gc.pickle_file):
-            os.remove(self.gc.pickle_file)
+    server.stop()
+    driver.quit()
 
 
 if __name__ == "__main__":
-    unittest.main()
+    run()
