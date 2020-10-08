@@ -22,6 +22,7 @@ report.html
 # log and other artifacts
 *_log.json
 *.log
+!tests/*.log
 hits.json
 *.har
 *.png

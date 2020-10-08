@@ -1,6 +1,0 @@
-{
-    "hits_file": "tests/hits.json",
-    "log_file": "logs/raw_hits.log",
-    "pickle_file": "tests/test_case.p",
-    "tracking_plan_file": "tests/tracking_plan.json"
-}
