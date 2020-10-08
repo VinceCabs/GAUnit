@@ -7,7 +7,6 @@ from urllib.parse import parse_qs, urlparse
 
 class GAUnit:
 
-    # TODO add add unit tests
     # TODO add logging level in config
 
     def __init__(self, config_file="config.json"):

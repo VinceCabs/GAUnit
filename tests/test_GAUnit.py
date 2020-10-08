@@ -1,7 +1,7 @@
 import unittest
 from gaunit.GAUnit import GAUnit
 
-# TODO make it work inside test/ dir
+
 class test_GAUnit(unittest.TestCase):
     def setUp(self):
 
