@@ -149,7 +149,6 @@ class GAUnit:
             with open(file_name, "r") as f:
                 content = json.load(f)
                 hits = content["test_cases"][test_case]["hits"]
-                f.close()
         except FileNotFoundError:
             logging.warning("No tracking plan file found:" +
                             self.tracking_file)
