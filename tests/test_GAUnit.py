@@ -11,7 +11,7 @@ class test_GAUnit(unittest.TestCase):
         test_case = "home_engie"
         log_file = "tests/home_engie.log"
         checklist = self.g.check_tracking_from_file(
-            test_case, log_file, format="log")
+            test_case, log_file, file_format="log")
         # all hits are here
         self.assertEqual([True, True, True], checklist)
 
@@ -19,7 +19,7 @@ class test_GAUnit(unittest.TestCase):
         test_case = "home_engie"
         log_file = "tests/home_engie_first_missing.log"
         checklist = self.g.check_tracking_from_file(
-            test_case, log_file, format="log")
+            test_case, log_file, file_format="log")
         # first hit is missing
         self.assertEqual([False, True, True], checklist)
 
