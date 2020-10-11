@@ -26,3 +26,8 @@ report.html
 hits.json
 *.har
 *.png
+
+# packaging
+dist/
+*.egg-info/
+build/
