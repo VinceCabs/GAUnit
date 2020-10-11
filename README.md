@@ -58,11 +58,19 @@ pip install -r requirements.txt  # Windows
 - Download a **webdriver**. To run the [example](./test_home_engie.py), get Geckodriver [latest release](https://chromedriver.chromium.org/getting-started) 
   - add it to your %PATH or copy it in your working directory
 
-## Run your first test
+## Run your first tests
+
+Test with Selenium Python
 
 ```sh
 python3 test_home_engie.py  # Linux
 python test_home_engie.py  # Windows
+```
+
+Test with RobotFramework
+
+```sh
+robot samples/test_home_engie.robot
 ```
 
 ## Why GAUnit?
