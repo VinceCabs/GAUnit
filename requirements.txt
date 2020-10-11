@@ -1,2 +1,6 @@
 selenium
 browsermob-proxy
+robotframework
+robotframework-seleniumlibrary
+robotframework-browsermobproxylibrary
+robotframework-requests
