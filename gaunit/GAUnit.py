@@ -1,5 +1,6 @@
 import json
 import logging
+import logging.config
 import re
 from urllib.parse import parse_qs, urlparse
 
@@ -10,6 +11,7 @@ class GAUnit:
 
     def __init__(self, config_file="config.json"):
         cfg = self.__getConfig(config_file)
+        logging.config.dictConfig(cfg["log_config"])
         self.tracking_file = cfg["tracking_plan_file"]
 
     def check_tracking_from_har(self, test_case: str, har: dict) -> list:
@@ -51,7 +53,7 @@ class GAUnit:
             list: checklist of boolean with tracker statuses. eg. [True, False, True]
         """
 
-        logger.info("check tracking for test case '%s' from file '%s" %
+        logger.info("check tracking for test case '%s' from file '%s'" %
                     (test_case, file))
 
         # load urls list from file
