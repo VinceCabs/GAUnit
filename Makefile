@@ -18,6 +18,9 @@ install-dev: setup-robot ## Install dev requirements
 	pip install -r requirements/robot.txt
 	pip install -r requirements/dev.txt
 
+clean-logs:  ## Remove all log & RF report files
+	rm logs/*.log log.html output.xml report.html || true
+
 tests : test-unit test-lint test-format ## Run all tests
 
 test-format: ## Run code formatting tests
