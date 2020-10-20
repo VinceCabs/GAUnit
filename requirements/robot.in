@@ -1,5 +1,4 @@
-selenium
-browsermob-proxy
+-r base.in
 robotframework
 robotframework-seleniumlibrary
 robotframework-browsermobproxylibrary
