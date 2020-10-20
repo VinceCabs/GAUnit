@@ -8,7 +8,6 @@ logger = logging.getLogger(__name__)
 
 
 class GAUnit:
-
     def __init__(self, config_file="config.json"):
         cfg = self.__getConfig(config_file)
         logging.config.dictConfig(cfg["log_config"])
@@ -53,8 +52,9 @@ class GAUnit:
             list: checklist of boolean with tracker statuses. eg. [True, False, True]
         """
 
-        logger.info("check tracking for test case '%s' from file '%s'" %
-                    (test_case, file))
+        logger.info(
+            "check tracking for test case '%s' from file '%s'" % (test_case, file)
+        )
 
         # load urls list from file
         if file_format == "log":
@@ -90,12 +90,10 @@ class GAUnit:
         # Output is a list like this one :
         # [{'v':'1','dp'='home',..},{..},..]
         hits = self.__load_hits_from_urls(urls)
-        logger.debug("hits from test case : \n%s" %
-                     "\n".join([str(h) for h in hits]))
+        logger.debug("hits from test case : \n%s" % "\n".join([str(h) for h in hits]))
 
         # load tracking plan
-        tracking = self.__get_hits_from_tracking_plan(
-            self.tracking_file, test_case)
+        tracking = self.__get_hits_from_tracking_plan(self.tracking_file, test_case)
 
         # check recorded hits against hits in tracking plan
         checklist = self.__check_hits_vs_tracking_hits(tracking, hits)
@@ -169,8 +167,7 @@ class GAUnit:
                 content = json.load(f)
                 hits = content["test_cases"][test_case]["hits"]
         except FileNotFoundError:
-            logging.warning("No tracking plan file found: %s" %
-                            self.tracking_file)
+            logging.warning("No tracking plan file found: %s" % self.tracking_file)
         return hits
 
     @classmethod
