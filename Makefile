@@ -8,7 +8,7 @@ pip-comp: ## Compile requirements files
 	pip-compile requirements/dev.in
 	pip-compile requirements/robot.in
 
-pip-up: ## Compile requirements files
+pip-up: ## Update requirements files
 	pip-compile --upgrade requirements/base.in
 	pip-compile --upgrade requirements/dev.in
 	pip-compile --upgrade requirements/robot.in
@@ -27,7 +27,7 @@ test-format: ## Run code formatting tests
 	black --check --diff $(SRC_DIRS)
 
 test-lint: ## Run code linting tests
-	pylint --errors-only --ignore=templates ${SRC_DIRS}
+	pylint --errors-only ${SRC_DIRS}
 
 test-unit:  ## Run unit tests
 	python -m unittest discover tests
@@ -37,7 +37,7 @@ format: ## Format code
 
 ##### Use & Deploy
 
-install-minimal:
+install-minimal: ## Install minimal usage requirements
 	pip install 
 	pip install -r requirements/base.txt
 
