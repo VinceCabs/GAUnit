@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 class GAUnit:
     def __init__(self, config_file="config.json"):
-        cfg = self.__getConfig(config_file)
+        cfg = self.__get_config(config_file)
         logging.config.dictConfig(cfg["log_config"])
         self.tracking_file = cfg["tracking_plan_file"]
 
@@ -24,11 +24,11 @@ class GAUnit:
             list: checklist of boolean with tracker statuses. eg. [True, False, True]
         """
 
-        logger.info("check tracking for test case '%s'" % test_case)
+        logger.info("check tracking for test case '%s'", test_case)
 
         urls = self.__get_urls_from_har(har)
         checklist = self.__check_tracking_from_urls(test_case, urls)
-        logger.info("checklist : %s" % checklist)
+        logger.info("checklist : %s", checklist)
 
         return checklist
 
@@ -52,9 +52,7 @@ class GAUnit:
             list: checklist of boolean with tracker statuses. eg. [True, False, True]
         """
 
-        logger.info(
-            "check tracking for test case '%s' from file '%s'" % (test_case, file)
-        )
+        logger.info("check tracking for test case '%s' from file '%s'", test_case, file)
 
         # load urls list from file
         if file_format == "log":
@@ -68,7 +66,7 @@ class GAUnit:
             raise Exception("File format '%s' is not recognized" % file_format)
 
         checklist = self.__check_tracking_from_urls(test_case, urls)
-        logger.info("checklist : %s" % checklist)
+        logger.info("checklist : %s", checklist)
 
         return checklist
 
@@ -90,7 +88,7 @@ class GAUnit:
         # Output is a list like this one :
         # [{'v':'1','dp'='home',..},{..},..]
         hits = self.__load_hits_from_urls(urls)
-        logger.debug("hits from test case : \n%s" % "\n".join([str(h) for h in hits]))
+        logger.debug("hits from test case : \n%s", "\n".join([str(h) for h in hits]))
 
         # load tracking plan
         tracking = self.__get_hits_from_tracking_plan(self.tracking_file, test_case)
@@ -132,11 +130,11 @@ class GAUnit:
         return urls
 
     @classmethod
-    def __load_hits_from_urls(self, urls: list) -> list:
-        raw_ga_hits = self.__filter_ga_hits(urls)
+    def __load_hits_from_urls(cls, urls: list) -> list:
+        raw_ga_hits = cls.__filter_ga_hits(urls)
         hits = []
         for url in raw_ga_hits:
-            hit_fields = self.__parse_ga_url(url)
+            hit_fields = cls.__parse_ga_url(url)
             hits.append(hit_fields)
         return hits
 
@@ -167,11 +165,11 @@ class GAUnit:
                 content = json.load(f)
                 hits = content["test_cases"][test_case]["hits"]
         except FileNotFoundError:
-            logging.warning("No tracking plan file found: %s" % self.tracking_file)
+            logging.warning("No tracking plan file found: %s", self.tracking_file)
         return hits
 
     @classmethod
-    def __getConfig(cls, file: str) -> dict:
+    def __get_config(cls, file: str) -> dict:
         with open(file) as f:
             config = json.load(f)
         return config
