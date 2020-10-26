@@ -21,7 +21,7 @@ install-dev: ## * Install dev requirements
 clean-logs:  ## Remove all log & RF report files
 	rm logs/*.log log.html output.xml report.html || true
 
-tests : test-unit test-lint test-format ## * Run all tests
+tests : test-unit test-robot test-lint test-format ## Run all tests
 
 test-format: ## Run code formatting tests
 	black --check --diff $(SRC_DIRS)
@@ -31,6 +31,9 @@ test-lint: ## Run code linting tests
 
 test-unit:  ## Run unit tests
 	python -m unittest discover tests
+
+test-robot:  ## Run RobotFramework library
+	robot tests/test_home_engie.robot
 
 format: ## Format code
 	black $(SRC_DIRS)
