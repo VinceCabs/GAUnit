@@ -3,7 +3,7 @@ SRC_DIRS = ./gaunit ./tests
 
 ##### Dev
 
-pip-comp: ## Compile requirements files
+pip-comp: ## * Compile requirements files
 	pip-compile requirements/base.in
 	pip-compile requirements/dev.in
 	pip-compile requirements/robot.in
@@ -13,7 +13,7 @@ pip-up: ## Update requirements files
 	pip-compile --upgrade requirements/dev.in
 	pip-compile --upgrade requirements/robot.in
 
-install-dev: setup-robot ## Install dev requirements
+install-dev: ## * Install dev requirements
 	pip install .
 	pip install -r requirements/robot.txt
 	pip install -r requirements/dev.txt
@@ -21,7 +21,7 @@ install-dev: setup-robot ## Install dev requirements
 clean-logs:  ## Remove all log & RF report files
 	rm logs/*.log log.html output.xml report.html || true
 
-tests : test-unit test-lint test-format ## Run all tests
+tests : test-unit test-lint test-format ## * Run all tests
 
 test-format: ## Run code formatting tests
 	black --check --diff $(SRC_DIRS)
@@ -38,12 +38,18 @@ format: ## Format code
 ##### Use & Deploy
 
 install-minimal: ## Install minimal usage requirements
-	pip install 
+	pip install .
 	pip install -r requirements/base.txt
 
 install-robot: ## Install Robot Framework requirements
 	pip install .
 	pip install -r requirements/robot.txt
+
+build-ppackage:   ## Build a python package ready to upload to pypi
+	python setup.py sdist bdist_wheel
+
+push-ppackage: ## Push python packages to pypi
+	python -m twine upload --skip-existing dist/*
 
 ###### Additional commands
 

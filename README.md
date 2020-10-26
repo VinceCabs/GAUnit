@@ -45,11 +45,18 @@ See a full working example [here](./test_home_engie.py). You can also use GAUnit
 
 You will need Python 3.6+ installed.
 
-- install Python packages :
+- install gaunit :
 
 ```sh
-pip3 install -r requirements.txt  # Linux
-pip install -r requirements.txt  # Windows
+pip3 install gaunit  # Linux
+pip install gaunit  # Windows
+```
+
+- If you want to use RobotFramework module :
+
+```sh
+pip3 install -r requirements/robot.txt  # Linux
+pip install -r requirements/robot.txt  # Windows
 ```
 
 - Download **browsermob-proxy** [latest release](https://github.com/lightbody/browsermob-proxy/releases) (note: you'll need [Java](https://www.oracle.com/java/technologies/javase-jre8-downloads.html)).
@@ -75,7 +82,7 @@ robot samples/test_home_engie.robot
 
 ## Why GAUnit?
 
-Testing your Google Analytics implementation is often time consuming and, let's say it, sometimes very boring! 
+Testing your Google Analytics implementation is often time consuming and, let's say it, sometimes very boring!
 
 But most of all, if your tracking is not reliable as your application evolves, your reportings won't be either. People in your company will loose confidence in your reportings when they have to take important business decisions. You will provide great reportings if you integrate tracking in your DevOps pipelines (and thus, in you Quality Assurance plan).
 
