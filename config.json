@@ -23,7 +23,7 @@
         },
         "loggers": {
             "gaunit": {
-                "level": "INFO"
+                "level": "WARNING"
             }
         },
         "root": {
