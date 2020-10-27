@@ -55,14 +55,14 @@ pip install gaunit  # Windows
 - If you want to use RobotFramework module :
 
 ```sh
-pip3 install -r requirements/robot.txt  # Linux
-pip install -r requirements/robot.txt  # Windows
+pip3 install robotframework-gaunitlibrary  # Linux
+pip install robotframework-gaunitlibrary  # Windows
 ```
 
-- Download **browsermob-proxy** [latest release](https://github.com/lightbody/browsermob-proxy/releases) (note: you'll need [Java](https://www.oracle.com/java/technologies/javase-jre8-downloads.html)).
+- Download **browsermob-proxy** [latest release](https://github.com/lightbody/browsermob-proxy/releases) (note: install [Java](https://www.oracle.com/java/technologies/javase-jre8-downloads.html)).
   - Add `bin/` directory to your %PATH
 
-- Download a **webdriver**. To run the [example](./test_home_engie.py), get Geckodriver [latest release](https://chromedriver.chromium.org/getting-started) 
+- Download a **webdriver**. To run the [example](./test_home_engie.py), get Geckodriver [latest release](https://chromedriver.chromium.org/getting-started)
   - add it to your %PATH or copy it in your working directory
 
 ## Run your first tests
