@@ -23,8 +23,8 @@ report.html
 *_log.json
 *.log
 !tests/*.log
-hits.json
 *.har
+!tests/*.har
 *.png
 
 # packaging
