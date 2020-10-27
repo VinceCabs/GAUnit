@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-SRC_DIRS = ./gaunit ./tests
+SRC_FILES = ./gaunit ./tests setup.py
 
 ##### Dev
 
@@ -19,15 +19,15 @@ install-dev: ## * Install dev requirements
 	pip install -r requirements/dev.txt
 
 clean-logs:  ## Remove all log & RF report files
-	rm logs/*.log log.html output.xml report.html || true
+	rm *.log log.html output.xml report.html || true
 
 tests : test-unit test-robot test-lint test-format ## Run all tests
 
 test-format: ## Run code formatting tests
-	black --check --diff $(SRC_DIRS)
+	black --check --diff $(SRC_FILES)
 
 test-lint: ## Run code linting tests
-	pylint --errors-only ${SRC_DIRS}
+	pylint --errors-only ${SRC_FILES}
 
 test-unit:  ## Run unit tests
 	python -m unittest discover tests
@@ -36,7 +36,7 @@ test-robot:  ## Run RobotFramework library
 	robot tests/test_home_engie.robot
 
 format: ## Format code
-	black $(SRC_DIRS)
+	black $(SRC_FILES)
 
 ##### Use & Deploy
 
@@ -48,10 +48,10 @@ install-robot: ## Install Robot Framework requirements
 	pip install .
 	pip install -r requirements/robot.txt
 
-build-ppackage:   ## Build a python package ready to upload to pypi
+build-package:   ## Build a python package ready to upload to pypi
 	python setup.py sdist bdist_wheel
 
-push-ppackage: ## Push python packages to pypi
+push-package: ## Push python packages to pypi
 	python -m twine upload --skip-existing dist/*
 
 ###### Additional commands

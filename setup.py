@@ -4,9 +4,9 @@ import setuptools
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-init = {}
-with io.open(os.path.join(here, "gaunit", "__init__.py"), "r", encoding="utf-8") as f:
-    exec(f.read(), init)
+about = {}
+with io.open(os.path.join(here, "gaunit", "__about__.py"), "r", encoding="utf-8") as f:
+    exec(f.read(), about)
 with io.open("README.md", "r", encoding="utf8") as f:
     long_description = f.read()
 requirements = []
@@ -15,7 +15,7 @@ with io.open(os.path.join(here, "requirements", "base.in"), "r", encoding="utf-8
 
 setuptools.setup(
     name="gaunit",
-    version=init["__version__"],
+    version=about["__version__"],
     author="Vincent Cabanis",
     author_email="touch@cabanis.fr",
     description="Testing Google Analytics implementations within CI pipelines",
@@ -23,9 +23,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/VinceCabs/GAUnit",
     packages=["gaunit"],
-    package_data={
-        "gaunit": ["config.json"]
-    },
+    package_data={"gaunit": ["config.json"]},
     license="MIT",
     python_requires=">=3.6",
     install_requires=requirements,
