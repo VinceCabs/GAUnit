@@ -1,6 +1,7 @@
 import json
 import logging
 import logging.config
+import os
 import re
 from urllib.parse import parse_qs, urlparse
 
@@ -8,10 +9,15 @@ logger = logging.getLogger(__name__)
 
 
 class GAUnit:
-    def __init__(self, config_file="config.json"):
-        cfg = self.__get_config(config_file)
-        logging.config.dictConfig(cfg["log_config"])
-        self.tracking_file = cfg["tracking_plan_file"]
+    def __init__(self, tracking_plan="tracking_plan.json"):
+
+        # TODO better log configuration
+        here = os.path.abspath(os.path.dirname(__file__))
+        config_file = os.path.join(here, "config.json")
+        with open(config_file) as f:
+            log_config = json.load(f)
+        logging.config.dictConfig(log_config)
+        self.tracking_plan = tracking_plan
 
     def check_tracking_from_har(self, test_case: str, har: dict) -> list:
         """takes har recorded for a given test case and check it against tracking plan
@@ -91,7 +97,7 @@ class GAUnit:
         logger.debug("hits from test case : \n%s", "\n".join([str(h) for h in hits]))
 
         # load tracking plan
-        tracking = self.__get_hits_from_tracking_plan(self.tracking_file, test_case)
+        tracking = self.__get_hits_from_tracking_plan(self.tracking_plan, test_case)
 
         # check recorded hits against hits in tracking plan
         checklist = self.__check_hits_vs_tracking_hits(tracking, hits)
@@ -165,7 +171,7 @@ class GAUnit:
                 content = json.load(f)
                 hits = content["test_cases"][test_case]["hits"]
         except FileNotFoundError:
-            logging.warning("No tracking plan file found: %s", self.tracking_file)
+            logging.warning("No tracking plan file found: %s", self.tracking_plan)
         return hits
 
     @classmethod

@@ -10,9 +10,7 @@ with io.open(os.path.join(here, "gaunit", "__init__.py"), "r", encoding="utf-8")
 with io.open("README.md", "r", encoding="utf8") as f:
     long_description = f.read()
 requirements = []
-with io.open(
-    os.path.join(here, "requirements", "base.in"), "r", encoding="utf-8"
-) as f:
+with io.open(os.path.join(here, "requirements", "base.in"), "r", encoding="utf-8") as f:
     requirements = [line.strip() for line in f]
 
 setuptools.setup(
@@ -25,6 +23,9 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/VinceCabs/GAUnit",
     packages=["gaunit"],
+    package_data={
+        "gaunit": ["config.json"]
+    },
     license="MIT",
     python_requires=">=3.6",
     install_requires=requirements,

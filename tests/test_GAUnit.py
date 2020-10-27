@@ -5,7 +5,7 @@ from gaunit.GAUnit import GAUnit
 class test_GAUnit(unittest.TestCase):
     def setUp(self):
 
-        self.g = GAUnit(config_file="config.json")
+        self.g = GAUnit(tracking_plan="tracking_plan.json")
 
     def test_check_tracking_from_log_file_ok(self):
         test_case = "home_engie"
