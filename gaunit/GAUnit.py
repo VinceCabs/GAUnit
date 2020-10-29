@@ -114,6 +114,7 @@ class GAUnit:
         if ordered:
             pos = 0  # position of last checked hit
             for t in tracking:
+                logger.debug("checking tracker: %s", t)
                 check = False
                 pointer = pos
                 for hit in hits[pos:]:
@@ -126,6 +127,7 @@ class GAUnit:
                         pos = pointer
                         break
                     # tracker is not here
+                    logger.warning("tracker not found: %s", t)
                 chklst.append(check)
         return chklst
 
