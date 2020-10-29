@@ -33,7 +33,7 @@ test-unit:  ## Run unit tests
 	python -m unittest discover tests
 
 test-robot:  ## Run RobotFramework library
-	robot tests/test_home_engie.robot
+	robot tests/test_robot.robot
 
 format: ## Format code
 	black $(SRC_FILES)
@@ -41,11 +41,11 @@ format: ## Format code
 ##### Use & Deploy
 
 install-minimal: ## Install minimal usage requirements
-	pip install gaunit
+	pip install --upgrade gaunit
 
 install-robot: ## Install Robot Framework requirements
-	pip install gaunit
-	pip install robotframework-gaunitlibrary
+	pip install --upgrade gaunit
+	pip install --upgrade robotframework-gaunitlibrary
 
 build-package:   ## Build a python package ready to upload to pypi
 	python setup.py sdist bdist_wheel

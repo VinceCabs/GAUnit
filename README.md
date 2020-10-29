@@ -39,7 +39,7 @@ checklist = g.check_tracking_from_har("my_test_case.har")
 print(checklist)  # [True, False] oups! pageview is fine but video "play" button is not properly tracked.
 ```
 
-See a full working example [here](./test_home_engie.py). You can also use GAUnit within unittest or RobotFramework test cases (WIP : we will soon add samples).
+See a full working example [here](./samples/test_home_engie.py). You can also use GAUnit within unittest or RobotFramework test cases (WIP : we will soon add samples).
 
 ## Installation
 
@@ -52,17 +52,10 @@ pip3 install gaunit  # Linux
 pip install gaunit  # Windows
 ```
 
-- If you want to use RobotFramework module :
-
-```sh
-pip3 install robotframework-gaunitlibrary  # Linux
-pip install robotframework-gaunitlibrary  # Windows
-```
-
 - Download **browsermob-proxy** [latest release](https://github.com/lightbody/browsermob-proxy/releases) (note: install [Java](https://www.oracle.com/java/technologies/javase-jre8-downloads.html)).
   - Add `bin/` directory to your %PATH
 
-- Download a **webdriver**. To run the [example](./test_home_engie.py), get Geckodriver [latest release](https://chromedriver.chromium.org/getting-started)
+- Download a **webdriver**. To run the [example](./samples/test_home_engie.py), get Geckodriver [latest release](https://chromedriver.chromium.org/getting-started)
   - add it to your %PATH or copy it in your working directory
 
 ## Run your first tests
@@ -70,15 +63,11 @@ pip install robotframework-gaunitlibrary  # Windows
 Test with Selenium Python
 
 ```sh
-python3 test_home_engie.py  # Linux
-python test_home_engie.py  # Windows
+python3 samples/test_home_engie.py  # Linux
+python samples/test_home_engie.py  # Windows
 ```
 
-Test with RobotFramework
-
-```sh
-robot samples/test_home_engie.robot
-```
+If you want to use RobotFramework, check [GAUnit Library for Robot Framework](https://github.com/VinceCabs/robotframework-gaunitlibrary)
 
 ## Why GAUnit?
 
@@ -102,6 +91,6 @@ GAUnit was inspired by [WAUnit](https://github.com/joaolcorreia/WAUnit). We deci
 
 ## Roadmap
 
-- Complete test case samples with RobotFramework for web and mobile app
-- Tracking plan using analytics.js or GTM syntax
+- Complete test case samples with RobotFramework mobile app
+- Tracking plan using analytics.js, GTM or GA4 syntax
 - Dockerize (for simpler set up)
