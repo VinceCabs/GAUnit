@@ -14,7 +14,7 @@ pip-up: ## Update requirements files
 	pip-compile --upgrade requirements/robot.in
 
 install-dev: ## * Install dev requirements
-	pip install .
+	pip install -e .
 	pip install -r requirements/robot.txt
 	pip install -r requirements/dev.txt
 
@@ -41,12 +41,11 @@ format: ## Format code
 ##### Use & Deploy
 
 install-minimal: ## Install minimal usage requirements
-	pip install .
-	pip install -r requirements/base.txt
+	pip install gaunit
 
 install-robot: ## Install Robot Framework requirements
-	pip install .
-	pip install -r requirements/robot.txt
+	pip install gaunit
+	pip install robotframework-gaunitlibrary
 
 build-package:   ## Build a python package ready to upload to pypi
 	python setup.py sdist bdist_wheel
