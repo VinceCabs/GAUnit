@@ -127,6 +127,7 @@ class GAUnit:
                         pos = pointer
                         break
                     # tracker is not here
+                if not check:
                     logger.warning("tracker not found: %s", t)
                 chklst.append(check)
         return chklst
