@@ -7,22 +7,19 @@ PACKAGE = gaunit
 pip-comp: ## Compile requirements files
 	pip-compile requirements/base.in
 	pip-compile requirements/dev.in
-	pip-compile requirements/robot.in
 
 pip-up: ## Update requirements files
 	pip-compile --upgrade requirements/base.in
 	pip-compile --upgrade requirements/dev.in
-	pip-compile --upgrade requirements/robot.in
 
 install-dev: ## * Install dev requirements
 	pip install -e .
-	pip install -r requirements/robot.txt
 	pip install -r requirements/dev.txt
 
 clean-logs:  ## Remove all log & RF report files
 	rm *.log log.html output.xml report.html || true
 
-tests : test-unit test-robot test-lint test-format test-package ## * Run all tests
+tests : test-unit test-lint test-format test-package ## * Run all tests
 
 test-format: ## Run code formatting tests
 	black --check --diff $(SRC_FILES)
@@ -46,10 +43,6 @@ format: ## * Format code
 
 install-minimal: ## Install minimal usage requirements
 	pip install --upgrade gaunit
-
-install-robot: ## Install Robot Framework requirements
-	pip install --upgrade gaunit
-	pip install --upgrade robotframework-gaunitlibrary
 
 build-package:   ## Build a python package ready to upload to pypi
 	python setup.py sdist bdist_wheel
