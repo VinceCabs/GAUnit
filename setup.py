@@ -24,6 +24,7 @@ setuptools.setup(
     url="https://github.com/VinceCabs/GAUnit",
     packages=["gaunit"],
     package_data={"gaunit": ["config.json"]},
+    entry_points={"console_scripts": ["gaunit=gaunit.cli:main"]},
     license="MIT",
     python_requires=">=3.6",
     install_requires=requirements,
