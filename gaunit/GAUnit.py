@@ -174,7 +174,7 @@ class GAUnit:
                 content = json.load(f)
                 hits = content["test_cases"][test_case]["hits"]
         except FileNotFoundError:
-            logging.warning("No tracking plan file found: %s", self.tracking_plan)
+            logging.exception("No tracking plan file found: %s", self.tracking_plan)
         return hits
 
     @classmethod
