@@ -50,13 +50,19 @@ build-package:   ## Build a python package ready to upload to pypi
 push-package: test-package ## * Push python packages to pypi
 	python -m twine upload --skip-existing dist/${PACKAGE}-*.tar.gz
 
-release: tests ## * Create a release tag and push it to repos
-	$(MAKE) retag release-public TAG=v$(shell make version)
+release: tests ## * Create a release tag and push it to repos (origin and public)
+	$(MAKE) retag release-public release-origin TAG=v$(shell make version)
 
 retag:
 	@echo "=== Creating tag $(TAG)"
 	git tag -d $(TAG) || true
 	git tag $(TAG)
+
+release-origin:
+	@echo "=== Pushing tag $(TAG) to origin"
+	git push origin
+	git push origin :$(TAG) || true
+	git push origin $(TAG)
 
 release-public:
 	@echo "=== Pushing tag $(TAG) to public"
