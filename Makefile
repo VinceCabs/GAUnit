@@ -47,7 +47,7 @@ install-minimal: ## Install minimal usage requirements
 build-package:   ## Build a python package ready to upload to pypi
 	python setup.py sdist bdist_wheel
 
-push-package: test-package ## * Push python packages to pypi
+push-package: test-package ## * Build, test and push python packages to pypi
 	python -m twine upload --skip-existing dist/${PACKAGE}-*.tar.gz
 
 release: tests ## * Test, create a release tag and push it to repos (origin and public)
