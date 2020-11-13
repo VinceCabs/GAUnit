@@ -19,6 +19,15 @@ class GAUnit:
         logging.config.dictConfig(log_config)
         self.tracking_plan = tracking_plan
 
+    def set_log_level(self, level: int):
+        """sets log level in logger (will log to a gaunit.log file by default)
+
+        Args:
+            level (int): log level. eg. logging.DEBUG, logging.INFO, etc.
+        """
+        logger = logging.getLogger(__name__)
+        logger.setLevel(level)
+
     def check_tracking_from_har(self, test_case: str, har: dict) -> list:
         """takes har recorded for a given test case and check it against tracking plan
 

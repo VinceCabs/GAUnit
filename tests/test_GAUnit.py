@@ -1,4 +1,4 @@
-import os.path
+import logging
 import unittest
 
 from gaunit.GAUnit import GAUnit
@@ -8,6 +8,7 @@ class test_GAUnit(unittest.TestCase):
     def setUp(self):
 
         self.g = GAUnit(tracking_plan="./tests/tracking_plan.json")
+        self.g.set_log_level(logging.ERROR)
 
     def test_check_tracking_from_log_file_ok(self):
         test_case = "home_engie"

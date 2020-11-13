@@ -1,4 +1,5 @@
 import os.path
+import logging
 
 from browsermobproxy import Server
 from gaunit.GAUnit import GAUnit
@@ -23,6 +24,7 @@ def run():
             os.path.abspath(os.path.dirname(__file__)), "tracking_plan.json"
         )
     g = GAUnit(tracking_plan=tracking_plan_path)
+    g.set_log_level(logging.INFO)
 
     # start test case
     test_case = "home_engie"
