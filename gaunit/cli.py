@@ -1,11 +1,20 @@
 import argparse
 import logging
-from .GAUnit import GAUnit
+import pprint
+from colorama import init, Fore, Style
+import json
+
+import gaunit
 
 # to run : gaunit home_engie tests/home_engie.har -t tests/tracking_plan.json
 
 
 def main():
+
+    check_har()
+
+
+def check_har():
     parser = argparse.ArgumentParser()
     parser.add_argument("test_case", type=str, help="name of test case")
     parser.add_argument("har_file", type=str, help="path to HAR file")
@@ -17,29 +26,18 @@ def main():
         default="./tracking_plan.json",
     )
     parser.add_argument(
-        "-d",
-        "--debug",
-        help="set log level to DEBUG",
-        action="store_const",
-        dest="loglevel",
-        const=logging.DEBUG,
-        default=logging.WARNING,
-    )
-    parser.add_argument(
         "-v",
         "--verbose",
-        help="set log level to INFO",
-        action="store_const",
-        dest="loglevel",
-        const=logging.INFO,
+        help="print all trackers with their status and all hits recorded",
+        action="store_false",
+        dest="verbose",
     )
+
     args = parser.parse_args()
 
-    g = GAUnit(tracking_plan=args.tracking_plan)
-    g.set_log_level(args.loglevel)
-    checklist = g.check_tracking_from_file(args.test_case, args.har_file)
-    print(checklist)
+    r = gaunit.check_har(args.test_case, args.tracking_plan, har_path=args.har_file)
+    r.pprint_trackers()
+    # r.pprint_hits()
+    print(80 * "=")
 
-
-if __name__ == "__main__":
-    main()
+    r.pprint_hits()

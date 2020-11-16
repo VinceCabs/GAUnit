@@ -30,6 +30,9 @@ test-lint: ## Run code linting tests
 test-unit:  ## Run unit tests
 	python -m unittest discover tests
 
+test-unit-v:  ## Run unit tests (verbose)
+	python -m unittest discover tests -v
+
 test-robot:  ## Run RobotFramework library
 	robot tests/test_robot.robot
 

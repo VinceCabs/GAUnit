@@ -1,5 +1,6 @@
 import io
 import os
+
 import setuptools
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -24,6 +25,7 @@ setuptools.setup(
     entry_points={"console_scripts": ["gaunit=gaunit.cli:main"]},
     license="MIT",
     python_requires=">=3.6",
+    install_requires=["colorama==0.4.4"],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 3",

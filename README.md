@@ -26,16 +26,13 @@ Define your expected GA [tracking plan](tracking_plan.json) for a given test cas
 Run your test wih Python and check it against your expected tracking plan:
 
 ```python
-from gaunit.GAUnit import GAUnit
+import gaunit
 import browsermobproxy
-
-# Instantiate GAUnit and set your test case name
-g = GAUnit()
 
 # Run your Selenium test here with browsermob-proxy and export har
 # ...
 
-checklist = g.check_tracking_from_har("my_test_case.har")
+result = gaunit.check_har("my_test_case", tracking_plan = "tracking_plan.json", har_path="my_test_case.har")
 print(checklist)  # [True, False] oups! pageview is fine but video "play" button is not properly tracked.
 ```
 
@@ -52,13 +49,13 @@ pip3 install gaunit  # Linux
 pip install gaunit  # Windows
 ```
 
+## Run your first automated tests
+
 - Download **browsermob-proxy** [latest release](https://github.com/lightbody/browsermob-proxy/releases) (note: install [Java](https://www.oracle.com/java/technologies/javase-jre8-downloads.html)).
   - Add `bin/` directory to your %PATH
 
 - Download a **webdriver**. To run the [example](./samples/test_home_engie.py), get Geckodriver [latest release](https://chromedriver.chromium.org/getting-started)
   - add it to your %PATH or copy it in your working directory
-
-## Run your first tests
 
 Test with Selenium Python
 
@@ -68,6 +65,28 @@ python samples/test_home_engie.py  # Windows
 ```
 
 If you want to use RobotFramework, check [GAUnit Library for Robot Framework](https://github.com/VinceCabs/robotframework-gaunitlibrary)
+
+## Manually control a HAR file
+
+You can manually browse your website, export a HAR file and check it through command line :
+
+```sh
+$ gaunit home_engie home_engie.har
+[True, True, True]
+$ gaunit -h
+usage: gaunit [-h] [-t TRACKING_PLAN] [-v] test_case har_file
+
+positional arguments:
+  test_case             name of test case
+  har_file              path to HAR file
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -t TRACKING_PLAN, --tracking_plan TRACKING_PLAN
+                        path to tracking plan
+  -v, --verbose         print all trackers with their status and all hits
+                        recorded
+```
 
 ## Why GAUnit?
 
