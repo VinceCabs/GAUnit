@@ -1,4 +1,8 @@
-import json
+"""
+gaunit.models
+
+This module implements main classes used by gaunit: `TestCase` and `Result`. 
+"""
 from typing import Tuple
 import logging
 import pprint
@@ -22,27 +26,43 @@ logging.basicConfig(level=logging.DEBUG)
 class TestCase(object):
     """User-defined class object representing a test case
 
-    Used to get results between runned test case and expected tracking plan
+    Used to get results between runned test case and expected tracking plan.
+    Typical usage :
+        tc = TestCase("my_test_case","tracking_plan.json")
+        tc.load_har(har=har)
+        r = tc.check()  # r is a Result class object
+        print(r.checklist_trackers)
 
-    Args:
+    Attributes:
         id (str): test case id (same id used to match with tracking plan)
         tracking_plan (str): path to tracking plan file (see Documentation)
         har (dict): har for this test case in dict format
-        har_path (str) : path to HAR file for this test case (standard HAR JSON)
-        http_log (list): list of logged URL for this test case
-        http_log_path (str) : HTTP log file for this test case (one line per URL)
+        tracking_hits (list) : list of tracker found in tracking plan. Each tracker is
+            represented by a dict of hits/event params.
+            Example: `[{"t":"pageview","dt":"home"},...]`
+        ga_urls (list) : Google Analytis hits urls found in Test Case (from HAR or
+            http_log)
+        ga_params (list) : list of params parsed from `ga_urls`. Each hit is represented
+            by a dict in the same format as in `tracking_hits`.
+            Example: `[{"t":"pageview","dt":"home"},...]`
+            note that TestCase.check() will compare `tracking_hits` and `ga_params`
 
-    Raises:
-        ValueError:
-
-    Returns:
-        [type]: [description]
     """
 
     def __init__(
         self, id: str, tracking_plan=None, har=None, har_path=None, http_log=None
     ):
+        """[summary]
 
+        Args:
+            id (str): [description]
+            tracking_plan ([type], optional): [description]. Defaults to None.
+            har (dict, optional): har for this test case in dict format. Defaults to None.
+            har_path (str) : path to HAR file for this test case (standard HAR JSON)
+            # http_log (list): list of logged URL for this test case
+
+        Note: one and one only argument must be given: `har`or `har_path`
+        """
         # # Default empty dicts/lists for dict/lists params.
         har = {} if har is None else har
         http_log = [] if http_log is None else http_log
@@ -64,14 +84,14 @@ class TestCase(object):
             self.load_har(har, har_path)
 
     def load_har(self, har=None, har_path=None):
-        """updates self.har, self.hits, (soon : self.page_flow)
+        """extracts and stores analytics hits from a har
+
+        updates attributes `ga_urls` and `ga_hits` (soon: page_flow).
+        Takes one and one only argument : dict or path to a json file
 
         Args:
             har (dict, optional): [description]. Defaults to None.
             har_path (str, optional): [description]. Defaults to None.
-
-        Returns:
-
 
         Raises:
             ValueError: if zero or two arguments are given.
@@ -92,10 +112,23 @@ class TestCase(object):
         # page_flow_ids = get_pages_ids_from_har(har)
 
     def check(self, ordered=True) -> Tuple[list, list]:
-        """returns results of checks
+        """compares hits from tracking plan and from har and returns 2 checklists
+
+
+
+        Args:
+            ordered (bool, optional): True if we want hits to respect tracking plan
+                order (default behavior)
+
+        Raises:
+            Exception: if something's missing (tracking plan, test case har or
+                analytics hits)
 
         Returns:
-            [type]: [description]
+            Tuple[list, list]: 2 checklists:
+                First checklist tells which tracker in tracking plan is missing
+                Second checlist tells which analytics hit from test case corresponds to
+                a tracker
         """
 
         # check if everything needed is defined
@@ -132,7 +165,7 @@ class TestCase(object):
         return chklst_plan, chklst_hits
 
     def result(self):
-        """performs tracking checks and return result"""
+        """performs tracking checks and return a Result class object"""
 
         checklist_trackers, checklist_hits = self.check()
         r = Result(self, checklist_trackers, checklist_hits)
@@ -140,6 +173,12 @@ class TestCase(object):
 
 
 class Result(object):
+    """Created by a TestCase object. Stores results from a check
+
+    Attributes:
+        test_case (TestCase): TestCase used to generate this Result object
+    """
+
     def __init__(
         self, test_case: TestCase, checklist_trackers: list, checklist_hits: list
     ):
@@ -151,10 +190,9 @@ class Result(object):
     # TODO method to return merged results : trackers, hits and pages
 
     def pprint_trackers(self):
-        """pretty print list of trackers from tracking plan and status (present/missing)
+        """pretty print list of trackers from tracking plan
 
-        Args:
-            url (bool): print url if True, print hit params if False. Default False
+        says which tracker was found in test case  ("present" or "missing")
         """
 
         tc = self.test_case
@@ -171,10 +209,12 @@ class Result(object):
                 print(70 * "-", Fore.RED + "missing")
 
     def pprint_hits(self, url=True):
-        """pretty print list of trackers from tracking plan and status (present/missing)
+        """pretty print list of analytics hits from test case
+
+        says which analytics hit was in tracking plan ("OK" or "pass")
 
         Args:
-            url (bool): print url if True, print hit params if False. Default False
+            url (bool): print url if True, print hit params if False. Default: True.
         """
         tc = self.test_case
         urls = tc.ga_urls

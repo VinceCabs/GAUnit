@@ -4,7 +4,7 @@ def generate_mock_har_ga(*args) -> dict:
     GA hits will get values in argument
 
     Args:
-        schema (list): 'dp' parameters for GA hits [A,x,B,..]
+        schema (list): 'dp' parameters for GA hits "A" ,"x", "B",..
 
     Returns :
         dict : har

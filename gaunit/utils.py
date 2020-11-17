@@ -1,9 +1,14 @@
+"""
+gaunit.models
+
+This module implements general methods used by gaunits.
+"""
 import json
 import re
 from urllib.parse import parse_qs, urlparse
 
 
-def get_hits_from_tracking_plan(test_case: str, tracking_plan: str) -> dict:
+def get_hits_from_tracking_plan(test_case: str, tracking_plan: str) -> list:
     """load tracking plan file and extract hits for a given test case
 
     Args:
@@ -22,7 +27,7 @@ def open_json(json_path) -> dict:
     return content
 
 
-def get_hits_from_tp_dict(tc: str, tp: dict) -> dict:
+def get_hits_from_tp_dict(tc: str, tp: dict) -> list:
     """extract hits from tracking plan dict"""
     try:
         d = tp["test_cases"].get(tc, None)
