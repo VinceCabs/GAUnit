@@ -1,8 +1,12 @@
 .DEFAULT_GOAL := help
+.PHONY: docs
 SRC_FILES = ./gaunit ./tests setup.py
 PACKAGE = gaunit
 
 ##### Dev
+
+docs: ## Build html documentation
+	$(MAKE) -C docs
 
 pip-comp: ## Compile requirements files
 	pip-compile requirements/base.in

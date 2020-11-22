@@ -3,3 +3,5 @@ pip-tools
 black
 pylint
 twine
+Sphinx
+sphinx-rtd-theme

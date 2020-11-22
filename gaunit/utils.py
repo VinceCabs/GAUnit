@@ -1,5 +1,5 @@
 """
-gaunit.models
+gaunit.utils
 
 This module implements general methods used by gaunits.
 """

@@ -1,7 +1,7 @@
 """
 gaunit.models
 
-This module implements main classes used by gaunit: `TestCase` and `Result`. 
+This module implements main classes used by gaunit: :class:`TestCase` and :class:`Result`. 
 """
 from typing import Tuple
 import logging
@@ -24,46 +24,42 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 class TestCase(object):
-    """User-defined class object representing a test case
+    """User-defined class object representing a test case.
 
     Used to get results between runned test case and expected tracking plan.
-    Typical usage :
-        tc = TestCase("my_test_case","tracking_plan.json")
-        tc.load_har(har=har)
-        r = tc.check()  # r is a Result class object
-        print(r.checklist_trackers)
+
+    Note: 
+        one and one only argument must be given: ``har`` or ``har_path``
+
+    Example :
+        >>> tc = TestCase("my_test_case", "tracking_plan.json")
+        >>> tc.load_har(har=har)
+        >>> r = tc.check()
+        >>> r.checklist_trackers
+        [True, True]
 
     Attributes:
         id (str): test case id (same id used to match with tracking plan)
         tracking_plan (str): path to tracking plan file (see Documentation)
-        har (dict): har for this test case in dict format
+        har (dict): har for this test case in dict format. Defaults to None
+        har_path (str) : path to HAR file for this test case (standard HAR JSON). Defaults to None
         tracking_hits (list) : list of tracker found in tracking plan. Each tracker is
             represented by a dict of hits/event params.
-            Example: `[{"t":"pageview","dt":"home"},...]`
+            Example: ``[{"t":"pageview","dt":"home"},...]``
         ga_urls (list) : Google Analytis hits urls found in Test Case (from HAR or
             http_log)
         ga_params (list) : list of params parsed from `ga_urls`. Each hit is represented
             by a dict in the same format as in `tracking_hits`.
-            Example: `[{"t":"pageview","dt":"home"},...]`
-            note that TestCase.check() will compare `tracking_hits` and `ga_params`
+            Example: ``[{"t":"pageview","dt":"home"},...]``
+            note that TestCase.check() will compare ``tracking_hits`` and ``ga_params``
+
 
     """
 
     def __init__(
         self, id: str, tracking_plan=None, har=None, har_path=None, http_log=None
     ):
-        """[summary]
-
-        Args:
-            id (str): [description]
-            tracking_plan ([type], optional): [description]. Defaults to None.
-            har (dict, optional): har for this test case in dict format. Defaults to None.
-            har_path (str) : path to HAR file for this test case (standard HAR JSON)
-            # http_log (list): list of logged URL for this test case
-
-        Note: one and one only argument must be given: `har`or `har_path`
-        """
-        # # Default empty dicts/lists for dict/lists params.
+        # Default empty dicts/lists for dict/lists params.
         har = {} if har is None else har
         http_log = [] if http_log is None else http_log
 
@@ -176,7 +172,7 @@ class Result(object):
     """Created by a TestCase object. Stores results from a check
 
     Attributes:
-        test_case (TestCase): TestCase used to generate this Result object
+        test_case (TestCase): test case these results are coming from
     """
 
     def __init__(

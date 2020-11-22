@@ -28,7 +28,7 @@ report.html
 !tests/*.har
 *.png
 
-# packaging
+# packaging and docs
 dist/
 *.egg-info/
 build/
