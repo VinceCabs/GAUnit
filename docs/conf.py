@@ -69,7 +69,7 @@ html_static_path = ["_static"]
 html_context = {
     "display_github": True,
     "github_user": "VinceCabs",
-    "github_repo": "ga-unit",
+    "github_repo": "GAUnit",
     "github_version": "master",
     "conf_py_path": "/docs/",
 }
