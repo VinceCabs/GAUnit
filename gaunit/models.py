@@ -28,7 +28,7 @@ class TestCase(object):
 
     Used to get results between runned test case and expected tracking plan.
 
-    Note: 
+    Note:
         one and one only argument must be given: ``har`` or ``har_path``
 
     Example :
@@ -178,12 +178,57 @@ class Result(object):
     def __init__(
         self, test_case: TestCase, checklist_trackers: list, checklist_hits: list
     ):
-        self.test_case = test_case  # classe entière
+        self.test_case = test_case  # entire TestCase object
         self.checklist_trackers = checklist_trackers
         self.checklist_hits = checklist_hits
-        # self.comparison = None # to code after: comparison of both tracker and hits list
+        # self.comparison = None
 
-    # TODO method to return merged results : trackers, hits and pages
+    # TODO method to return merged results : comparison of both tracker and hits list
+
+    def get_trackers(self) -> list:
+        """Returns expected hits and their status
+
+        Returns:
+            list: list of expected hits and if they were present or not
+
+        Example:
+            >>> r = gaunit.check_har("my_test_case", "tracking_plan.json", har=har)
+            >>> r.get_trackers()
+            [{'hit':{'t':'pageview', 'dp': 'home'}, 'check': True},..]
+        """
+
+        tc = self.test_case
+        hits = tc.tracking_hits
+        chcklst = self.checklist_trackers
+
+        return [{"hit": h, "check": c} for (h, c) in zip(hits, chcklst)]
+
+    def get_hits(self, url=True) -> list:
+        """Returns actual hits and which ones were expected in tracking plan
+
+        Args:
+            url (bool): print url if True, print hit params if False. Default: True.
+
+        Returns:
+            list: list of actual hits
+
+        Example:
+            >>> r = gaunit.check_har("my_test_case", "tracking_plan.json", har=har)
+            >>> r.get_hits()
+            [{'url:{'t':'pageview', 'dp': 'home'}, 'expected': True}
+            >>> r.get_hits(url=False)
+            [{'url:'https://www.google-analytics.com/collect?v=1&...', 'expected': True}
+        """
+
+        tc = self.test_case
+        urls = tc.ga_urls
+        hits = tc.ga_hits
+        chcklst = self.checklist_hits
+
+        if url:
+            return [{"url": u, "expected": c} for (u, c) in zip(urls, chcklst)]
+        else:
+            return [{"hit": h, "expected": c} for (h, c) in zip(hits, chcklst)]
 
     def pprint_trackers(self):
         """pretty print list of trackers from tracking plan

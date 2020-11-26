@@ -74,5 +74,43 @@ class test_TestCase(unittest.TestCase):
         self.assertEqual(checklist_hits, [False, True, True])
 
 
+class test_Result(unittest.TestCase):
+
+    here = path.dirname(path.realpath(__file__))
+    tracking_plan = path.join(here, "tracking_plan.json")
+    tc = gaunit.TestCase("home_engie", tracking_plan)
+
+    def test_get_trackers(self):
+        har = generate_mock_har_ga("A", "B")
+        self.tc.load_har(har)
+        r = self.tc.result()
+        self.assertEqual(
+            r.get_trackers(),
+            [
+                {"hit": {"dp": "A"}, "check": True},
+                {"hit": {"dp": "B"}, "check": True},
+                {"hit": {"dp": "C"}, "check": False},
+            ],
+        )
+
+    def test_get_hits(self):
+        har = generate_mock_har_ga("A", "x")
+        self.tc.load_har(har)
+        r = self.tc.result()
+        self.assertEqual(
+            r.get_hits(url=True),
+            [
+                {
+                    "url": "https://www.google-analytics.com/collect?v=1&dp=A",
+                    "expected": True,
+                },
+                {
+                    "url": "https://www.google-analytics.com/collect?v=1&dp=x",
+                    "expected": False,
+                },
+            ],
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
