@@ -35,8 +35,8 @@ def run():
     tracking_plan = join(abspath(dirname(__file__)), "tracking_plan.json")
     r = gaunit.check_har(test_case, tracking_plan, har=har)
 
-    print("tracking checklist:", r.checklist_trackers)  # [True, True, True] tracking is correct !
-    r.pprint_hits(url=True)
+    print("tracking checklist:", r.checklist_expected)  # [True, True, True] tracking is correct !
+    r.pprint_actual_events(url=True)
 
     server.stop()
     driver.quit()

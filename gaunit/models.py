@@ -11,7 +11,7 @@ from colorama import init, Fore
 
 from .utils import (
     filter_ga_urls,
-    get_hits_from_tracking_plan,
+    get_events_from_tracking_plan,
     get_requests_from_har,
     load_dict_xor_json,
     parse_ga_url,
@@ -41,17 +41,18 @@ class TestCase(object):
     Attributes:
         id (str): test case id (same id used to match with tracking plan)
         tracking_plan (str): path to tracking plan file (see Documentation)
-        har (dict): har for this test case in dict format. Defaults to None
+        har (dict): actual har for this test case in dict format. Defaults to None
         har_path (str) : path to HAR file for this test case (standard HAR JSON). Defaults to None
-        tracking_hits (list) : list of tracker found in tracking plan. Each tracker is
-            represented by a dict of hits/event params.
+        expected_events (list) : list of Google Analytics event  found in tracking plan.
+            Each event is represented by a dict of params.
             Example: ``[{"t":"pageview","dt":"home"},...]``
-        ga_urls (list) : Google Analytis hits urls found in Test Case (from HAR or
+        actual_urls (list) : actual GA events urls found in Test Case (from given HAR or
             http_log)
-        ga_params (list) : list of params parsed from `ga_urls`. Each hit is represented
-            by a dict in the same format as in `tracking_hits`.
+        actual_events (list) : list of GA events params parsed from `actual_urls`.
+            Each event is represented by a dict of params (same as `expected_events`).
             Example: ``[{"t":"pageview","dt":"home"},...]``
-            note that TestCase.check() will compare ``tracking_hits`` and ``ga_params``
+            note that TestCase.check() will compare ``expected_events`` and
+            ``actual_events``
 
 
     """
@@ -66,14 +67,14 @@ class TestCase(object):
         self.id = id  # test case name
         self.tracking_plan = tracking_plan  # path to tracking plan
 
-        self.tracking_hits = {}
+        self.expected_events = {}
         if tracking_plan:
-            self.tracking_hits = get_hits_from_tracking_plan(id, tracking_plan)
+            self.expected_events = get_events_from_tracking_plan(id, tracking_plan)
 
         self.har = {}  # for debug, will be killed soon
 
-        self.ga_urls = {}
-        self.ga_hits = {}
+        self.actual_urls = {}
+        self.actual_events = {}
         # self.page_flow = [] # will store urls from pages TODO
         # self.page_flow_ids = [] # will store har ids for pages
         if har or har_path:
@@ -97,11 +98,11 @@ class TestCase(object):
 
         # extract GA hits (urls and params)
         urls = get_requests_from_har(har)
-        ga_urls = filter_ga_urls(urls)
-        ga_hits = [parse_ga_url(url) for url in ga_urls]
+        urls = filter_ga_urls(urls)
+        params = [parse_ga_url(url) for url in urls]
 
         self.har = har  # TDO remove attribute
-        self.ga_urls, self.ga_hits = ga_urls, ga_hits
+        self.actual_urls, self.actual_events = urls, params
 
         # # extract pages (urls and har ids)
         # page_flow = get_pages_from_har(har)
@@ -130,41 +131,41 @@ class TestCase(object):
         # check if everything needed is defined
         message = "tried to check tracking but something is missing: %s"
         missing = []
-        if not self.tracking_hits:
+        if not self.expected_events:
             missing.append("tracking plan")
         if not self.har:
             missing.append("har")
         if missing:
             raise Exception(message % ", ".join(missing))
-        if not self.ga_hits:
+        if not self.actual_events:
             raise Exception("no ga hits found in har")
 
         # start checking
-        tracking = self.tracking_hits
-        hits = self.ga_hits
-        chklst_plan = []
-        chklst_hits = [False] * len(hits)
+        expected = self.expected_events
+        actual = self.actual_events
+        chklst_expected = []
+        chklst_actual = [False] * len(actual)
         pos = 0  # position of last checked hit
-        for t in tracking:
+        for t in expected:
             check = False
-            for index, hit in enumerate(hits[pos:]):
+            for index, hit in enumerate(actual[pos:]):
                 if t.items() <= hit.items():
                     # tracker is present : all params are there
                     check = True
-                    chklst_hits[pos + index] = True
+                    chklst_actual[pos + index] = True
                     if ordered:
                         pos += index  # if we want hits to respect tracking plan order (default)
                     break
                 # tracker is not here
-            chklst_plan.append(check)
+            chklst_expected.append(check)
 
-        return chklst_plan, chklst_hits
+        return chklst_expected, chklst_actual
 
     def result(self):
         """performs tracking checks and return a Result class object"""
 
-        checklist_trackers, checklist_hits = self.check()
-        r = Result(self, checklist_trackers, checklist_hits)
+        expected, actual = self.check()
+        r = Result(self, expected, actual)
         return r
 
 
@@ -176,35 +177,35 @@ class Result(object):
     """
 
     def __init__(
-        self, test_case: TestCase, checklist_trackers: list, checklist_hits: list
+        self, test_case: TestCase, checklist_expected: list, checklist_actual: list
     ):
         self.test_case = test_case  # entire TestCase object
-        self.checklist_trackers = checklist_trackers
-        self.checklist_hits = checklist_hits
+        self.checklist_expected = checklist_expected
+        self.checklist_actual = checklist_actual
         # self.comparison = None
 
     # TODO method to return merged results : comparison of both tracker and hits list
 
-    def get_trackers(self) -> list:
-        """Returns expected hits and their status
+    def get_status_expected_events(self) -> list:
+        """Returns expected event and their status
 
         Returns:
-            list: list of expected hits and if they were present or not
+            list: list of expected events and their status (``True`` if found in actual events))
 
         Example:
             >>> r = gaunit.check_har("my_test_case", "tracking_plan.json", har=har)
             >>> r.get_trackers()
-            [{'hit':{'t':'pageview', 'dp': 'home'}, 'check': True},..]
+            [{'hit':{'t':'pageview', 'dp': 'home'}, 'found': True},..]
         """
 
         tc = self.test_case
-        hits = tc.tracking_hits
-        chcklst = self.checklist_trackers
+        hits = tc.expected_events
+        chcklst = self.checklist_expected
 
-        return [{"hit": h, "check": c} for (h, c) in zip(hits, chcklst)]
+        return [{"hit": h, "found": c} for (h, c) in zip(hits, chcklst)]
 
-    def get_hits(self, url=True) -> list:
-        """Returns actual hits and which ones were expected in tracking plan
+    def get_status_actual_events(self, url=True) -> list:
+        """Returns actual events and which ones were expected in tracking plan
 
         Args:
             url (bool): print url if True, print hit params if False. Default: True.
@@ -221,24 +222,24 @@ class Result(object):
         """
 
         tc = self.test_case
-        urls = tc.ga_urls
-        hits = tc.ga_hits
-        chcklst = self.checklist_hits
+        urls = tc.actual_urls
+        hits = tc.actual_events
+        chcklst = self.checklist_actual
 
         if url:
             return [{"url": u, "expected": c} for (u, c) in zip(urls, chcklst)]
         else:
             return [{"hit": h, "expected": c} for (h, c) in zip(hits, chcklst)]
 
-    def pprint_trackers(self):
+    def pprint_expected_events(self):
         """pretty print list of trackers from tracking plan
 
-        says which tracker was found in test case  ("present" or "missing")
+        says which tracker was found in test case  ("OK" or "missing")
         """
 
         tc = self.test_case
-        hits = tc.tracking_hits
-        chcklst = self.checklist_trackers
+        hits = tc.expected_events
+        chcklst = self.checklist_expected
 
         # print trackers urls
         init(autoreset=True)
@@ -249,18 +250,18 @@ class Result(object):
             else:
                 print(70 * "-", Fore.RED + "missing")
 
-    def pprint_hits(self, url=True):
+    def pprint_actual_events(self, url=True):
         """pretty print list of analytics hits from test case
 
-        says which analytics hit was in tracking plan ("OK" or "pass")
+        says which analytics hit was in tracking plan ("OK" or "skip")
 
         Args:
             url (bool): print url if True, print hit params if False. Default: True.
         """
         tc = self.test_case
-        urls = tc.ga_urls
-        hits = tc.ga_hits
-        chcklst = self.checklist_hits
+        urls = tc.actual_urls
+        hits = tc.actual_events
+        chcklst = self.checklist_actual
 
         init(autoreset=True)
         for (u, hit, check) in zip(urls, hits, chcklst):
@@ -271,4 +272,4 @@ class Result(object):
             if check:
                 print(70 * "-", Fore.GREEN + "OK")
             else:
-                print(70 * "-", "pass")
+                print(70 * "-", "skip")

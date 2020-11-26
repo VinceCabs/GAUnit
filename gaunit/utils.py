@@ -8,7 +8,7 @@ import re
 from urllib.parse import parse_qs, urlparse
 
 
-def get_hits_from_tracking_plan(test_case: str, tracking_plan: str) -> list:
+def get_events_from_tracking_plan(test_case: str, tracking_plan: str) -> list:
     """load tracking plan file and extract hits for a given test case
 
     Args:
@@ -16,7 +16,7 @@ def get_hits_from_tracking_plan(test_case: str, tracking_plan: str) -> list:
     """
     # 4 test unit
     tp = open_json(tracking_plan)
-    return get_hits_from_tp_dict(test_case, tp)
+    return get_event_params_from_tp_dict(test_case, tp)
 
 
 def open_json(json_path) -> dict:
@@ -27,8 +27,8 @@ def open_json(json_path) -> dict:
     return content
 
 
-def get_hits_from_tp_dict(tc: str, tp: dict) -> list:
-    """extract hits from tracking plan dict"""
+def get_event_params_from_tp_dict(tc: str, tp: dict) -> list:
+    """extract GA event params from tracking plan dict"""
     try:
         d = tp["test_cases"].get(tc, None)
         if d:
@@ -107,6 +107,8 @@ def filter_ga_urls(urls: list) -> list:
 
 def parse_ga_url(url: str) -> dict:
     query = urlparse(url).query
-    hit_fields = parse_qs(query)
-    hit_fields = {f: hit_fields[f][0] for f in hit_fields}  # transform {f:[v]} to {f:v}
-    return hit_fields
+    event_params = parse_qs(query)
+    event_params = {
+        f: event_params[f][0] for f in event_params
+    }  # transform {f:[v]} to {f:v}
+    return event_params

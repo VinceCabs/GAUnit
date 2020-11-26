@@ -16,22 +16,22 @@ class test_utils(unittest.TestCase):
     # def tearDown(self):
     #     # Remove the directory after the test
 
-    def test_get_hits_from_tp_dict_wrong_format_1(self):
+    def test_get_event_params_from_tp_dict_wrong_format_1(self):
 
         tp = {"dummy": "dummy"}
         with self.assertRaises(KeyError):
-            gaunit.utils.get_hits_from_tp_dict("home_engie", tp)
+            gaunit.utils.get_event_params_from_tp_dict("home_engie", tp)
 
-    def test_get_hits_from_tracking_plan_wrong_format_2(self):
+    def test_get_event_params_from_tp_dict_plan_wrong_format_2(self):
 
         tp = {"test_cases": {"home_engie": {"dummy": "dummy"}}}
         with self.assertRaises(KeyError):
-            gaunit.utils.get_hits_from_tp_dict("home_engie", tp)
+            gaunit.utils.get_event_params_from_tp_dict("home_engie", tp)
 
-    def test_get_hits_from_tracking_plan_OK(self):
+    def test_get_event_params_from_tp_dict_OK(self):
 
         tp = {"test_cases": {"home_engie": {"hits": [{"t": "pageview"}]}}}
-        hits = gaunit.utils.get_hits_from_tp_dict("home_engie", tp)
+        hits = gaunit.utils.get_event_params_from_tp_dict("home_engie", tp)
         self.assertEqual([{"t": "pageview"}], hits)
 
     def test_get_requests_from_har_OK(self):

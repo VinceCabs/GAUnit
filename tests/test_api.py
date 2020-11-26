@@ -15,4 +15,4 @@ class test_api(unittest.TestCase):
 
         har = generate_mock_har_ga("A", "B", "C")
         r = gaunit.check_har("home_engie", tracking_plan=self.tracking_plan, har=har)
-        self.assertEqual([True, True, True], r.checklist_trackers)
+        self.assertEqual([True, True, True], r.checklist_expected)

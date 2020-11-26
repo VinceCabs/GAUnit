@@ -12,17 +12,18 @@ def check_har(test_case: str, tracking_plan: str, har=None, har_path=None) -> Re
     Example:
         >>> # from har dict
         >>> r = gaunit.check_har("my_test_case", "tracking_plan.json", har=har)
-        >>> r.checklist_trackers
+        >>> r.checklist_expected
         [True, True]
         >>> # or from HAR JSON file
         >>> r = gaunit.check_har("my_test_case", "tracking_plan.json", har_path="har.json")
-        >>> r.checklist_trackers
+        >>> r.checklist_expected
         [True, True]
 
     Args:
         test_case (str): test case id (same id used to match with tracking plan)
         tracking_plan (str): path to tracking plan file (see Documentation)
-        har_path (str) : path to HAR file for this test case (standard HAR JSON)
+        har (dict): actual har for this test case in dict format. Defaults to None
+        har_path (str) : path to HAR file for this test case (standard HAR JSON). Defaults to None
 
     Note:
         one and one only argument must be given: ``har`` or ``har_path``

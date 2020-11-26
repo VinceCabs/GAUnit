@@ -28,7 +28,7 @@ def check_har():
     parser.add_argument(
         "-v",
         "--verbose",
-        help="print all trackers with their status and all hits recorded",
+        help="print all expected events with their status and all actual events recorded",
         action="store_false",
         dest="verbose",
     )
@@ -36,8 +36,9 @@ def check_har():
     args = parser.parse_args()
 
     r = gaunit.check_har(args.test_case, args.tracking_plan, har_path=args.har_file)
-    r.pprint_trackers()
-    # r.pprint_hits()
-    print(80 * "=")
-
-    r.pprint_hits()
+    if args.verbose:
+        r.pprint_expected_events()
+        print(80 * "=")
+        r.pprint_actual_events()
+    else:
+        print(r.checklist_expected)

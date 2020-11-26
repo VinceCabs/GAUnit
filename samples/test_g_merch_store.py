@@ -38,8 +38,8 @@ def run():
     with open("har.json", "w", encoding="utf8") as f:
         json.dump(har, f)
 
-    print("tracking checklist:", r.checklist_trackers)  # [True]
-    r.pprint_hits(url=True)
+    print("tracking checklist:", r.checklist_expected)  # [True]
+    r.pprint_actual_events(url=True)
 
     server.stop()
     driver.quit()
