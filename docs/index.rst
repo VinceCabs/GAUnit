@@ -11,6 +11,10 @@ Welcome to GAUnit's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+.. image:: https://readthedocs.org/projects/gaunit/badge/?version=latest
+   :target: https://gaunit.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
+
 Usage
 ------------
 

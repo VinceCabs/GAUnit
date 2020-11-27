@@ -1,5 +1,7 @@
 # GAUnit
 
+[![Documentation Status](https://readthedocs.org/projects/gaunit/badge/?version=latest)](https://gaunit.readthedocs.io/en/latest/?badge=latest)
+
 GAUnit is a Python library for testing Google Analytics implementations with Selenium or RobotFramework test cases.
 
 It is designed to be used within your pipelines in various environments such as traditional websites, Single Page Applications or Mobile Apps.
