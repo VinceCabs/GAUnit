@@ -35,7 +35,7 @@ class TestCase(object):
         >>> tc = TestCase("my_test_case", "tracking_plan.json")
         >>> tc.load_har(har=har)
         >>> r = tc.check()
-        >>> r.checklist_trackers
+        >>> r.expected_events
         [True, True]
 
     Attributes:
@@ -43,8 +43,8 @@ class TestCase(object):
         tracking_plan (str): path to tracking plan file (see Documentation)
         har (dict): actual har for this test case in dict format. Defaults to None
         har_path (str) : path to HAR file for this test case (standard HAR JSON). Defaults to None
-        expected_events (list) : list of Google Analytics event  found in tracking plan.
-            Each event is represented by a dict of params.
+        expected_events (list) : list of Google Analytics event in tracking plan.
+        Each event is represented by a dict of params.
             Example: ``[{"t":"pageview","dt":"home"},...]``
         actual_urls (list) : actual GA events urls found in Test Case (from given HAR or
             http_log)
@@ -52,9 +52,7 @@ class TestCase(object):
             Each event is represented by a dict of params (same as `expected_events`).
             Example: ``[{"t":"pageview","dt":"home"},...]``
             note that TestCase.check() will compare ``expected_events`` and
-            ``actual_events``
-
-
+            ``actual_events``, whick makes sense!
     """
 
     def __init__(
@@ -123,9 +121,9 @@ class TestCase(object):
 
         Returns:
             Tuple[list, list]: 2 checklists:
-                First checklist tells which tracker in tracking plan is missing
-                Second checlist tells which analytics hit from test case corresponds to
-                a tracker
+                First checklist tells which event in tracking plan is missing
+                Second checklist tells which analytics event from test case corresponds
+                to an expected event
         """
 
         # check if everything needed is defined
@@ -150,13 +148,13 @@ class TestCase(object):
             check = False
             for index, hit in enumerate(actual[pos:]):
                 if t.items() <= hit.items():
-                    # tracker is present : all params are there
+                    # expected event is present : all params are there
                     check = True
                     chklst_actual[pos + index] = True
                     if ordered:
                         pos += index  # if we want hits to respect tracking plan order (default)
                     break
-                # tracker is not here
+                # expected event is not here
             chklst_expected.append(check)
 
         return chklst_expected, chklst_actual
@@ -194,7 +192,7 @@ class Result(object):
 
         Example:
             >>> r = gaunit.check_har("my_test_case", "tracking_plan.json", har=har)
-            >>> r.get_trackers()
+            >>> r.get_status_expected_events()
             [{'hit':{'t':'pageview', 'dp': 'home'}, 'found': True},..]
         """
 
@@ -215,9 +213,9 @@ class Result(object):
 
         Example:
             >>> r = gaunit.check_har("my_test_case", "tracking_plan.json", har=har)
-            >>> r.get_hits()
+            >>> r.get_status_actual_events()
             [{'url:{'t':'pageview', 'dp': 'home'}, 'expected': True}
-            >>> r.get_hits(url=False)
+            >>> r.get_status_actual_events(url=False)
             [{'url:'https://www.google-analytics.com/collect?v=1&...', 'expected': True}
         """
 
@@ -232,7 +230,7 @@ class Result(object):
             return [{"hit": h, "expected": c} for (h, c) in zip(hits, chcklst)]
 
     def pprint_expected_events(self):
-        """pretty print list of trackers from tracking plan
+        """pretty print list of events from tracking plan
 
         says which tracker was found in test case  ("OK" or "missing")
         """
@@ -241,7 +239,7 @@ class Result(object):
         hits = tc.expected_events
         chcklst = self.checklist_expected
 
-        # print trackers urls
+        # print expected urls
         init(autoreset=True)
         for (hit, check) in zip(hits, chcklst):
             pprint.pprint(hit)
