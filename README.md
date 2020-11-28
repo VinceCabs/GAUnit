@@ -1,6 +1,8 @@
 # GAUnit
 
+[![Build Status](https://travis-ci.org/VinceCabs/GAUnit.svg?branch=master)](https://travis-ci.org/VinceCabs/GAUnit)
 [![Documentation Status](https://readthedocs.org/projects/gaunit/badge/?version=latest)](https://gaunit.readthedocs.io/en/latest/?badge=latest)
+
 
 GAUnit is a Python library for testing Google Analytics implementations with Selenium or RobotFramework test cases.
 

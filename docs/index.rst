@@ -11,6 +11,8 @@ Welcome to GAUnit's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+.. image:: https://travis-ci.org/VinceCabs/GAUnit.svg?branch=master
+   :target: https://travis-ci.org/VinceCabs/GAUnit
 .. image:: https://readthedocs.org/projects/gaunit/badge/?version=latest
    :target: https://gaunit.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
