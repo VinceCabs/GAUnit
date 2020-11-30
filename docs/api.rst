@@ -11,6 +11,7 @@ Main API
 All the methods you will need for general usage.
 
 .. autofunction:: check_har
+.. autofunction:: check_perf_log
 
 Classes
 ----------

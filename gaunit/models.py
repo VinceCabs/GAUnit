@@ -12,6 +12,7 @@ from colorama import init, Fore
 from .utils import (
     filter_ga_urls,
     get_events_from_tracking_plan,
+    get_requests_from_browser_perf_log,
     get_requests_from_har,
     load_dict_xor_json,
     parse_ga_url,
@@ -43,6 +44,7 @@ class TestCase(object):
         tracking_plan (str): path to tracking plan file (see Documentation)
         har (dict): actual har for this test case in dict format. Defaults to None
         har_path (str) : path to HAR file for this test case (standard HAR JSON). Defaults to None
+        perf_log (list) : browser performance log
         expected_events (list) : list of Google Analytics event in tracking plan.
         Each event is represented by a dict of params.
             Example: ``[{"t":"pageview","dt":"home"},...]``
@@ -56,11 +58,11 @@ class TestCase(object):
     """
 
     def __init__(
-        self, id: str, tracking_plan=None, har=None, har_path=None, http_log=None
+        self, id: str, tracking_plan=None, har=None, har_path=None, perf_log=None
     ):
         # Default empty dicts/lists for dict/lists params.
         har = {} if har is None else har
-        http_log = [] if http_log is None else http_log
+        perf_log = [] if perf_log is None else perf_log
 
         self.id = id  # test case name
         self.tracking_plan = tracking_plan  # path to tracking plan
@@ -77,6 +79,9 @@ class TestCase(object):
         # self.page_flow_ids = [] # will store har ids for pages
         if har or har_path:
             self.load_har(har, har_path)
+
+        if perf_log:
+            self.load_perf_log(perf_log)
 
     def load_har(self, har=None, har_path=None):
         """extracts and stores analytics hits from a har
@@ -106,8 +111,26 @@ class TestCase(object):
         # page_flow = get_pages_from_har(har)
         # page_flow_ids = get_pages_ids_from_har(har)
 
+    def load_perf_log(self, perf_log: list):
+        """extracts and stores analytics events from Performance Log
+
+        For more info on Performance Log, see https://chromedriver.chromium.org/logging/performance-log
+
+        Args:
+            perf_log (list): log entries from ``driver.get_log("performance")``
+
+        See also :
+            :func:`TestCase.load_har`
+        """
+
+        urls = get_requests_from_browser_perf_log(perf_log)
+        urls = filter_ga_urls(urls)
+        params = [parse_ga_url(url) for url in urls]
+
+        self.actual_urls, self.actual_events = urls, params
+
     def check(self, ordered=True) -> Tuple[list, list]:
-        """compares hits from tracking plan and from har and returns 2 checklists
+        """compares hits from tracking plan and from log and returns 2 checklists
 
 
 
@@ -116,8 +139,8 @@ class TestCase(object):
                 order (default behavior)
 
         Raises:
-            Exception: if something's missing (tracking plan, test case har or
-                analytics hits)
+            Exception: if something's missing (tracking plan, test case log entries or
+                analytics events)
 
         Returns:
             Tuple[list, list]: 2 checklists:
@@ -131,12 +154,12 @@ class TestCase(object):
         missing = []
         if not self.expected_events:
             missing.append("tracking plan")
-        if not self.har:
-            missing.append("har")
+        if not self.actual_urls:
+            missing.append("log")
         if missing:
             raise Exception(message % ", ".join(missing))
         if not self.actual_events:
-            raise Exception("no ga hits found in har")
+            raise Exception("no actual analytics event found in log")
 
         # start checking
         expected = self.expected_events

@@ -14,7 +14,6 @@ def get_events_from_tracking_plan(test_case: str, tracking_plan: str) -> list:
     Args:
         tracking_plan (str): path to tracking plan JSON file (see Documentation for tracking plan expected format)
     """
-    # 4 test unit
     tp = open_json(tracking_plan)
     return get_event_params_from_tp_dict(test_case, tp)
 
@@ -42,16 +41,40 @@ def get_event_params_from_tp_dict(tc: str, tp: dict) -> list:
 
 
 def get_requests_from_har(har: dict) -> list:
-    """returns
+    """returns a list of HTTP requests urls found in har
 
     Args:
-        har (dict): har
+        har (dict): list of urls
 
     Returns:
-        list: [description]
+        list:
     """
     entries = har["log"]["entries"]
     urls = [e["request"]["url"] for e in entries]
+    return urls
+
+
+def get_requests_from_browser_perf_log(log: list) -> list:
+    """returns a list of HTTP requests urls found in log
+
+    Args:
+        log (list): log entries from ``driver.get_log("performance")``.
+
+    Returns:
+        list: list of urls
+    """
+    urls = []
+    for entry in log:
+        message = json.loads(entry["message"])["message"]
+        if (
+            "Network.response" in message["method"]  # not sure it is useful
+            or "Network.request" in message["method"]
+            or "Network.webSocket" in message["method"]  # same here
+        ):
+            try:
+                urls.append(message["params"]["request"]["url"])
+            except:
+                pass
     return urls
 
 
