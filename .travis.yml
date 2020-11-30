@@ -9,4 +9,6 @@ install:
   - make install-dev # install package + test dependencies
 script: 
   - make tests # run tests
-#https://towardsdatascience.com/extensive-python-testing-on-travis-ci-4c24db9bf961
+after_success:
+  - codecov
+  

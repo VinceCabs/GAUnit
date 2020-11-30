@@ -10,6 +10,8 @@ dev.py
 .vscode
 .project
 .pydevproject
+.coverage
+coverage.xml
 
 # Webdrivers
 **chromedriver*

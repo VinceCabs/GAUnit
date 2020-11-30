@@ -69,3 +69,7 @@ class test_utils(unittest.TestCase):
         url = "https://www.google-analytics.com/collect?v=1&t=pageviews&dp=home"
         params = gaunit.utils.parse_ga_url(url)
         self.assertEqual({"v": "1", "t": "pageviews", "dp": "home"}, params)
+
+
+if __name__ == "__main__":
+    unittest.main()

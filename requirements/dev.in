@@ -5,3 +5,4 @@ pylint
 twine
 Sphinx
 sphinx-rtd-theme
+codecov

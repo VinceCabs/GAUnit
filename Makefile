@@ -31,11 +31,11 @@ test-format: ## Run code formatting tests
 test-lint: ## Run code linting tests
 	pylint --errors-only ${SRC_FILES}
 
-test-unit:  ## Run unit tests
-	python -m unittest discover tests
+test-unit:  ## Run unit tests (with coverage run)
+	coverage run -m unittest discover tests
 
 test-unit-v:  ## Run unit tests (verbose)
-	python -m unittest discover tests -v
+	coverage run -m unittest discover tests -v
 
 test-robot:  ## Run RobotFramework library
 	robot tests/test_robot.robot
