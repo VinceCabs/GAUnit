@@ -22,10 +22,16 @@ class test_utils(unittest.TestCase):
         with self.assertRaises(KeyError):
             gaunit.utils.get_event_params_from_tp_dict("home_engie", tp)
 
-    def test_get_event_params_from_tp_dict_plan_wrong_format_2(self):
+    def test_get_event_params_from_tp_dict_wrong_format_2(self):
 
         tp = {"test_cases": {"home_engie": {"dummy": "dummy"}}}
         with self.assertRaises(KeyError):
+            gaunit.utils.get_event_params_from_tp_dict("home_engie", tp)
+
+    def test_get_event_params_from_tp_dict_missing_test_case(self):
+
+        tp = {"test_cases": {"not_my_test_case": {"dummy": "dummy"}}}
+        with self.assertRaises(Exception):
             gaunit.utils.get_event_params_from_tp_dict("home_engie", tp)
 
     def test_get_event_params_from_tp_dict_OK(self):
