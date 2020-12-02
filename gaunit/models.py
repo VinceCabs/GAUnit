@@ -46,7 +46,7 @@ class TestCase(object):
         har_path (str) : path to HAR file for this test case (standard HAR JSON). Defaults to None
         perf_log (list) : browser performance log
         expected_events (list) : list of Google Analytics event in tracking plan.
-        Each event is represented by a dict of params.
+            Each event is represented by a dict of params.
             Example: ``[{"t":"pageview","dt":"home"},...]``
         actual_urls (list) : actual GA events urls found in Test Case (from given HAR or
             http_log)

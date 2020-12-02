@@ -46,6 +46,24 @@ class test_utils(unittest.TestCase):
         urls = gaunit.utils.get_requests_from_har(har)
         self.assertEqual(["https://domain.com"], urls)
 
+    def test_get_requests_from_browser_perf_log_OK(self):
+        # fmt: off
+        perf_log = [
+            # log entry we want to get
+            {
+                "level": "INFO",
+                "message": "{\"message\":{\"method\":\"Network.requestWillBeSent\",\"params\":{\"request\":{\"url\":\"https://domain.com\"}}}}", 
+            },
+            # skipped
+                        {
+                "level": "INFO",
+                "message": "{\"message\":{\"method\":\"Network.responseReceived\",\"params\":{}}}", 
+            }
+        ]
+        # fmt: on
+        urls = gaunit.utils.get_requests_from_browser_perf_log(perf_log)
+        self.assertEqual(["https://domain.com"], urls)
+
     def test_load_dict_xor_json_too_many_args(self):
 
         d = {"dummy": "dummy"}

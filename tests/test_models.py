@@ -11,20 +11,22 @@ class test_TestCase(unittest.TestCase):
     here = path.dirname(path.realpath(__file__))
     tracking_plan = path.join(here, "tracking_plan.json")
     tc = gaunit.TestCase("home_engie", tracking_plan)
+    ga_base_url = "https://www.google-analytics.com/collect"
 
     def test_load_har_ok(self):
 
-        ga_base_url = "https://www.google-analytics.com/collect"
         har = {
             "log": {
-                "entries": [{"request": {"url": ga_base_url + "?v=1&t=pageview&dp=A"}}]
+                "entries": [
+                    {"request": {"url": self.ga_base_url + "?v=1&t=pageview&dp=A"}}
+                ]
             }
         }
         self.tc.load_har(har)
 
         self.assertEqual(
             self.tc.actual_urls,
-            [ga_base_url + "?v=1&t=pageview&dp=A"],
+            [self.ga_base_url + "?v=1&t=pageview&dp=A"],
         )
         self.assertEqual(
             self.tc.actual_events,
@@ -33,6 +35,35 @@ class test_TestCase(unittest.TestCase):
                     "v": "1",
                     "t": "pageview",
                     "dp": "A",
+                }
+            ],
+        )
+
+    def test_load_perf_log_ok(self):
+        # fmt: off
+        perf_log = [
+            # log entry we want to get
+            {
+                "level": "INFO",
+                "message": "{\"message\":{\"method\":\"Network.requestWillBeSent\",\"params\":{\"request\":{\"url\":\"" 
+                    + self.ga_base_url 
+                    + "?v=1&t=pageview&dp=B\"}}}}"
+            }
+        ]
+        # fmt: on
+        self.tc.load_perf_log(perf_log)
+
+        self.assertEqual(
+            self.tc.actual_urls,
+            [self.ga_base_url + "?v=1&t=pageview&dp=B"],
+        )
+        self.assertEqual(
+            self.tc.actual_events,
+            [
+                {
+                    "v": "1",
+                    "t": "pageview",
+                    "dp": "B",
                 }
             ],
         )

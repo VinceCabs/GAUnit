@@ -24,7 +24,7 @@ def run():
     log = driver.get_log("performance")
 
     # with open("perf_log.json", "w", encoding="utf8") as f:
-    #     json.dump(log,f)
+    #     json.dump(log,f,indent=2)
 
     # with open("perf_log.json",encoding="utf8") as f:
     #     log=json.load(f)
