@@ -1,4 +1,4 @@
-def generate_mock_har_ga(*args) -> dict:
+def generate_mock_har(*args) -> dict:
     """build facility for unit tests used to generate hars with GA hits
 
     GA hits will get values in argument
@@ -8,7 +8,7 @@ def generate_mock_har_ga(*args) -> dict:
 
     Returns :
         dict : har
-        example : build_mock_har_ga("A","B") ->
+        example : generate_mock_har_ga("A","B") ->
             ({'log': {'entries': [
                 {'request': {'url': 'https://www.google-analytics.com/collect?v=1&dp=A'}},
                 {'request': {'url': 'https://www.google-analytics.com/collect?v=1&dp=B'}}
@@ -20,3 +20,34 @@ def generate_mock_har_ga(*args) -> dict:
     ]
     har = {"log": {"entries": [{"request": {"url": url}} for url in ga_urls]}}
     return har
+
+
+def generate_mock_perf_log(*args) -> list:
+    """build facility for unit test used to generate webdriver Performance Log
+
+    GA hits will get values in argument
+
+    Returns:
+        list: performance log
+        example : generate_mock_perf_log_ga("A") ->
+            [{
+                "level": "INFO",
+                "message": "{\"message\":{\"method\":\"Network.requestWillBeSent\",\"params\":{\"request\":"
+                    +"{\"url\":\"https://www.google-analytics.com/collect?v=1&t=pageview&dp=dp=A\""
+                    + "}}}}"
+
+            }]
+    """
+    # fmt: off
+    perf_log = [
+        {
+            "level": "INFO",
+            "message": "{\"message\":{\"method\":\"Network.requestWillBeSent\",\"params\":{\"request\":{\"url\":\"" 
+                + "https://www.google-analytics.com/collect?v=1&t=pageview&dp=" 
+                +  dp
+                + "\"}}}}"
+        }
+        for dp in [*args]
+    ]
+    # fmt: on
+    return perf_log

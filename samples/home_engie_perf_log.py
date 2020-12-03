@@ -31,7 +31,7 @@ def run():
 
     # check hits against tracking plan and print results
     tracking_plan = join(abspath(dirname(__file__)), "tracking_plan.json")
-    r = gaunit.check_perf_log("home_engie", tracking_plan, log=log)
+    r = gaunit.check_perf_log("home_engie", tracking_plan, log)
 
     print(
         "tracking checklist:", r.checklist_expected

@@ -3,7 +3,7 @@ from os import path
 
 import gaunit
 
-from tests.utils import generate_mock_har_ga
+from tests.utils import generate_mock_har, generate_mock_perf_log
 
 
 class test_TestCase(unittest.TestCase):
@@ -40,17 +40,7 @@ class test_TestCase(unittest.TestCase):
         )
 
     def test_load_perf_log_ok(self):
-        # fmt: off
-        perf_log = [
-            # log entry we want to get
-            {
-                "level": "INFO",
-                "message": "{\"message\":{\"method\":\"Network.requestWillBeSent\",\"params\":{\"request\":{\"url\":\"" 
-                    + self.ga_base_url 
-                    + "?v=1&t=pageview&dp=B\"}}}}"
-            }
-        ]
-        # fmt: on
+        perf_log = generate_mock_perf_log("B")
         self.tc.load_perf_log(perf_log)
 
         self.assertEqual(
@@ -69,7 +59,7 @@ class test_TestCase(unittest.TestCase):
         )
 
     def test_check_OK(self):
-        har = generate_mock_har_ga("A", "B", "C")
+        har = generate_mock_har("A", "B", "C")
         self.tc.load_har(har)
         checklist_expected, checklist_actual = self.tc.check()
         self.assertEqual(checklist_expected, [True, True, True])
@@ -77,28 +67,28 @@ class test_TestCase(unittest.TestCase):
 
     def test_check_missing_1(self):
         """tracking plan is "A", "B", "C" """
-        har = generate_mock_har_ga("A", "x", "B", "x")
+        har = generate_mock_har("A", "x", "B", "x")
         self.tc.load_har(har)
         checklist_expected, checklist_actual = self.tc.check()
         self.assertEqual(checklist_expected, [True, True, False])
         self.assertEqual(checklist_actual, [True, False, True, False])
 
     def test_check_missing_2(self):
-        har = generate_mock_har_ga("A", "C", "x")
+        har = generate_mock_har("A", "C", "x")
         self.tc.load_har(har)
         checklist_expected, checklist_actual = self.tc.check()
         self.assertEqual(checklist_expected, [True, False, True])
         self.assertEqual(checklist_actual, [True, True, False])
 
     def test_check_OK_not_ordered(self):
-        har = generate_mock_har_ga("A", "x", "C", "B")
+        har = generate_mock_har("A", "x", "C", "B")
         self.tc.load_har(har)
         checklist_expected, checklist_actual = self.tc.check(ordered=False)
         self.assertEqual(checklist_expected, [True, True, True])
         self.assertEqual(checklist_actual, [True, False, True, True])
 
     def test_check_missing_not_ordered(self):
-        har = generate_mock_har_ga("x", "C", "A")
+        har = generate_mock_har("x", "C", "A")
         self.tc.load_har(har)
         checklist_expected, checklist_actual = self.tc.check(ordered=False)
         self.assertEqual(checklist_expected, [True, False, True])
@@ -112,7 +102,7 @@ class test_Result(unittest.TestCase):
     tc = gaunit.TestCase("home_engie", tracking_plan)
 
     def test_get_status_expected_events(self):
-        har = generate_mock_har_ga("A", "B")
+        har = generate_mock_har("A", "B")
         self.tc.load_har(har)
         r = self.tc.result()
         self.assertEqual(
@@ -125,7 +115,7 @@ class test_Result(unittest.TestCase):
         )
 
     def test_get_status_actual_events(self):
-        har = generate_mock_har_ga("A", "x")
+        har = generate_mock_har("A", "x")
         self.tc.load_har(har)
         r = self.tc.result()
         self.assertEqual(

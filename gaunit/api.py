@@ -36,7 +36,7 @@ def check_har(test_case: str, tracking_plan: str, har=None, har_path=None) -> Re
     return tc.result()
 
 
-def check_perf_log(test_case: str, tracking_plan: str, perf_log) -> Result:
+def check_perf_log(test_case: str, tracking_plan: str, perf_log: list) -> Result:
     """Performs checks of a Performance log against a tracking plan
 
     For more info on Performance Log and how to get it, see
@@ -59,5 +59,5 @@ def check_perf_log(test_case: str, tracking_plan: str, perf_log) -> Result:
     Returns:
         :class:`gaunit.Result`: complete results of your test case.
     """
-    tc = TestCase(test_case, tracking_plan, perf_log)
+    tc = TestCase(test_case, tracking_plan, perf_log=perf_log)
     return tc.result()
