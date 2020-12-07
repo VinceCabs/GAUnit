@@ -1,5 +1,5 @@
 import unittest
-from os import path
+from os.path import dirname, join, realpath
 
 import gaunit
 
@@ -8,10 +8,12 @@ from tests.utils import generate_mock_har, generate_mock_perf_log
 
 class test_TestCase(unittest.TestCase):
 
-    here = path.dirname(path.realpath(__file__))
-    tracking_plan = path.join(here, "tracking_plan.json")
-    tc = gaunit.TestCase("home_engie", tracking_plan)
+    here = dirname(realpath(__file__))
+    tracking_plan = join(here, "tracking_plan.json")
     ga_base_url = "https://www.google-analytics.com/collect"
+
+    def setUp(self) -> None:
+        self.tc = gaunit.TestCase("home_engie", self.tracking_plan)
 
     def test_load_har_ok(self):
 
@@ -94,11 +96,22 @@ class test_TestCase(unittest.TestCase):
         self.assertEqual(checklist_expected, [True, False, True])
         self.assertEqual(checklist_actual, [False, True, True])
 
+    def test_check_None(self):
+        har = generate_mock_har("x")
+        self.tc.load_har(har)
+        checklist_expected, checklist_actual = self.tc.check()
+        self.assertEqual(checklist_expected, [False, False, False])
+        self.assertEqual(checklist_actual, [False])
+
+    def test_check_no_http_log_loaded(self):
+        with self.assertRaises(Exception):
+            self.tc.check()
+
 
 class test_Result(unittest.TestCase):
 
-    here = path.dirname(path.realpath(__file__))
-    tracking_plan = path.join(here, "tracking_plan.json")
+    here = dirname(realpath(__file__))
+    tracking_plan = join(here, "tracking_plan.json")
     tc = gaunit.TestCase("home_engie", tracking_plan)
 
     def test_get_status_expected_events(self):

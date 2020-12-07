@@ -155,7 +155,7 @@ class TestCase(object):
         if not self.expected_events:
             missing.append("tracking plan")
         if not self.actual_urls:
-            missing.append("log")
+            missing.append("HTTP log")
         if missing:
             raise Exception(message % ", ".join(missing))
         if not self.actual_events:
