@@ -3,14 +3,22 @@
 [![Build Status](https://travis-ci.org/VinceCabs/GAUnit.svg?branch=master)](https://travis-ci.org/VinceCabs/GAUnit)
 [![Documentation Status](https://readthedocs.org/projects/gaunit/badge/?version=latest)](https://gaunit.readthedocs.io/en/latest/?badge=latest)
 
-
 GAUnit is a Python library for testing Google Analytics implementations with Selenium or RobotFramework test cases.
 
 It is designed to be used within your pipelines in various environments such as traditional websites, Single Page Applications or Mobile Apps.
 
+## Installation
+
+You will need Python 3.6+ installed.
+
+```sh
+pip3 install gaunit  # Linux
+pip install gaunit  # Windows
+```
+
 ## Usage
 
-Define your expected GA [tracking plan](tracking_plan.json) for a given test case. Example : tracking the "play" button on a video:
+Define your expected GA tracking plan for a given test case. Example : tracking the "play" button on a video from a product page:
 
 ```JSON
 {
@@ -27,70 +35,87 @@ Define your expected GA [tracking plan](tracking_plan.json) for a given test cas
 }
 ```
 
-Run your test wih Python and check it against your expected tracking plan:
+### Run your automated test wih Python
+
+Run a test, export har and check it against your expected tracking plan:
 
 ```python
 import gaunit
 import browsermobproxy
 
-# Run your Selenium test here with browsermob-proxy and export har
+# Run your Selenium test here and export har 
+# (see howtos or samples for more details)
 # ...
 
-result = gaunit.check_har("my_test_case", tracking_plan = "tracking_plan.json", har_path="my_test_case.har")
-print(checklist)  # [True, False] oups! pageview is fine but video "play" button is not properly tracked.
+result = gaunit.check_har(
+    "my_test_case", "tracking_plan.json", har_path="my_test_case.har"
+)
+print(result.checklist_expected)
+# [True, True] congrats! both events (pageview and click) were  fired.
 ```
 
-See a full working example [here](./samples/test_home_engie.py). You can also use GAUnit within unittest or RobotFramework test cases (WIP : we will soon add samples).
+### Or manually check HAR files
 
-## Installation
-
-You will need Python 3.6+ installed.
-
-- install gaunit :
+Alternatively to automatic tests, you can manually browse your website, export a HAR file and check it through command line :
 
 ```sh
-pip3 install gaunit  # Linux
-pip install gaunit  # Windows
+$ gaunit my_test_case my_test_case.har
+[True, True]
 ```
 
-## Run your first automated tests
 
-- Download **browsermob-proxy** [latest release](https://github.com/lightbody/browsermob-proxy/releases) (note: install [Java](https://www.oracle.com/java/technologies/javase-jre8-downloads.html)).
-  - Add `bin/` directory to your %PATH
+## Run your first tests (full working samples)
 
-- Download a **webdriver**. To run the [example](./samples/test_home_engie.py), get Geckodriver [latest release](https://chromedriver.chromium.org/getting-started)
-  - add it to your %PATH or copy it in your working directory
+### Automated test using a proxy
 
-Test with Selenium Python
+We can use BrowserMob Proxy to intercept Google Analytics events.
 
-```sh
-python3 samples/test_home_engie.py  # Linux
-python samples/test_home_engie.py  # Windows
-```
+- Install [Selenium](https://selenium-python.readthedocs.io/) and [Browsermob Proxy](https://browsermob-proxy-py.readthedocs.io/) packages:
+
+  ```sh
+  pip3 install selenium browsermobproxy # Linux
+  pip install selenium browsermobproxy # Windows
+  ```
+
+- Download **BrowserMob Proxy** [latest release](https://github.com/lightbody/browsermob-proxy/releases) (note: install [Java](https://www.oracle.com/java/technologies/javase-jre8-downloads.html)).
+  - add `bin/` directory to your %PATH
+
+- Download [Geckodriver/Firefox](https://github.com/mozilla/geckodriver/releases)
+  - add it to your %PATH or copy it in your working directory (more details [here](https://selenium-python.readthedocs.io/installation.html#drivers))
+
+- Run the test:
+
+  ```sh
+  python3 samples/home_engie_with_proxy.py  # Linux
+  python samples/home_engie_with_proxy.py  # Windows
+  ```
+
+### Automated test with Performance Log (Chrome only)
+
+Performance Log is a fast and easy way to intercept GA events (GET events only).
+
+Note: this method works for `analytics.js` but might not work for new GA implementations, such as GA4 or `gtag.js`.*
+
+- Install Selenium (see above) and  [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads)
+
+- Run the test:
+
+  ```sh
+  python3 samples/home_engie_with_perf_log.py  # Linux
+  python samples/home_engie_with_perf_log.py  # Windows
+  ```
+
+### Robot Framework
 
 If you want to use RobotFramework, check [GAUnit Library for Robot Framework](https://github.com/VinceCabs/robotframework-gaunitlibrary)
 
-## Manually control a HAR file
+## Documentation
 
-You can manually browse your website, export a HAR file and check it through command line :
+*Still work in progress, sorry!*
 
-```sh
-$ gaunit home_engie home_engie.har
-[True, True, True]
-$ gaunit -h
-usage: gaunit [-h] [-t TRACKING_PLAN] [-v] test_case har_file
+Full documentation will soon be available [here](https://gaunit.readthedocs.io/).
 
-positional arguments:
-  test_case             name of test case
-  har_file              path to HAR file
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -t TRACKING_PLAN, --tracking_plan TRACKING_PLAN
-                        path to tracking plan
-  -v, --verbose         print all trackers with their status and all hits
-                        recorded
-```
+In the meantime, please refer to [samples](samples/) and [Developer interface](https://gaunit.readthedocs.io/en/latest/api.html#main-api).
 
 ## Why GAUnit?
 
