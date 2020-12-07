@@ -1,12 +1,9 @@
 from os.path import abspath, dirname, join
-
-from selenium.webdriver.remote.webelement import WebElement
+from time import sleep
 
 import gaunit
 from browsermobproxy import Server
 from selenium import webdriver
-
-import json
 
 
 def run():
@@ -14,32 +11,33 @@ def run():
     # set up proxy
     server = Server()
     server.start()
-    proxy = server.create_proxy()
+    sleep(1)
+    # 'useEcc' is needed to have decent response time with HTTPS
+    proxy = server.create_proxy({"useEcc": True})
+    sleep(1)
 
     # set up webdriver
     profile = webdriver.FirefoxProfile()
-    profile.set_preference("browser.private.browsing.autostart", False)
     profile.set_proxy(proxy.selenium_proxy())
     driver = webdriver.Firefox(firefox_profile=profile)
-    driver.implicitly_wait(60)
+    driver.implicitly_wait(10)
 
     # start test case
     test_case = "g_merch_store_home"
     proxy.new_har(test_case)
     driver.get("https://shop.googlemerchandisestore.com/")
+    sleep(2)
 
-    # # export har
+    # export har
     har = proxy.har
 
-    # # check hits against tracking plan and print results
+    # check hits against tracking plan and print results
     tracking_plan = join(abspath(dirname(__file__)), "tracking_plan.json")
     r = gaunit.check_har(test_case, tracking_plan, har=har)
 
-    with open("har.json", "w", encoding="utf8") as f:
-        json.dump(har, f)
-
-    print("tracking checklist:", r.checklist_expected)  # [True]
-    r.pprint_actual_events(url=True)
+    print(
+        "GAUnit -- tracking checklist:", r.checklist_expected
+    )  # [True] tracking is correct !
 
     server.stop()
     driver.quit()

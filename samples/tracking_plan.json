@@ -3,7 +3,7 @@
     "version": "0.1",
     "test_cases": {
         "home_engie": {
-            "description": "entre dans tunnel de sousc. depuis la home",
+            "description": "from homepage, enters conversion funnel",
             "author": "VinceCabs",
             "hits": [
                 {
