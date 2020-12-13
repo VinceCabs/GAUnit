@@ -1,6 +1,7 @@
 .DEFAULT_GOAL := help
 .PHONY: docs
-SRC_FILES = ./gaunit ./tests ./samples setup.py
+SRC_FILES = ./gaunit ./tests setup.py
+FORMAT_FILES = ./gaunit ./tests setup.py ./samples 
 PACKAGE = gaunit
 
 ##### Dev
@@ -32,7 +33,7 @@ clean-logs:  ## Remove all log & RF report files
 tests : test-unit test-lint test-format test-package ## * Run all tests
 
 test-format: ## Run code formatting tests
-	black --check --diff $(SRC_FILES)
+	black --check --diff $(FORMAT_FILES)
 
 test-lint: ## Run code linting tests
 	pylint --errors-only ${SRC_FILES}
@@ -43,14 +44,11 @@ test-unit:  ## Run unit tests (with coverage run)
 test-unit-v:  ## Run unit tests (verbose)
 	coverage run -m unittest discover tests -v
 
-test-robot:  ## Run RobotFramework library
-	robot tests/test_robot.robot
-
 test-package: build-package ## Test that package can be uploaded to pypi
 	twine check dist/${PACKAGE}-$(shell make version).tar.gz
 
 format: ## * Format code
-	black $(SRC_FILES)
+	black $(FORMAT_FILES)
 
 ##### Use & Deploy
 
