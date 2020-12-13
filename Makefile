@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 .PHONY: docs
-SRC_FILES = ./gaunit ./tests setup.py
+SRC_FILES = ./gaunit ./tests ./samples setup.py
 PACKAGE = gaunit
 
 ##### Dev

@@ -11,18 +11,25 @@ def run():
     # set up proxy
     server = Server()
     server.start()
-    sleep(1)
     # 'useEcc' is needed to have decent response time with HTTPS
     proxy = server.create_proxy({"useEcc": True})
-    sleep(1)
 
-    # set up webdriver
-    profile = webdriver.FirefoxProfile()
-    profile.set_proxy(proxy.selenium_proxy())
-    driver = webdriver.Firefox(firefox_profile=profile)
-    driver.implicitly_wait(10)
+    # set up Geckodriver/Firefox
+    # # uncomment if you want to use Firefox
+    # profile = webdriver.FirefoxProfile()
+    # profile.set_proxy(proxy.selenium_proxy())
+    # driver = webdriver.Firefox(firefox_profile=profile)
+
+    # set up Chrome driver
+    options = webdriver.ChromeOptions()
+    options.add_argument("--proxy-server=%s" % proxy.proxy)
+    options.add_argument("--headless")
+    capabilities = webdriver.DesiredCapabilities.CHROME.copy()
+    capabilities["acceptInsecureCerts"] = True
+    driver = webdriver.Chrome(chrome_options=options, desired_capabilities=capabilities)
 
     # start test case
+    driver.implicitly_wait(10)
     test_case = "home_engie"
     proxy.new_har(test_case)
     driver.get("https://particuliers.engie.fr")
@@ -40,7 +47,7 @@ def run():
     r = gaunit.check_har(test_case, tracking_plan, har=har)
 
     print(
-        "GAUnit -- tracking checklist:", r.checklist_expected
+        "=== GAUnit == tracking checklist: %s ===" % r.checklist_expected
     )  # [True, True, True] tracking is correct !
 
     server.stop()

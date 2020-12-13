@@ -35,7 +35,7 @@ def run():
     r = gaunit.check_perf_log("home_engie", tracking_plan, log)
 
     print(
-        "tracking checklist:", r.checklist_expected
+        "=== GAUnit == tracking checklist: %s ===" % r.checklist_expected
     )  # [True, True, True] tracking is correct !
 
     driver.quit()
