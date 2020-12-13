@@ -12,6 +12,7 @@ dev.py
 .pydevproject
 .coverage
 coverage.xml
+.devcontainer
 
 # Webdrivers
 **chromedriver*
