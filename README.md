@@ -12,8 +12,7 @@ It is designed to be used within your pipelines in various environments such as 
 You will need Python 3.6+ installed.
 
 ```sh
-pip3 install gaunit  # Linux
-pip install gaunit  # Windows
+pip install gaunit
 ```
 
 ## Usage
@@ -44,7 +43,7 @@ import gaunit
 import browsermobproxy
 
 # Run your Selenium test here and export har 
-# (see howtos or samples for more details)
+# (see samples below or how-tos for more details)
 # ...
 
 result = gaunit.check_har(
@@ -63,7 +62,6 @@ $ gaunit my_test_case my_test_case.har
 [True, True]
 ```
 
-
 ## Run your first tests (full working samples)
 
 ### Automated test using a proxy
@@ -73,21 +71,19 @@ We can use BrowserMob Proxy to intercept Google Analytics events.
 - Install [Selenium](https://selenium-python.readthedocs.io/) and [Browsermob Proxy](https://browsermob-proxy-py.readthedocs.io/) packages:
 
   ```sh
-  pip3 install selenium browsermobproxy # Linux
-  pip install selenium browsermobproxy # Windows
+  pip install selenium browsermob-proxy
   ```
 
 - Download **BrowserMob Proxy** [latest release](https://github.com/lightbody/browsermob-proxy/releases) (note: install [Java](https://www.oracle.com/java/technologies/javase-jre8-downloads.html)).
   - add `bin/` directory to your %PATH
 
-- Download [Geckodriver/Firefox](https://github.com/mozilla/geckodriver/releases)
+- Download [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads)
   - add it to your %PATH or copy it in your working directory (more details [here](https://selenium-python.readthedocs.io/installation.html#drivers))
 
 - Run the test:
 
   ```sh
-  python3 samples/home_engie_with_proxy.py  # Linux
-  python samples/home_engie_with_proxy.py  # Windows
+  python samples/home_engie_with_proxy.py
   ```
 
 ### Automated test with Performance Log (Chrome only)
@@ -96,13 +92,12 @@ Performance Log is a fast and easy way to intercept GA events (GET events only).
 
 Note: this method works for `analytics.js` but might not work for new GA implementations, such as GA4 or `gtag.js`.*
 
-- Install Selenium (see above) and  [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads)
+- Install Selenium and ChromeDriver (same as above)
 
 - Run the test:
 
   ```sh
-  python3 samples/home_engie_with_perf_log.py  # Linux
-  python samples/home_engie_with_perf_log.py  # Windows
+  python samples/home_engie_with_perf_log.py
   ```
 
 ### Robot Framework

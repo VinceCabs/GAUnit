@@ -23,7 +23,7 @@ def run():
     # set up Chrome driver
     options = webdriver.ChromeOptions()
     options.add_argument("--proxy-server=%s" % proxy.proxy)
-    options.add_argument("--headless")
+    # options.add_argument("--headless")
     capabilities = webdriver.DesiredCapabilities.CHROME.copy()
     capabilities["acceptInsecureCerts"] = True
     driver = webdriver.Chrome(chrome_options=options, desired_capabilities=capabilities)
@@ -39,8 +39,10 @@ def run():
     ).click()  # clic on "souscrire" button
     sleep(2)
 
-    # export har
+    # export har and close all
     har = proxy.har
+    server.stop()
+    driver.quit()
 
     # check hits against tracking plan and print results
     tracking_plan = join(abspath(dirname(__file__)), "tracking_plan.json")
@@ -49,9 +51,6 @@ def run():
     print(
         "=== GAUnit == tracking checklist: %s ===" % r.checklist_expected
     )  # [True, True, True] tracking is correct !
-
-    server.stop()
-    driver.quit()
 
 
 if __name__ == "__main__":

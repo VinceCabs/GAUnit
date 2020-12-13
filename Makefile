@@ -11,14 +11,20 @@ docs: ## Build html documentation
 pip-comp: ## Compile requirements files
 	pip-compile requirements/base.in
 	pip-compile requirements/dev.in
+	pip-compile requirements/samples.in
 
 pip-up: ## Update requirements files
 	pip-compile --upgrade requirements/base.in
 	pip-compile --upgrade requirements/dev.in
+	pip-compile --upgrade requirements/samples.in
 
 install-dev: ## * Install dev requirements
 	pip install -e .
 	pip install -r requirements/dev.txt
+
+install-samples: ## Install samples requirements
+	pip install -e .
+	pip install -r requirements/samples.txt
 
 clean-logs:  ## Remove all log & RF report files
 	rm *.log log.html output.xml report.html || true

@@ -21,8 +21,9 @@ def run():
     ).click()  # clic on "souscrire" button
     sleep(2)
 
-    # Get Performance Log
+    # Get Performance Log and close all
     log = driver.get_log("performance")
+    driver.quit()
 
     # with open("perf_log.json", "w", encoding="utf8") as f:
     #     json.dump(log, f, indent=2)
@@ -37,8 +38,6 @@ def run():
     print(
         "=== GAUnit == tracking checklist: %s ===" % r.checklist_expected
     )  # [True, True, True] tracking is correct !
-
-    driver.quit()
 
 
 if __name__ == "__main__":
