@@ -36,9 +36,15 @@ class test_utils(unittest.TestCase):
 
     def test_get_event_params_from_tp_dict_OK(self):
 
-        tp = {"test_cases": {"home_engie": {"hits": [{"t": "pageview"}]}}}
+        tp = {"test_cases": {"home_engie": {"events": [{"t": "pageview"}]}}}
         hits = gaunit.utils.get_event_params_from_tp_dict("home_engie", tp)
         self.assertEqual([{"t": "pageview"}], hits)
+
+    def test_get_event_params_from_tp_dict_with_url_decode_OK(self):
+
+        tp = {"test_cases": {"home_engie": {"events": [{"dl": "%2F"}]}}}
+        hits = gaunit.utils.get_event_params_from_tp_dict("home_engie", tp)
+        self.assertEqual([{"dl": "/"}], hits)
 
     def test_get_requests_from_har_OK(self):
 
@@ -82,11 +88,18 @@ class test_utils(unittest.TestCase):
 
         urls = [
             "https://www.google-analytics.com/collect?v=1..",
+            "https://www.google-analytics.com/j/collect?v=1..",
             "https://domain.com",
             "https://analytics.google.com/g/collect?v=2...",
         ]
         ga_urls = gaunit.utils.filter_ga_urls(urls)
-        self.assertEqual(["https://www.google-analytics.com/collect?v=1.."], ga_urls)
+        self.assertEqual(
+            [
+                "https://www.google-analytics.com/collect?v=1..",
+                "https://www.google-analytics.com/j/collect?v=1..",
+            ],
+            ga_urls,
+        )
 
     def test_parse_ga_url(self):
 

@@ -5,7 +5,7 @@
         "home_engie": {
             "description": "tracking plan for unittestig",
             "author": "VinceCabs",
-            "hits": [
+            "events": [
                 {
                     "dp": "A"
                 },

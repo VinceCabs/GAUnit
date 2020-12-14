@@ -266,6 +266,7 @@ class Result(object):
         init(autoreset=True)
         for (hit, check) in zip(hits, chcklst):
             pprint.pprint(hit)
+            # pprint.pprint(hit, sort_dicts=False) #  Python >=3.8 only TODO
             if check:
                 print(70 * "-", Fore.GREEN + "OK")
             else:
@@ -290,6 +291,7 @@ class Result(object):
                 print(u)
             else:
                 pprint.pprint(hit)  # TODO filter params
+                # pprint.pprint(hit, sort_dicts=False) #  Python >=3.8 only TODO
             if check:
                 print(70 * "-", Fore.GREEN + "OK")
             else:

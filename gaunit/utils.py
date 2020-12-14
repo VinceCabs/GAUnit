@@ -5,7 +5,7 @@ This module implements general methods used by gaunits.
 """
 import json
 import re
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, urlparse, unquote
 
 
 def get_events_from_tracking_plan(test_case: str, tracking_plan: str) -> list:
@@ -31,7 +31,11 @@ def get_event_params_from_tp_dict(tc: str, tp: dict) -> list:
     try:
         d = tp["test_cases"].get(tc, None)
         if d:
-            return d["hits"]
+            # URL decode events params from tracking plan
+            hits = []
+            for hit in d["events"]:
+                hits.append({k: unquote(v) for (k, v) in hit.items()})
+            return hits
         else:
             raise Exception("no test case '%s' found in tracking plan" % tc)
     except KeyError as e:
@@ -122,7 +126,9 @@ def filter_ga_urls(urls: list) -> list:
 
     ga_urls = []
     for url in urls:
-        extract = re.search(r"https://www\.google-analytics\.com/(g/|)collect.*", url)
+        extract = re.search(
+            r"https://www\.google-analytics\.com\/(j\/|)collect\?v=1.*", url
+        )
         if extract:
             ga_urls.append(extract.group(0))
     return ga_urls
