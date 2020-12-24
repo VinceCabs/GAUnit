@@ -12,17 +12,6 @@ with io.open("README.md", "r", encoding="utf8") as f:
     long_description = f.read()
 
 
-def load_requirements():
-    with io.open(
-        os.path.join(HERE, "requirements", "base.txt"), "rt", encoding="utf-8"
-    ) as f:
-        return [line.strip() for line in f if is_requirement(line)]
-
-
-def is_requirement(line):
-    return not (line.strip() == "" or line.startswith("#"))
-
-
 setuptools.setup(
     name="gaunit",
     version=ABOUT["__version__"],
@@ -37,7 +26,7 @@ setuptools.setup(
     entry_points={"console_scripts": ["gaunit=gaunit.cli:main"]},
     license="MIT",
     python_requires=">=3.6",
-    install_requires=load_requirements(),
+    install_requires=["colorama==0.4.4"],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 3",
