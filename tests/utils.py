@@ -18,7 +18,11 @@ def generate_mock_har(*args) -> dict:
     ga_urls = [
         "https://www.google-analytics.com/collect?v=1&dp=" + dp for dp in [*args]
     ]
-    har = {"log": {"entries": [{"request": {"url": url}} for url in ga_urls]}}
+    har = {
+        "log": {
+            "entries": [{"request": {"method": "GET", "url": url}} for url in ga_urls]
+        }
+    }
     return har
 
 

@@ -10,26 +10,25 @@ class test_TestCase(unittest.TestCase):
 
     here = dirname(realpath(__file__))
     tracking_plan = join(here, "tracking_plan.json")
-    ga_base_url = "https://www.google-analytics.com/collect"
+    ga_base_url = ""
 
     def setUp(self) -> None:
         self.tc = gaunit.TestCase("home_engie", self.tracking_plan)
 
     def test_load_har_ok(self):
-
         har = {
             "log": {
                 "entries": [
-                    {"request": {"url": self.ga_base_url + "?v=1&t=pageview&dp=A"}}
+                    {
+                        "request": {
+                            "method": "GET",
+                            "url": "https://www.google-analytics.com/collect?v=1&t=pageview&dp=A",
+                        }
+                    }
                 ]
             }
         }
         self.tc.load_har(har)
-
-        self.assertEqual(
-            self.tc.actual_urls,
-            [self.ga_base_url + "?v=1&t=pageview&dp=A"],
-        )
         self.assertEqual(
             self.tc.actual_events,
             [
@@ -44,11 +43,6 @@ class test_TestCase(unittest.TestCase):
     def test_load_perf_log_ok(self):
         perf_log = generate_mock_perf_log("B")
         self.tc.load_perf_log(perf_log)
-
-        self.assertEqual(
-            self.tc.actual_urls,
-            [self.ga_base_url + "?v=1&t=pageview&dp=B"],
-        )
         self.assertEqual(
             self.tc.actual_events,
             [
@@ -121,9 +115,9 @@ class test_Result(unittest.TestCase):
         self.assertEqual(
             r.get_status_expected_events(),
             [
-                {"hit": {"dp": "A"}, "found": True},
-                {"hit": {"dp": "B"}, "found": True},
-                {"hit": {"dp": "C"}, "found": False},
+                {"event": {"dp": "A"}, "found": True},
+                {"event": {"dp": "B"}, "found": True},
+                {"event": {"dp": "C"}, "found": False},
             ],
         )
 
@@ -132,14 +126,14 @@ class test_Result(unittest.TestCase):
         self.tc.load_har(har)
         r = self.tc.result()
         self.assertEqual(
-            r.get_status_actual_events(url=True),
+            r.get_status_actual_events(),
             [
                 {
-                    "url": "https://www.google-analytics.com/collect?v=1&dp=A",
+                    "event": {"v": "1", "dp": "A"},
                     "expected": True,
                 },
                 {
-                    "url": "https://www.google-analytics.com/collect?v=1&dp=x",
+                    "event": {"v": "1", "dp": "x"},
                     "expected": False,
                 },
             ],

@@ -3,21 +3,20 @@ gaunit.models
 
 This module implements main classes used by gaunit: :class:`TestCase` and :class:`Result`. 
 """
-from typing import Tuple
 import logging
 import pprint
+from typing import Tuple
 
-from colorama import init, Fore
+from colorama import Fore, init
 
 from .utils import (
-    filter_ga_urls,
     get_events_from_tracking_plan,
-    get_requests_from_browser_perf_log,
-    get_requests_from_har,
+    get_ga_requests_from_browser_perf_log,
+    get_ga_requests_from_har,
     load_dict_xor_json,
+    parse_ga_request,
     parse_ga_url,
 )
-
 
 logger = logging.getLogger(__name__)
 
@@ -48,9 +47,7 @@ class TestCase(object):
         expected_events (list) : list of Google Analytics event in tracking plan.
             Each event is represented by a dict of params.
             Example: ``[{"t":"pageview","dt":"home"},...]``
-        actual_urls (list) : actual GA events urls found in Test Case (from given HAR or
-            http_log)
-        actual_events (list) : list of GA events params parsed from `actual_urls`.
+        actual_events (list) : list of GA events params parsed from HAR or http log
             Each event is represented by a dict of params (same as `expected_events`).
             Example: ``[{"t":"pageview","dt":"home"},...]``
             note that TestCase.check() will compare ``expected_events`` and
@@ -70,11 +67,9 @@ class TestCase(object):
         self.expected_events = {}
         if tracking_plan:
             self.expected_events = get_events_from_tracking_plan(id, tracking_plan)
+        self.actual_events = {}
 
         self.har = {}  # for debug, will be killed soon
-
-        self.actual_urls = {}
-        self.actual_events = {}
         # self.page_flow = [] # will store urls from pages TODO
         # self.page_flow_ids = [] # will store har ids for pages
         if har or har_path:
@@ -86,7 +81,7 @@ class TestCase(object):
     def load_har(self, har=None, har_path=None):
         """extracts and stores analytics hits from a har
 
-        updates attributes `ga_urls` and `ga_hits` (soon: page_flow).
+        updates attributes `actual_events` (wip: page_flow).
         Takes one and one only argument : dict or path to a json file
 
         Args:
@@ -98,14 +93,14 @@ class TestCase(object):
         """
 
         har = load_dict_xor_json(har, har_path)
-
-        # extract GA hits (urls and params)
-        urls = get_requests_from_har(har)
-        urls = filter_ga_urls(urls)
-        params = [parse_ga_url(url) for url in urls]
+        # extract GA events
+        requests = get_ga_requests_from_har(har)
+        events = []
+        for r in requests:
+            events.extend(parse_ga_request(r))
 
         self.har = har  # TDO remove attribute
-        self.actual_urls, self.actual_events = urls, params
+        self.actual_events = events
 
         # # extract pages (urls and har ids)
         # page_flow = get_pages_from_har(har)
@@ -122,17 +117,14 @@ class TestCase(object):
         See also :
             :func:`TestCase.load_har`
         """
+        # TODO GA4 check that there are no POST methods, otherwise throw an error or warning
+        urls = get_ga_requests_from_browser_perf_log(perf_log)
+        events = [parse_ga_url(url) for url in urls]
 
-        urls = get_requests_from_browser_perf_log(perf_log)
-        urls = filter_ga_urls(urls)
-        params = [parse_ga_url(url) for url in urls]
-
-        self.actual_urls, self.actual_events = urls, params
+        self.actual_events = events
 
     def check(self, ordered=True) -> Tuple[list, list]:
         """compares hits from tracking plan and from log and returns 2 checklists
-
-
 
         Args:
             ordered (bool, optional): True if we want hits to respect tracking plan
@@ -154,8 +146,6 @@ class TestCase(object):
         missing = []
         if not self.expected_events:
             missing.append("tracking plan")
-        if not self.actual_urls:
-            missing.append("HTTP log")
         if missing:
             raise Exception(message % ", ".join(missing))
         if not self.actual_events:
@@ -216,20 +206,17 @@ class Result(object):
         Example:
             >>> r = gaunit.check_har("my_test_case", "tracking_plan.json", har=har)
             >>> r.get_status_expected_events()
-            [{'hit':{'t':'pageview', 'dp': 'home'}, 'found': True},..]
+            [{'event':{'t':'pageview', 'dp': 'home'}, 'found': True},..]
         """
 
         tc = self.test_case
-        hits = tc.expected_events
+        events = tc.expected_events
         chcklst = self.checklist_expected
 
-        return [{"hit": h, "found": c} for (h, c) in zip(hits, chcklst)]
+        return [{"event": h, "found": c} for (h, c) in zip(events, chcklst)]
 
-    def get_status_actual_events(self, url=True) -> list:
+    def get_status_actual_events(self) -> list:
         """Returns actual events and which ones were expected in tracking plan
-
-        Args:
-            url (bool): print url if True, print hit params if False. Default: True.
 
         Returns:
             list: list of actual hits
@@ -237,20 +224,14 @@ class Result(object):
         Example:
             >>> r = gaunit.check_har("my_test_case", "tracking_plan.json", har=har)
             >>> r.get_status_actual_events()
-            [{'url:{'t':'pageview', 'dp': 'home'}, 'expected': True}
-            >>> r.get_status_actual_events(url=False)
-            [{'url:'https://www.google-analytics.com/collect?v=1&...', 'expected': True}
+            [{'event:{'t':'pageview', 'dp': 'home'}, 'expected': True}
         """
 
         tc = self.test_case
-        urls = tc.actual_urls
-        hits = tc.actual_events
+        events = tc.actual_events
         chcklst = self.checklist_actual
 
-        if url:
-            return [{"url": u, "expected": c} for (u, c) in zip(urls, chcklst)]
-        else:
-            return [{"hit": h, "expected": c} for (h, c) in zip(hits, chcklst)]
+        return [{"event": h, "expected": c} for (h, c) in zip(events, chcklst)]
 
     def pprint_expected_events(self):
         """pretty print list of events from tracking plan
@@ -259,39 +240,32 @@ class Result(object):
         """
 
         tc = self.test_case
-        hits = tc.expected_events
+        events = tc.expected_events
         chcklst = self.checklist_expected
 
-        # print expected urls
+        # print expected events
         init(autoreset=True)
-        for (hit, check) in zip(hits, chcklst):
-            pprint.pprint(hit)
+        for (event, check) in zip(events, chcklst):
+            pprint.pprint(event)
             # pprint.pprint(hit, sort_dicts=False) #  Python >=3.8 only TODO
             if check:
                 print(70 * "-", Fore.GREEN + "OK")
             else:
                 print(70 * "-", Fore.RED + "missing")
 
-    def pprint_actual_events(self, url=True):
+    def pprint_actual_events(self):
         """pretty print list of analytics hits from test case
 
         says which analytics hit was in tracking plan ("OK" or "skip")
-
-        Args:
-            url (bool): print url if True, print hit params if False. Default: True.
         """
         tc = self.test_case
-        urls = tc.actual_urls
-        hits = tc.actual_events
+        events = tc.actual_events
         chcklst = self.checklist_actual
 
         init(autoreset=True)
-        for (u, hit, check) in zip(urls, hits, chcklst):
-            if url:
-                print(u)
-            else:
-                pprint.pprint(hit)  # TODO filter params
-                # pprint.pprint(hit, sort_dicts=False) #  Python >=3.8 only TODO
+        for (event, check) in zip(events, chcklst):
+            pprint.pprint(event)  # TODO filter params
+            # pprint.pprint(hit, sort_dicts=False) #  Python >=3.8 only TODO
             if check:
                 print(70 * "-", Fore.GREEN + "OK")
             else:
