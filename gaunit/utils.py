@@ -4,7 +4,8 @@ gaunit.utils
 This module implements general methods used by gaunits.
 """
 import json
-import re
+import sys
+from typing import Tuple
 from urllib.parse import parse_qs, unquote, urlparse
 
 
@@ -45,7 +46,6 @@ def get_event_params_from_tp_dict(tc: str, tp: dict) -> list:
 
 
 def get_ga_requests_from_har(har: dict) -> list:
-    # TODO docstring
     """extract HAR requests from GA
 
     Args:
@@ -97,10 +97,10 @@ def parse_postdata_events(data: str) -> list:
     """extract events params from POST data
 
     Args:
-        data (str): [description]
+        data (str): data string contained in GA POST request
 
     Returns:
-        dict: [description]
+        dict: all events found in POST data
     """
     # sample postdata: "en=page_view\r\nen=scroll&epn.percent_scrolled=90"
     # en=scroll
@@ -179,26 +179,6 @@ def load_dict_xor_json(d: dict, json_path: str) -> dict:
         raise ValueError("arguments given are both empty (dict or JSON file path)")
 
 
-def filter_ga_urls(urls: list) -> list:
-    """gets a list of urls and returns only GA urls
-
-    Args:
-        urls (list): [description]
-
-    Returns:
-        list: [description]
-    """
-
-    ga_urls = []
-    for url in urls:
-        extract = re.search(
-            r"https://www\.google-analytics\.com\/(j\/|)collect\?v=1.*", url
-        )
-        if extract:
-            ga_urls.append(extract.group(0))
-    return ga_urls
-
-
 def parse_ga_url(url: str) -> dict:
     query = urlparse(url).query
     event_params = parse_qs(query)
@@ -210,6 +190,11 @@ def parse_ga_url(url: str) -> dict:
 
 def is_ga_url(url: str) -> bool:
     return "www.google-analytics.com" in url
+
+
+def get_py_version() -> Tuple[int, int]:
+    _ver = sys.version_info
+    return (_ver[0], _ver[1])
 
 
 # def get_ga_request_type(request: dict) -> str:

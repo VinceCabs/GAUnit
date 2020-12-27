@@ -13,6 +13,7 @@ from .utils import (
     get_events_from_tracking_plan,
     get_ga_requests_from_browser_perf_log,
     get_ga_requests_from_har,
+    get_py_version,
     load_dict_xor_json,
     parse_ga_request,
     parse_ga_url,
@@ -245,9 +246,10 @@ class Result(object):
 
         # print expected events
         init(autoreset=True)
+        # preserve dict params order when printing (only for Python>=3.8)
+        args = {"sort_dicts": False} if get_py_version() >= (3, 8) else {}
         for (event, check) in zip(events, chcklst):
-            pprint.pprint(event)
-            # pprint.pprint(hit, sort_dicts=False) #  Python >=3.8 only TODO
+            pprint.pprint(event, **args)  # pylint: disable=E1123
             if check:
                 print(70 * "-", Fore.GREEN + "OK")
             else:
@@ -263,9 +265,10 @@ class Result(object):
         chcklst = self.checklist_actual
 
         init(autoreset=True)
+        # preserve dict params order when printing (only for Python>=3.8)
+        args = {"sort_dicts": False} if get_py_version() >= (3, 8) else {}
         for (event, check) in zip(events, chcklst):
-            pprint.pprint(event)  # TODO filter params
-            # pprint.pprint(hit, sort_dicts=False) #  Python >=3.8 only TODO
+            pprint.pprint(event, **args)  # pylint: disable=E1123
             if check:
                 print(70 * "-", Fore.GREEN + "OK")
             else:

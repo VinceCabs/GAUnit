@@ -42,7 +42,7 @@ test-unit:  ## Run unit tests (with coverage run)
 	coverage run -m unittest discover tests
 
 test-cli : ## Run a test on gaunit command
-	gaunit home_engie tests/test_cli/mock.har -t tests/tracking_plan.json
+	gaunit home_engie tests/test_cli_mock.har -t tests/tracking_plan.json
 
 test-unit-v:  ## Run unit tests (verbose)
 	coverage run -m unittest discover tests -v
