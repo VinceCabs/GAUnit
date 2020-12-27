@@ -30,7 +30,7 @@ install-samples: ## Install samples requirements
 clean-logs:  ## Remove all log & RF report files
 	rm *.log log.html output.xml report.html || true
 
-tests : test-unit test-lint test-format test-package ## * Run all tests
+tests : test-unit test-cli test-lint test-format test-package ## * Run all tests
 
 test-format: ## Run code formatting tests
 	black --check --diff $(FORMAT_FILES)
@@ -40,6 +40,9 @@ test-lint: ## Run code linting tests
 
 test-unit:  ## Run unit tests (with coverage run)
 	coverage run -m unittest discover tests
+
+test-cli : ## Run a test on gaunit command
+	gaunit home_engie tests/test_cli/mock.har -t tests/tracking_plan.json
 
 test-unit-v:  ## Run unit tests (verbose)
 	coverage run -m unittest discover tests -v

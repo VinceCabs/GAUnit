@@ -29,7 +29,7 @@ def check_har():
         "-v",
         "--verbose",
         help="print all expected events with their status and all actual events recorded",
-        action="store_false",
+        action="store_true",
         dest="verbose",
     )
 
