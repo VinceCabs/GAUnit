@@ -1,10 +1,10 @@
 import argparse
-import logging
-import pprint
-from colorama import init, Fore, Style
-import json
+
+from colorama import Fore, Style, init
 
 import gaunit
+
+from .__about__ import __version__
 
 # to run : gaunit home_engie tests/home_engie.har -t tests/tracking_plan.json
 
@@ -31,6 +31,12 @@ def check_har():
         help="print all expected events with their status and all actual events recorded",
         action="store_true",
         dest="verbose",
+    )
+    parser.add_argument(
+        "--version",
+        help="print GAUnit version",
+        action="version",
+        version="GAUnit %s" % __version__,
     )
 
     args = parser.parse_args()
