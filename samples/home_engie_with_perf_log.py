@@ -25,9 +25,11 @@ def run():
     log = driver.get_log("performance")
     driver.quit()
 
+    # # Uncomment if you want to store log in json file
     # with open("perf_log.json", "w", encoding="utf8") as f:
     #     json.dump(log, f, indent=2)
 
+    # # Uncomment if you want to parse existing log file before check
     # with open("perf_log.json", encoding="utf8") as f:
     #     log = json.load(f)
 
