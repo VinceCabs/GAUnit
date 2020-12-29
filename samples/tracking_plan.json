@@ -1,9 +1,7 @@
 {
-    "base_url": "https://particuliers.engie.fr",
-    "version": "0.1",
     "test_cases": {
         "home_engie": {
-            "description": "from homepage, enters conversion funnel",
+            "description": "from ENGIE Particuliers homepage, enters conversion funnel",
             "author": "VinceCabs",
             "events": [
                 {
@@ -22,13 +20,33 @@
                 }
             ]
         },
-        "g_merch_store_home": {
+        "ga_demo_store_add_to_cart": {
+            "description": "from GA Demo store homepage, view a T-shirt and add it to cart",
             "author": "VinceCabs",
             "events": [
                 {
                     "t": "pageview",
-                    "dl": "https://shop.googlemerchandisestore.com/",
                     "dt": "Home"
+                },
+                {
+                    "t": "event",
+                    "ec": "engagement",
+                    "ea": "select_content",
+                    "el": "product",
+                    "pa": "click",
+                    "pr1ca": "T-Shirts"
+                },
+                {
+                    "t": "pageview",
+                    "dt": "Product View"
+                },
+                {
+                    "t": "event",
+                    "ec": "ecommerce",
+                    "ea": "add_to_cart",
+                    "ev": "44",
+                    "pr1nm": "Compton%20T-Shirt",
+                    "pr1pr": "44.00"
                 }
             ]
         }
