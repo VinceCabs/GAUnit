@@ -53,13 +53,25 @@ print(result.checklist_expected)
 # [True, True] congrats! both events (pageview and click) were  fired.
 ```
 
-### Or manually check HAR files
+### Or manually check HAR files with command line
 
 Alternatively to automatic tests, you can manually browse your website, export a HAR file and check it through command line :
 
 ```sh
-$ gaunit my_test_case my_test_case.har
-[True, True]
+$ gaunit test_case.har my_test_case  # passed
+events in tracking plan: 3
+--------------------------------------------------------------------------------
+GA events found: total:4 / ok:3 / missing:0
+✔ OK: all expected events found
+
+$ gaunit test_case.har my_test_case  # failed
+events in tracking plan: 3
+================================================================================
+{'t': 'event', 'ec': 'Video', 'ea': 'Play'}
+                                                                     ... missing
+--------------------------------------------------------------------------------
+GA events found: total:11 / ok:1 / missing:2
+❌ FAILED: events missing
 ```
 
 ## Run your first tests (full working samples)
