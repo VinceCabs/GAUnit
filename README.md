@@ -100,9 +100,9 @@ We can use BrowserMob Proxy to intercept Google Analytics events.
 
 ### Automated test with Performance Log (Chrome only)
 
-Performance Log is a fast and easy way to intercept GA events (GET events only).
+Performance Log is a fast and easy way to intercept GA events (GET events only). It works without BrowserMob Proxy.
 
-Note: this method works for `analytics.js` but might not work for new GA implementations, such as GA4 or `gtag.js`.*
+Note: this method works for `analytics.js` but might not work for new GA implementations, such as transport beacon or GA4.
 
 - Install Selenium and ChromeDriver (same as above)
 
