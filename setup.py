@@ -22,8 +22,13 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/VinceCabs/GAUnit",
     packages=["gaunit"],
-    package_data={"gaunit": ["config.json"]},
-    entry_points={"console_scripts": ["gaunit=gaunit.cli:main"]},
+    # package_data={"gaunit": ["config.json"]},
+    entry_points={
+        "console_scripts": [
+            "gaunit=gaunit.cli:check_har",
+            "gaextract=gaunit.cli:extract_har",
+        ]
+    },
     license="MIT",
     python_requires=">=3.6",
     install_requires=["colorama==0.4.4"],
