@@ -37,9 +37,7 @@ def run():
     tracking_plan = join(abspath(dirname(__file__)), "tracking_plan.json")
     r = gaunit.check_perf_log("home_engie", tracking_plan, log)
 
-    print(
-        "=== GAUnit == tracking checklist: %s ===" % r.checklist_expected
-    )  # [True, True, True] tracking is correct !
+    r.print_result(display_ok=True)
 
 
 if __name__ == "__main__":

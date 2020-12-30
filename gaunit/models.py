@@ -234,42 +234,91 @@ class Result(object):
 
         return [{"event": h, "expected": c} for (h, c) in zip(events, chcklst)]
 
-    def pprint_expected_events(self):
+    def print_result(self, display_ok=False):
+        self._print_expected_events(all=display_ok)
+        self._print_summary()
+
+    def _print_expected_events(self, all=False):
         """pretty print list of events from tracking plan
 
-        says which tracker was found in test case  ("OK" or "missing")
+        says which tracker was found in test case  ("OK" or "missing"), used in CLI
+
+        Args:
+            all (bool, optional): if False, print only missing events if True, print all.
+                Defaults to False.
         """
-
-        tc = self.test_case
-        events = tc.expected_events
+        expected = self.test_case.expected_events
         chcklst = self.checklist_expected
+        init(autoreset=True)  # colorama
 
-        # print expected events
-        init(autoreset=True)
-        # preserve dict params order when printing (only for Python>=3.8)
-        args = {"sort_dicts": False} if get_py_version() >= (3, 8) else {}
-        for (event, check) in zip(events, chcklst):
-            pprint.pprint(event, **args)  # pylint: disable=E1123
-            if check:
-                print(70 * "-", Fore.GREEN + "OK")
+        print("events in tracking plan: %s" % len(expected))
+        args = (
+            {"sort_dicts": False} if get_py_version() >= (3, 8) else {}
+        )  # preserve dict params order when printing (only for Python>=3.8)
+        for (event, check) in zip(expected, chcklst):
+            if not check:
+                print(80 * "=")
+                pprint.pprint(event, **args)  # pylint: disable=E1123
+                print(67 * " ", " ... " + Fore.RED + "missing")
+            elif check and all:
+                print(80 * "=")
+                pprint.pprint(event, **args)  # pylint: disable=E1123
+                print(72 * " ", " ... " + Fore.GREEN + "OK")
             else:
-                print(70 * "-", Fore.RED + "missing")
+                pass
 
-    def pprint_actual_events(self):
+    def _print_summary(self):
+        """print a result summary
+
+        Example:
+            output:
+
+            | GA events found: total:4 / ok:3 / missing:0
+            | ✔ OK: all expected events found
+
+            or
+
+            | GA events found: total:11 / ok:1 / missing:2
+            | ❌ FAILED: events missing
+            ""
+
+        """
+        expected = self.test_case.expected_events
+        actual = self.test_case.actual_events
+        chcklst = self.checklist_expected
+        total_found, expected_found = len(actual), len([c for c in chcklst if c])
+        missing = len(expected) - expected_found
+
+        print(80 * "-")
+        if total_found == 0:
+            print("no GA events found")
+        else:
+            print(
+                "GA events found: total:%s / ok:%s / missing:%s"
+                % (total_found, expected_found, missing)
+            )
+        if False in chcklst:
+            print("\N{Cross Mark} FAILED: events missing")
+        else:
+            print("\N{Heavy Check Mark} OK: all expected events found")
+
+    def print_actual_events(self):
         """pretty print list of analytics hits from test case
 
-        says which analytics hit was in tracking plan ("OK" or "skip")
+        says which analytics hit was in tracking plan ("OK" or "skip"), used in CLI
         """
         tc = self.test_case
         events = tc.actual_events
         chcklst = self.checklist_actual
 
-        init(autoreset=True)
-        # preserve dict params order when printing (only for Python>=3.8)
-        args = {"sort_dicts": False} if get_py_version() >= (3, 8) else {}
+        init(autoreset=True)  # colorama
+        args = (
+            {"sort_dicts": False} if get_py_version() >= (3, 8) else {}
+        )  # preserve dict params order when printing (only for Python>=3.8)
         for (event, check) in zip(events, chcklst):
+            print(80 * "=")
             pprint.pprint(event, **args)  # pylint: disable=E1123
             if check:
-                print(70 * "-", Fore.GREEN + "OK")
+                print(72 * " ", " ... " + Fore.GREEN + "OK")
             else:
-                print(70 * "-", "skip")
+                print(70 * " ", " ... skip")
