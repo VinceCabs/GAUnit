@@ -32,10 +32,10 @@ def get_event_params_from_tp_dict(tc: str, tp: dict) -> list:
     try:
         d = tp["test_cases"].get(tc, None)
         if d:
-            # URL decode events params from tracking plan
+            # URL decode events params from tracking plan. Numbers must be converted to string
             events = []
             for event in d["events"]:
-                events.append({k: unquote(v) for (k, v) in event.items()})
+                events.append({k: unquote(str(v)) for (k, v) in event.items()})
             return events
         else:
             raise Exception("no test case '%s' found in tracking plan" % tc)

@@ -25,6 +25,16 @@ class test_utils(unittest.TestCase):
         hits = gaunit.utils.get_event_params_from_tp_dict("home_engie", tp)
         self.assertEqual([{"t": "pageview"}], hits)
 
+    def test_get_event_params_from_tp_dict_with_int_OK_(self):
+        tp = {"test_cases": {"home_engie": {"events": [{"ev": 1}]}}}
+        hits = gaunit.utils.get_event_params_from_tp_dict("home_engie", tp)
+        self.assertEqual([{"ev": "1"}], hits)
+
+    def test_get_event_params_from_tp_dict_with_float_OK(self):
+        tp = {"test_cases": {"home_engie": {"events": [{"ev": 1.0}]}}}
+        hits = gaunit.utils.get_event_params_from_tp_dict("home_engie", tp)
+        self.assertEqual([{"ev": "1.0"}], hits)
+
     def test_get_event_params_from_tp_dict_with_url_decode_OK(self):
         tp = {"test_cases": {"home_engie": {"events": [{"dl": "%2F"}]}}}
         hits = gaunit.utils.get_event_params_from_tp_dict("home_engie", tp)
