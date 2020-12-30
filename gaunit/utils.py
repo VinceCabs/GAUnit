@@ -4,6 +4,7 @@ gaunit.utils
 This module implements general methods used by gaunits.
 """
 import json
+import re
 import sys
 from typing import Tuple
 from urllib.parse import parse_qs, unquote, urlparse
@@ -189,7 +190,16 @@ def parse_ga_url(url: str) -> dict:
 
 
 def is_ga_url(url: str) -> bool:
-    return "www.google-analytics.com" in url
+    # TODO check if rule is enough (no need of v=1 or v=2 params?)
+    # TODO return GA event type (GA or GA4)
+    r = False
+    # GA
+    if re.search(r"www\.google-analytics\.com\/(j\/|)collect.*", url):
+        r = True
+    # GA4
+    if re.search(r"www\.google-analytics\.com\/g\/collect.*", url):
+        r = True
+    return r
 
 
 def get_py_version() -> Tuple[int, int]:
@@ -197,24 +207,6 @@ def get_py_version() -> Tuple[int, int]:
     return (_ver[0], _ver[1])
 
 
-# def get_ga_request_type(request: dict) -> str:
-#     """tells what kind of GA event it is
-
-#     Args:
-#         urls (list): [description]
-
-#     Returns:
-#         str : None, "GA" or "GA4"
-#     """
-#     # TODO check if rule is enough (no need of v=1 or v=2 params?)
-#     ga_type = None
-#     url = request["url"]
-#     if re.search(
-#             r"https://www\.google-analytics\.com\/(j\/|)collect.*", url
-#         ):
-#         ga_type = "GA"
-#     if re.search(
-#             r"https://www\.google-analytics\.com\/g\/collect.*", url
-#         ):
-#         ga_type =  "GA4"
-#     return ga_type
+def filter_keys(d: dict, key_filter: list) -> dict:
+    r = {k: v for (k, v) in d.items() if k in key_filter}
+    return r

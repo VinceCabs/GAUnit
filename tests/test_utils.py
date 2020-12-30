@@ -45,13 +45,15 @@ class test_utils(unittest.TestCase):
             "log": {
                 "entries": [
                     {"request": {"url": "https://domain.com"}},
-                    {"request": {"url": "https://www.google-analytics.com"}},
+                    {"request": {"url": "https://www.google-analytics.com/collect"}},
                     {"request": {"url": "https://domain.com"}},
                 ]
             }
         }
         requests = gaunit.utils.get_ga_requests_from_har(har)
-        self.assertEqual([{"url": "https://www.google-analytics.com"}], requests)
+        self.assertEqual(
+            [{"url": "https://www.google-analytics.com/collect"}], requests
+        )
 
     # other test_get_ga_requests_from_har ?
 
@@ -108,7 +110,7 @@ class test_utils(unittest.TestCase):
             # log entry we want to get
             {
                 "level": "INFO",
-                "message": "{\"message\":{\"method\":\"Network.requestWillBeSent\",\"params\":{\"request\":{\"url\":\"https://www.google-analytics.com\"}}}}", 
+                "message": "{\"message\":{\"method\":\"Network.requestWillBeSent\",\"params\":{\"request\":{\"url\":\"https://www.google-analytics.com/collect\"}}}}", 
             },
             # skipped
                         {
@@ -118,7 +120,7 @@ class test_utils(unittest.TestCase):
         ]
         # fmt: on
         urls = gaunit.utils.get_ga_requests_from_browser_perf_log(perf_log)
-        self.assertEqual(["https://www.google-analytics.com"], urls)
+        self.assertEqual(["https://www.google-analytics.com/collect"], urls)
 
     def test_load_dict_xor_json_too_many_args(self):
         d = {"dummy": "dummy"}
@@ -155,7 +157,9 @@ class test_utils(unittest.TestCase):
         # TODO parse url without params : {}
 
     def test_is_ga_url(self):
-        self.assertTrue(gaunit.utils.is_ga_url("www.google-analytics.com?.."))
+        self.assertTrue(
+            gaunit.utils.is_ga_url("https://www.google-analytics.com/collect")
+        )
 
 
 if __name__ == "__main__":
