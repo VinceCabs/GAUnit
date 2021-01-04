@@ -6,7 +6,6 @@ This module implements main classes used by gaunit: :class:`TrackingPlan,
 """
 from __future__ import annotations
 
-import logging
 import pprint
 from typing import List, Tuple
 from urllib.parse import unquote
@@ -24,11 +23,6 @@ from .utils import (
     parse_ga_request,
     parse_ga_url,
 )
-
-logger = logging.getLogger(__name__)
-
-logging.basicConfig(level=logging.DEBUG)
-# TODO remove that
 
 
 class TrackingPlan(object):
