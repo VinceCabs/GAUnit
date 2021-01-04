@@ -9,7 +9,6 @@ from gaunit.models import Result
 from gaunit.utils import (
     filter_keys,
     get_ga_requests_from_har,
-    get_py_version,
     open_json,
     parse_ga_request,
 )
@@ -60,7 +59,8 @@ def check_har():
     #     # print("error: more than one test case in tracking plan, please specify a '--test-case' parameter ")
     #     # pass
 
-    r = gaunit.check_har(args.test_case, args.tracking_plan, har_path=args.har_file)
+    tp = gaunit.TrackingPlan.from_json(args.tracking_plan)
+    r = gaunit.check_har(args.test_case, tracking_plan=tp, har_path=args.har_file)
 
     r.print_result(display_ok=args.all)
     if False in r.checklist_expected:
@@ -71,8 +71,6 @@ def check_har():
 def extract_har():
     parser = argparse.ArgumentParser()
     parser.add_argument("har_file", type=str, help="path to HAR file")
-    # parser.add_argument("-f","--filter",help="events parameters to extract (other params are filtered out)",type=list,action='store',
-    #                   dest="params")
     parser.add_argument(
         "-f",
         "--filter",

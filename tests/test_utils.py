@@ -1,45 +1,9 @@
-from gaunit.utils import parse_postdata_events
 import unittest
 
 import gaunit
 
 
 class test_utils(unittest.TestCase):
-    def test_get_event_params_from_tp_dict_wrong_format_1(self):
-        tp = {"dummy": "dummy"}
-        with self.assertRaises(KeyError):
-            gaunit.utils.get_event_params_from_tp_dict("home_engie", tp)
-
-    def test_get_event_params_from_tp_dict_wrong_format_2(self):
-        tp = {"test_cases": {"home_engie": {"dummy": "dummy"}}}
-        with self.assertRaises(KeyError):
-            gaunit.utils.get_event_params_from_tp_dict("home_engie", tp)
-
-    def test_get_event_params_from_tp_dict_missing_test_case(self):
-        tp = {"test_cases": {"not_my_test_case": {"dummy": "dummy"}}}
-        with self.assertRaises(Exception):
-            gaunit.utils.get_event_params_from_tp_dict("home_engie", tp)
-
-    def test_get_event_params_from_tp_dict_OK(self):
-        tp = {"test_cases": {"home_engie": {"events": [{"t": "pageview"}]}}}
-        hits = gaunit.utils.get_event_params_from_tp_dict("home_engie", tp)
-        self.assertEqual([{"t": "pageview"}], hits)
-
-    def test_get_event_params_from_tp_dict_with_int_OK_(self):
-        tp = {"test_cases": {"home_engie": {"events": [{"ev": 1}]}}}
-        hits = gaunit.utils.get_event_params_from_tp_dict("home_engie", tp)
-        self.assertEqual([{"ev": "1"}], hits)
-
-    def test_get_event_params_from_tp_dict_with_float_OK(self):
-        tp = {"test_cases": {"home_engie": {"events": [{"ev": 1.0}]}}}
-        hits = gaunit.utils.get_event_params_from_tp_dict("home_engie", tp)
-        self.assertEqual([{"ev": "1.0"}], hits)
-
-    def test_get_event_params_from_tp_dict_with_url_decode_OK(self):
-        tp = {"test_cases": {"home_engie": {"events": [{"dl": "%2F"}]}}}
-        hits = gaunit.utils.get_event_params_from_tp_dict("home_engie", tp)
-        self.assertEqual([{"dl": "/"}], hits)
-
     def test_get_ga_requests_from_har_OK(self):
         har = {
             "log": {
@@ -86,22 +50,22 @@ class test_utils(unittest.TestCase):
 
     def test_parse_postdata_events_1(self):
         data = "p=v"
-        events = parse_postdata_events(data)
+        events = gaunit.utils.parse_postdata_events(data)
         self.assertEqual([{"p": "v"}], events)
 
     def test_parse_postdata_events_2(self):
         data = "p=v\r\np=v"
-        events = parse_postdata_events(data)
+        events = gaunit.utils.parse_postdata_events(data)
         self.assertEqual([{"p": "v"}, {"p": "v"}], events)
 
     def test_parse_postdata_events_3(self):
         data = "p=v\r\np=v&pp=vv"
-        events = parse_postdata_events(data)
+        events = gaunit.utils.parse_postdata_events(data)
         self.assertEqual([{"p": "v"}, {"p": "v", "pp": "vv"}], events)
 
     def test_parse_postdata_events_empty(self):
         data = ""
-        events = parse_postdata_events(data)
+        events = gaunit.utils.parse_postdata_events(data)
         self.assertEqual([{}], events)
 
     def test_get_ga_requests_from_browser_perf_log_OK(self):

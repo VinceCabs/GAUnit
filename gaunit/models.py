@@ -1,16 +1,22 @@
 """
 gaunit.models
 
-This module implements main classes used by gaunit: :class:`TestCase` and :class:`Result`. 
+This module implements main classes used by gaunit: :class:`TrackingPlan, 
+:class:`TestCase` and :class:`Result`. 
 """
+from __future__ import annotations
+
 import logging
 import pprint
-from typing import Tuple
+from typing import List, Tuple
+from urllib.parse import unquote
 
 from colorama import Fore, init
+from gspread import Spreadsheet
+
+from gaunit.utils import open_json, remove_empty_values
 
 from .utils import (
-    get_events_from_tracking_plan,
     get_ga_requests_from_browser_perf_log,
     get_ga_requests_from_har,
     get_py_version,
@@ -22,6 +28,77 @@ from .utils import (
 logger = logging.getLogger(__name__)
 
 logging.basicConfig(level=logging.DEBUG)
+# TODO remove that
+
+
+class TrackingPlan(object):
+    def __init__(self, test_cases=None):
+        # Default empty dicts/lists for dict/lists params.
+        test_cases = {} if test_cases is None else test_cases
+
+        self.test_cases = test_cases
+
+    def get_expected_events(self, test_case_id: str) -> list:
+        """get expected events for a given test case
+
+        Args:
+            test_case_id (str):  test case id
+        """
+        try:
+            d = self.test_cases.get(test_case_id, None)
+            if d:
+                # URL decode events params from tracking plan. Numbers must be converted to string
+                events = []
+                for event in d["events"]:
+                    events.append({k: unquote(str(v)) for (k, v) in event.items()})
+                return events
+            else:
+                raise Exception(
+                    "no test case '%s' found in tracking plan" % test_case_id
+                )
+        except KeyError:
+            raise KeyError(
+                "tracking plan is not valid (see Documentation) '%s'" % test_case_id
+            )
+
+    @classmethod
+    def from_json(cls, path: str) -> TrackingPlan:
+        # TODO docstring
+        d = open_json(path)
+        tp = TrackingPlan(test_cases=d.get("test_cases", None))
+        return tp
+
+    @classmethod
+    def from_spreadsheet(cls, sheet: Spreadsheet) -> TrackingPlan:
+        # TODO docstring
+        worksheets = sheet.worksheets()
+        tp = {}
+        for w in worksheets:
+            events = w.get_all_records()
+            events = [remove_empty_values(e) for e in events]
+            tp.update({w.title: {"events": events}})
+        return TrackingPlan(test_cases=tp)
+
+    @classmethod
+    def from_csv(cls, path: str) -> TrackingPlan:
+        # TODO
+        pass
+
+    @classmethod
+    def from_array(cls, array: List[list]) -> TrackingPlan:
+        # First column has the name of the test_case
+        # each row corresponds to an event
+        # [[["test_case","dp","v"],["home_engie","home","1"],...]]
+        # TODO
+        pass
+
+    def update_test_case(self, id: str, expected_events: List[dict]):
+        # TODO docstring
+        # events : list of dict
+        # [{"v:1", "'dp":"home"},{],..}
+
+        d = {id: {"events": expected_events}}
+        self.test_cases.update(d)
 
 
 class TestCase(object):
@@ -33,42 +110,56 @@ class TestCase(object):
         one and one only argument must be given: ``har`` or ``har_path``
 
     Example :
-        >>> tc = TestCase("my_test_case", "tracking_plan.json")
-        >>> tc.load_har(har=har)
-        >>> r = tc.check()
-        >>> r.expected_events
+        >>> events = [{"t":"pageview","dt":"home"},...]
+        tc = TestCase("my_test_case", expected_events=events)
+        >>> r = tc.check_har(har=har)  # or tc.check_har(har_path=path) for a HAR file
+        >>> r.checklist_expected_events
         [True, True]
+        >>> r.was_sucessful()
+        True
 
     Attributes:
         id (str): test case id (same id used to match with tracking plan)
-        tracking_plan (str): path to tracking plan file (see Documentation)
-        har (dict): actual har for this test case in dict format. Defaults to None
-        har_path (str) : path to HAR file for this test case (standard HAR JSON). Defaults to None
-        perf_log (list) : browser performance log
         expected_events (list) : list of Google Analytics event in tracking plan.
             Each event is represented by a dict of params.
-            Example: ``[{"t":"pageview","dt":"home"},...]``
+            Example: ``[{"t":"pageview","dt":"home"},...]``.
+            This parameter prevails over ``tracking_plan`` parameter.
+            Defaults to None.
+        tracking_plan (TrackingPlan): tracking plan containing expected events for this
+            test case. Defaults to None
+        har (dict): actual har for this test case in dict format. Defaults to None
+        har_path (str) : path to HAR file for this test case (standard HAR JSON).
+            Defaults to None.
+        perf_log (list) : browser performance log
+
         actual_events (list) : list of GA events params parsed from HAR or http log
             Each event is represented by a dict of params (same as `expected_events`).
             Example: ``[{"t":"pageview","dt":"home"},...]``
             note that TestCase.check() will compare ``expected_events`` and
-            ``actual_events``, whick makes sense!
+            ``actual_events``, which makes sense!
     """
 
     def __init__(
-        self, id: str, tracking_plan=None, har=None, har_path=None, perf_log=None
+        self,
+        id: str,
+        expected_events: list = None,
+        tracking_plan: TrackingPlan = None,
+        har: dict = None,
+        har_path: str = None,
+        perf_log: list = None,
     ):
         # Default empty dicts/lists for dict/lists params.
+        expected_events = [] if expected_events is None else expected_events
         har = {} if har is None else har
         perf_log = [] if perf_log is None else perf_log
 
         self.id = id  # test case name
-        self.tracking_plan = tracking_plan  # path to tracking plan
 
-        self.expected_events = {}
-        if tracking_plan:
-            self.expected_events = get_events_from_tracking_plan(id, tracking_plan)
-        self.actual_events = {}
+        if expected_events:
+            self.expected_events = expected_events
+        elif tracking_plan:
+            self.expected_events = tracking_plan.get_expected_events(self.id)
+        self.actual_events = []
 
         self.har = {}  # for debug, will be killed soon
         # self.page_flow = [] # will store urls from pages TODO
@@ -125,6 +216,7 @@ class TestCase(object):
         self.actual_events = events
 
     def check(self, ordered=True) -> Tuple[list, list]:
+        # TODO make private?
         """compares hits from tracking plan and from log and returns 2 checklists
 
         Args:
@@ -191,12 +283,16 @@ class Result(object):
     def __init__(
         self, test_case: TestCase, checklist_expected: list, checklist_actual: list
     ):
-        self.test_case = test_case  # entire TestCase object
-        self.checklist_expected = checklist_expected
-        self.checklist_actual = checklist_actual
+        self.test_case = test_case  # entire TestCase object  # TODO replace by content
+        self.checklist_expected = (
+            checklist_expected  # TODO rename to checklist_expected _events
+        )
+        self.checklist_actual = checklist_actual  # TODO same
         # self.comparison = None
 
     # TODO method to return merged results : comparison of both tracker and hits list
+
+    # TODO was_sucessful()
 
     def get_status_expected_events(self) -> list:
         """Returns expected event and their status

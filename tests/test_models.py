@@ -6,14 +6,84 @@ import gaunit
 from tests.utils import generate_mock_har, generate_mock_perf_log
 
 
+class test_TrackingPlan(unittest.TestCase):
+    def test_from_json_OK(self):
+        here = dirname(realpath(__file__))
+        path = join(here, "tracking_plan.json")
+        tp = gaunit.TrackingPlan.from_json(path)
+        self.assertEqual(
+            tp.test_cases.get("home_engie", None).get("events", None),
+            [{"dp": "A"}, {"dp": "B"}, {"dp": "C"}],
+        )
+
+    def test_update_test_case_create_OK(self):
+        events = [{"dp": "A"}]
+        tp = gaunit.TrackingPlan()
+        tp.update_test_case("home_engie", events)
+        self.assertEqual(tp.test_cases, {"home_engie": {"events": events}})
+
+    def test_update_test_case_update_OK(self):
+        # all events are replaced by new events
+        events = [{"dp": "A"}]
+        test_cases = {"home_engie": {"events": events}}
+        tp = gaunit.TrackingPlan(test_cases=test_cases)
+        tp.update_test_case("home_engie", {"dp": "X"})
+        self.assertEqual(tp.test_cases, {"home_engie": {"events": {"dp": "X"}}})
+
+    def test_get_expected_events_wrong_format_1(self):
+        test_cases = {"dummy": "dummy"}
+        tp = gaunit.TrackingPlan(test_cases=test_cases)
+        with self.assertRaises(Exception):
+            tp.get_expected_events("home_engie")
+
+    def test_get_expected_events_wrong_format_2(self):
+        test_cases = {"home_engie": {"dummy": "dummy"}}
+        tp = gaunit.TrackingPlan(test_cases=test_cases)
+        with self.assertRaises(KeyError):
+            tp.get_expected_events("home_engie")
+
+    def test_get_expected_events_missing_test_case(self):
+        test_cases = {"not_my_test_case": {"dummy": "dummy"}}
+        tp = gaunit.TrackingPlan(test_cases=test_cases)
+        with self.assertRaises(Exception):
+            tp.get_expected_events("home_engie")
+
+    def test_get_expected_events_OK(self):
+        test_cases = {"home_engie": {"events": [{"t": "pageview"}]}}
+        tp = gaunit.TrackingPlan(test_cases=test_cases)
+        events = tp.get_expected_events("home_engie")
+        self.assertEqual([{"t": "pageview"}], events)
+
+    def test_get_expected_events_with_int_OK_(self):
+        test_cases = {"home_engie": {"events": [{"ev": 1}]}}
+        tp = gaunit.TrackingPlan(test_cases=test_cases)
+        events = tp.get_expected_events("home_engie")
+        self.assertEqual([{"ev": "1"}], events)
+
+    def test_get_expected_events_with_float_OK(self):
+        test_cases = {"home_engie": {"events": [{"ev": 1.0}]}}
+        tp = gaunit.TrackingPlan(test_cases=test_cases)
+        events = tp.get_expected_events("home_engie")
+        self.assertEqual([{"ev": "1.0"}], events)
+
+    def test_get_expected_events_with_url_decode_OK(self):
+        test_cases = {"home_engie": {"events": [{"dl": "%2F"}]}}
+        tp = gaunit.TrackingPlan(test_cases=test_cases)
+        events = tp.get_expected_events("home_engie")
+        self.assertEqual([{"dl": "/"}], events)
+
+
 class test_TestCase(unittest.TestCase):
-
-    here = dirname(realpath(__file__))
-    tracking_plan = join(here, "tracking_plan.json")
-    ga_base_url = ""
-
     def setUp(self) -> None:
-        self.tc = gaunit.TestCase("home_engie", self.tracking_plan)
+        self.expected_events = [{"dp": "A"}, {"dp": "B"}, {"dp": "C"}]
+        self.tc = gaunit.TestCase("home_engie", expected_events=self.expected_events)
+
+    def test_constructor_with_tracking_plan(self):
+        # TestCase should be equal to tc_ref
+        tp = gaunit.TrackingPlan()
+        tp.update_test_case("home_engie", self.expected_events)
+        tc_ref = gaunit.TestCase("home_engie", tracking_plan=tp)
+        self.assertEqual(self.expected_events, tc_ref.expected_events)
 
     def test_load_har_ok(self):
         har = {
@@ -103,10 +173,9 @@ class test_TestCase(unittest.TestCase):
 
 
 class test_Result(unittest.TestCase):
-
-    here = dirname(realpath(__file__))
-    tracking_plan = join(here, "tracking_plan.json")
-    tc = gaunit.TestCase("home_engie", tracking_plan)
+    def setUp(self) -> None:
+        expected_events = [{"dp": "A"}, {"dp": "B"}, {"dp": "C"}]
+        self.tc = gaunit.TestCase("home_engie", expected_events=expected_events)
 
     def test_get_status_expected_events(self):
         har = generate_mock_har("A", "B")

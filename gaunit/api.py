@@ -3,27 +3,31 @@ gaunit.api
 
 This modules makes gaunit nicer to use
 """
-from gaunit.models import TestCase, Result
+from .models import Result, TestCase, TrackingPlan
+
+# TODO add methods to generate tracking plans
 
 
-def check_har(test_case: str, tracking_plan: str, har=None, har_path=None) -> Result:
+def check_har(
+    test_case_id: str, tracking_plan: TrackingPlan, har=None, har_path=None
+) -> Result:
     """Performs checks of a har dict or HAR JSON file against a tracking plan
 
     Example:
-        >>> r = gaunit.check_har("my_test_case", "tracking_plan.json", har=har) # from har dict
-        >>> r.checklist_expected
-        [True, True]
-        >>> r = gaunit.check_har("my_test_case", "tracking_plan.json", har_path="har.json") # from HAR file
-        >>> r.checklist_expected
-        [True, True]
+        >>> r = gaunit.check_har("my_test_case", tracking_plan, har=har) # from har dict
+        >>> r.was_sucessful()
+        True
+        >>> r = gaunit.check_har("my_test_case", tracking_plan, har_path="har.json") # from HAR file
+        >>> r.was_sucessful()
+        True
 
     See also :
         :func:`gaunit.check_perf_log`
 
     Args:
-        test_case (str): test case id (same id used to match with tracking plan)
-        tracking_plan (str): path to tracking plan file (see Documentation)
-        har (dict): actual har for this test case in dict format. Defaults to None
+        test_case_id (str): test case id (same id used to match with tracking plan)
+        tracking_plan (TrackingPlan): tracking plan containing expected events for this
+            test case. Defaults to None        har (dict): actual har for this test case in dict format. Defaults to None
         har_path (str) : path to HAR file for this test case (standard HAR JSON). Defaults to None
 
     Note:
@@ -32,11 +36,13 @@ def check_har(test_case: str, tracking_plan: str, har=None, har_path=None) -> Re
     Returns:
         :class:`gaunit.Result`: complete results of your test case.
     """
-    tc = TestCase(test_case, tracking_plan, har, har_path)
+    tc = TestCase(test_case_id, tracking_plan=tracking_plan, har=har, har_path=har_path)
     return tc.result()
 
 
-def check_perf_log(test_case: str, tracking_plan: str, perf_log: list) -> Result:
+def check_perf_log(
+    test_case_id: str, tracking_plan: TrackingPlan, perf_log: list
+) -> Result:
     """Performs checks of a Performance log against a tracking plan
 
     For more info on Performance Log and how to get it, see
@@ -46,18 +52,21 @@ def check_perf_log(test_case: str, tracking_plan: str, perf_log: list) -> Result
         :func:`gaunit.check_har`
 
     Example:
-        >>> driver.get_log("performance")  # selenium driver
-        >>> r = gaunit.check_perf_log("my_test_case", "tracking_plan.json", perf_log)
-        >>> r.checklist_expected
+        >>> perf_log = driver.get_log("performance")  # selenium driver
+        >>> r = gaunit.check_perf_log("my_test_case", tracking_plan, perf_log)
+        >>> r.checklist_expected_events
         [True, True]
+        >>> r.was_sucessful()
+        True
 
     Args:
-        test_case (str): test case id (same id used to match with tracking plan)
-        tracking_plan (str): path to tracking plan file (see Documentation)
+        test_case_id (str): test case id (same id used to match with tracking plan)
+        tracking_plan (TrackingPlan): tracking plan containing expected events for this
+            test case. Defaults to None
         perf_log (list): log entries from driver
 
     Returns:
         :class:`gaunit.Result`: complete results of your test case.
     """
-    tc = TestCase(test_case, tracking_plan, perf_log=perf_log)
+    tc = TestCase(test_case_id, tracking_plan=tracking_plan, perf_log=perf_log)
     return tc.result()

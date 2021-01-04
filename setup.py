@@ -31,7 +31,7 @@ setuptools.setup(
     },
     license="MIT",
     python_requires=">=3.6",
-    install_requires=["colorama==0.4.4"],
+    install_requires=["colorama==0.4.4", "gspread==3.6.0"],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 3",

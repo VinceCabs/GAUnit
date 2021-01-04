@@ -7,17 +7,7 @@ import json
 import re
 import sys
 from typing import Tuple
-from urllib.parse import parse_qs, unquote, urlparse
-
-
-def get_events_from_tracking_plan(test_case: str, tracking_plan: str) -> list:
-    """load tracking plan file and extract hits for a given test case
-
-    Args:
-        tracking_plan (str): path to tracking plan JSON file (see Documentation for tracking plan expected format)
-    """
-    tp = open_json(tracking_plan)
-    return get_event_params_from_tp_dict(test_case, tp)
+from urllib.parse import parse_qs, urlparse
 
 
 def open_json(json_path) -> dict:
@@ -26,24 +16,6 @@ def open_json(json_path) -> dict:
     with open(json_path, "r", encoding="utf8") as f:
         content = json.load(f)
     return content
-
-
-def get_event_params_from_tp_dict(tc: str, tp: dict) -> list:
-    """extract GA event params from tracking plan dict"""
-    try:
-        d = tp["test_cases"].get(tc, None)
-        if d:
-            # URL decode events params from tracking plan. Numbers must be converted to string
-            events = []
-            for event in d["events"]:
-                events.append({k: unquote(str(v)) for (k, v) in event.items()})
-            return events
-        else:
-            raise Exception("no test case '%s' found in tracking plan" % tc)
-    except KeyError:
-        raise KeyError(
-            "tracking plan format is not valid (see Documentation). '%s'" % tc
-        )
 
 
 def get_ga_requests_from_har(har: dict) -> list:
@@ -209,4 +181,9 @@ def get_py_version() -> Tuple[int, int]:
 
 def filter_keys(d: dict, key_filter: list) -> dict:
     r = {k: v for (k, v) in d.items() if k in key_filter}
+    return r
+
+
+def remove_empty_values(d: dict) -> dict:
+    r = {k: v for (k, v) in d.items() if not v == ""}
     return r
