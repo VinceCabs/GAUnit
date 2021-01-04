@@ -22,7 +22,6 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/VinceCabs/GAUnit",
     packages=["gaunit"],
-    # package_data={"gaunit": ["config.json"]},
     entry_points={
         "console_scripts": [
             "gaunit=gaunit.cli:check_har",
