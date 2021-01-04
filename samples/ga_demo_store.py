@@ -52,7 +52,8 @@ def run():
     #     json.dump(har, f)
 
     # check hits against tracking plan and print results
-    tracking_plan = join(abspath(dirname(__file__)), "tracking_plan.json")
+    path = join(abspath(dirname(__file__)), "tracking_plan.json")
+    tracking_plan = gaunit.TrackingPlan.from_json(path)
     r = gaunit.check_har(test_case, tracking_plan, har=har)
 
     r.print_result(display_ok=True)

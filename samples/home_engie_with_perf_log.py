@@ -34,7 +34,8 @@ def run():
     #     log = json.load(f)
 
     # check hits against tracking plan and print results
-    tracking_plan = join(abspath(dirname(__file__)), "tracking_plan.json")
+    path = join(abspath(dirname(__file__)), "tracking_plan.json")
+    tracking_plan = gaunit.TrackingPlan.from_json(path)
     r = gaunit.check_perf_log("home_engie", tracking_plan, log)
 
     r.print_result(display_ok=True)
