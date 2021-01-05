@@ -9,7 +9,7 @@ It is designed to be used within your pipelines in various environments such as 
 
 ## Installation
 
-You will need Python 3.6+ installed.
+You will need Python 3.7+ installed.
 
 ```sh
 pip install gaunit
