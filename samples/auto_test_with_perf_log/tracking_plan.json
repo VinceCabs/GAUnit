@@ -1,25 +1,5 @@
 {
     "test_cases": {
-        "home_engie": {
-            "description": "from ENGIE Particuliers homepage, enters conversion funnel",
-            "author": "VinceCabs",
-            "events": [
-                {
-                    "t": "pageview",
-                    "dp": "engie_fournisseur_d_electricite_et_de_gaz_naturel"
-                },
-                {
-                    "t": "event",
-                    "ec": "actions_diverses",
-                    "ea": "clics_internes-divers",
-                    "el": "souscrire_a_une_offre_d_energie"
-                },
-                {
-                    "t": "pageview",
-                    "dp": "apps/tunnel_de_souscription_v3/etape_1_projet"
-                }
-            ]
-        },
         "ga_demo_store_add_to_cart": {
             "description": "from GA Demo store homepage, view a T-shirt and add it to cart",
             "author": "VinceCabs",

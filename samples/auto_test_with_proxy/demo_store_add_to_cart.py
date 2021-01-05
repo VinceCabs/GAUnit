@@ -1,3 +1,9 @@
+""""
+ga_demo_store.py
+
+Code sample: an "add to cart" scenario using Selenium and a proxy to automatically test 
+tracking on Google online store demo.
+"""
 import json
 from os.path import abspath, dirname, join
 from time import sleep
@@ -45,9 +51,9 @@ def run():
     server.stop()
     driver.quit()
 
-    # # uncomment if you need to see the har
+    # uncomment if you need to export the har
     # with open(
-    #     join(abspath(dirname(__file__)), "test_case.har"), "w", encoding="utf8"
+    #     join(abspath(dirname(__file__)), test_case), "w", encoding="utf8"
     # ) as f:
     #     json.dump(har, f)
 
