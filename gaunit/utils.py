@@ -7,7 +7,7 @@ import json
 import re
 import sys
 from typing import Tuple
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, unquote, urlparse
 
 
 def open_json(json_path) -> dict:
@@ -91,7 +91,7 @@ def parse_postdata_events(data: str) -> list:
                 params.update({p: v})
             pass
         events.append(params)
-    return events
+    return format_events(events)
 
 
 def get_ga_requests_from_browser_perf_log(log: list) -> list:
@@ -180,10 +180,21 @@ def get_py_version() -> Tuple[int, int]:
 
 
 def filter_keys(d: dict, key_filter: list) -> dict:
-    r = {k: v for (k, v) in d.items() if k in key_filter}
-    return r
+    d = {k: v for (k, v) in d.items() if k in key_filter}
+    return d
 
 
 def remove_empty_values(d: dict) -> dict:
-    r = {k: v for (k, v) in d.items() if not v == ""}
-    return r
+    d = {k: v for (k, v) in d.items() if not v == ""}
+    return d
+
+
+def unquote_values(d: dict) -> dict:
+    d = {k: unquote(str(v)) for (k, v) in d.items()}
+    return d
+
+
+def format_events(events: list) -> dict:
+    events = [unquote_values(e) for e in events]
+    events = [remove_empty_values(e) for e in events]
+    return events

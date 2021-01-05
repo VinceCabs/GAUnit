@@ -40,6 +40,40 @@ class test_utils(unittest.TestCase):
             [{"v": "2", "en": "page_view"}, {"v": "2", "en": "scroll"}], events
         )
 
+    def test_parse_ga_request_GET_url_encode(self):
+        request = {
+            "method": "GET",
+            "url": "https://www.google-analytics.com/g/collect?dp=%2F",
+        }
+        events = gaunit.utils.parse_ga_request(request)
+        self.assertEqual([{"dp": "/"}], events)
+
+    def test_parse_ga_request_POST_url_encode(self):
+        request = {
+            "method": "POST",
+            "url": "https://www.google-analytics.com/g/collect?v=2",
+            "postData": {"text": "en=page_view&dt=%2F"},
+        }
+        events = gaunit.utils.parse_ga_request(request)
+        self.assertEqual([{"v": "2", "en": "page_view", "dt": "/"}], events)
+
+    def test_parse_ga_request_GET_numbers(self):
+        request = {
+            "method": "GET",
+            "url": "https://www.google-analytics.com/g/collect?ev=1&pr1pr=2.0",
+        }
+        events = gaunit.utils.parse_ga_request(request)
+        self.assertEqual([{"ev": "1", "pr1pr": "2.0"}], events)
+
+    def test_parse_ga_request_POST_numbers(self):
+        request = {
+            "method": "POST",
+            "url": "https://www.google-analytics.com/g/collect?v=2",
+            "postData": {"text": "ev=1&pr1pr=2.0"},
+        }
+        events = gaunit.utils.parse_ga_request(request)
+        self.assertEqual([{"v": "2", "ev": "1", "pr1pr": "2.0"}], events)
+
     def test_parse_ga_request_POST_no_postData(self):
         request = {
             "method": "POST",

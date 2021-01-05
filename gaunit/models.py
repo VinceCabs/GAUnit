@@ -13,13 +13,13 @@ from urllib.parse import unquote
 from colorama import Fore, init
 from gspread import Spreadsheet
 
-from gaunit.utils import open_json, remove_empty_values
-
 from .utils import (
+    format_events,
     get_ga_requests_from_browser_perf_log,
     get_ga_requests_from_har,
     get_py_version,
     load_dict_xor_json,
+    open_json,
     parse_ga_request,
     parse_ga_url,
 )
@@ -30,6 +30,15 @@ class TrackingPlan(object):
         # Default empty dicts/lists for dict/lists params.
         test_cases = {} if test_cases is None else test_cases
 
+        # TODO change test cases data model and factorize this
+        try:
+            for tc in test_cases:
+                events = test_cases[tc]["events"]
+                events = format_events(events)
+                test_cases[tc]["events"] = events
+        except (KeyError, TypeError):
+            raise Exception("test cases are not valid: %s" % test_cases)
+
         self.test_cases = test_cases
 
     def get_expected_events(self, test_case_id: str) -> list:
@@ -38,29 +47,28 @@ class TrackingPlan(object):
         Args:
             test_case_id (str):  test case id
         """
-        try:
-            d = self.test_cases.get(test_case_id, None)
-            if d:
-                # URL decode events params from tracking plan. Numbers must be converted to string
-                events = []
-                for event in d["events"]:
-                    events.append({k: unquote(str(v)) for (k, v) in event.items()})
-                return events
-            else:
-                raise Exception(
-                    "no test case '%s' found in tracking plan" % test_case_id
-                )
-        except KeyError:
-            raise KeyError(
-                "tracking plan is not valid (see Documentation) '%s'" % test_case_id
-            )
+
+        events = self.test_cases[test_case_id]["events"]
+        if events:
+            return events
+        else:
+            raise Exception("test case not found in tracking plan: '%s'" % test_case_id)
 
     @classmethod
     def from_json(cls, path: str) -> TrackingPlan:
         # TODO docstring
         d = open_json(path)
-        tp = TrackingPlan(test_cases=d.get("test_cases", None))
-        return tp
+        try:
+            test_cases = d["test_cases"]
+            for tc in test_cases:
+                events = test_cases[tc]["events"]
+                events = format_events(events)
+                test_cases[tc]["events"] = events
+            tp = TrackingPlan(test_cases=test_cases)
+            return tp
+        except KeyError:
+            # TODO custom Exceptions
+            raise KeyError("tracking plan is not valid (see Documentation) '%s'" % path)
 
     @classmethod
     def from_spreadsheet(cls, sheet: Spreadsheet) -> TrackingPlan:
@@ -69,7 +77,7 @@ class TrackingPlan(object):
         tp = {}
         for w in worksheets:
             events = w.get_all_records()
-            events = [remove_empty_values(e) for e in events]
+            events = format_events(events)
             tp.update({w.title: {"events": events}})
         return TrackingPlan(test_cases=tp)
 
@@ -86,13 +94,19 @@ class TrackingPlan(object):
         # TODO
         pass
 
-    def update_test_case(self, id: str, expected_events: List[dict]):
+    def update_test_case(self, test_case_id: str, expected_events: List[dict]):
         # TODO docstring
         # events : list of dict
         # [{"v:1", "'dp":"home"},{],..}
 
-        d = {id: {"events": expected_events}}
-        self.test_cases.update(d)
+        try:
+            expected_events = format_events(expected_events)
+            d = {test_case_id: {"events": expected_events}}
+            self.test_cases.update(d)
+        except AttributeError:
+            raise AttributeError(
+                "no proper format for expected events: %s" % expected_events
+            )
 
 
 class TestCase(object):
@@ -150,7 +164,7 @@ class TestCase(object):
         self.id = id  # test case name
 
         if expected_events:
-            self.expected_events = expected_events
+            self.expected_events = format_events(expected_events)
         elif tracking_plan:
             self.expected_events = tracking_plan.get_expected_events(self.id)
         self.actual_events = []

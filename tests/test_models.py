@@ -7,6 +7,16 @@ from tests.utils import generate_mock_har, generate_mock_perf_log
 
 
 class test_TrackingPlan(unittest.TestCase):
+    def test_init_events_wrong_format_1(self):
+        test_cases = {"dummy": "dummy"}
+        with self.assertRaises(Exception):
+            gaunit.TrackingPlan(test_cases=test_cases)
+
+    def test_init_wrong_format_2(self):
+        test_cases = {"home_engie": {"dummy": "dummy"}}
+        with self.assertRaises(Exception):
+            gaunit.TrackingPlan(test_cases=test_cases)
+
     def test_from_json_OK(self):
         here = dirname(realpath(__file__))
         path = join(here, "tracking_plan.json")
@@ -22,28 +32,16 @@ class test_TrackingPlan(unittest.TestCase):
         tp.update_test_case("home_engie", events)
         self.assertEqual(tp.test_cases, {"home_engie": {"events": events}})
 
-    def test_update_test_case_update_OK(self):
+    def test_update_test_case_OK(self):
         # all events are replaced by new events
         events = [{"dp": "A"}]
         test_cases = {"home_engie": {"events": events}}
         tp = gaunit.TrackingPlan(test_cases=test_cases)
-        tp.update_test_case("home_engie", {"dp": "X"})
-        self.assertEqual(tp.test_cases, {"home_engie": {"events": {"dp": "X"}}})
-
-    def test_get_expected_events_wrong_format_1(self):
-        test_cases = {"dummy": "dummy"}
-        tp = gaunit.TrackingPlan(test_cases=test_cases)
-        with self.assertRaises(Exception):
-            tp.get_expected_events("home_engie")
-
-    def test_get_expected_events_wrong_format_2(self):
-        test_cases = {"home_engie": {"dummy": "dummy"}}
-        tp = gaunit.TrackingPlan(test_cases=test_cases)
-        with self.assertRaises(KeyError):
-            tp.get_expected_events("home_engie")
+        tp.update_test_case("home_engie", [{"dp": "X"}])
+        self.assertEqual(tp.test_cases, {"home_engie": {"events": [{"dp": "X"}]}})
 
     def test_get_expected_events_missing_test_case(self):
-        test_cases = {"not_my_test_case": {"dummy": "dummy"}}
+        test_cases = {"not_my_test_case": {"events": []}}
         tp = gaunit.TrackingPlan(test_cases=test_cases)
         with self.assertRaises(Exception):
             tp.get_expected_events("home_engie")
@@ -54,7 +52,7 @@ class test_TrackingPlan(unittest.TestCase):
         events = tp.get_expected_events("home_engie")
         self.assertEqual([{"t": "pageview"}], events)
 
-    def test_get_expected_events_with_int_OK_(self):
+    def test_get_expected_events_with_int_OK(self):
         test_cases = {"home_engie": {"events": [{"ev": 1}]}}
         tp = gaunit.TrackingPlan(test_cases=test_cases)
         events = tp.get_expected_events("home_engie")
