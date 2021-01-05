@@ -46,8 +46,11 @@ import browsermobproxy
 # (see samples below or how-tos for more details)
 # ...
 
+# import tracking plan from json file or event from Google Sheets
+tracking_plan = gaunit.TrackingPlan.from_json("tracking_plan.json")
+# check GA events
 result = gaunit.check_har(
-    "my_test_case", "tracking_plan.json", har_path="my_test_case.har"
+    "my_test_case", tracking_plan, har_path="my_test_case.har"
 )
 print(result.checklist_expected)
 # [True, True] congrats! both events (pageview and click) were  fired.
@@ -95,7 +98,7 @@ We can use BrowserMob Proxy to intercept Google Analytics events.
 - Run the test:
 
   ```sh
-  python samples/home_engie_with_proxy.py
+  python samples/auto_test_with_proxy/demo_store_add_to_cart.py
   ```
 
 ### Automated test with Performance Log (Chrome only)
@@ -109,7 +112,7 @@ Note: this method works for `analytics.js` but might not work for new GA impleme
 - Run the test:
 
   ```sh
-  python samples/home_engie_with_perf_log.py
+  python samples/auto_test_with_perf_log/demo_store_add_to_cart.py
   ```
 
 ### Robot Framework
