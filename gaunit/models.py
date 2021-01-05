@@ -56,7 +56,7 @@ class TrackingPlan(object):
 
     @classmethod
     def from_json(cls, path: str) -> TrackingPlan:
-        # TODO docstring
+        # TODO P1 docstring
         d = open_json(path)
         try:
             test_cases = d["test_cases"]
@@ -72,7 +72,7 @@ class TrackingPlan(object):
 
     @classmethod
     def from_spreadsheet(cls, sheet: Spreadsheet) -> TrackingPlan:
-        # TODO docstring
+        # TODO P1 docstring
         worksheets = sheet.worksheets()
         tp = {}
         for w in worksheets:
@@ -83,7 +83,7 @@ class TrackingPlan(object):
 
     @classmethod
     def from_csv(cls, path: str) -> TrackingPlan:
-        # TODO
+        # TODO P1
         pass
 
     @classmethod
@@ -95,7 +95,7 @@ class TrackingPlan(object):
         pass
 
     def update_test_case(self, test_case_id: str, expected_events: List[dict]):
-        # TODO docstring
+        # TODO P1 docstring
         # events : list of dict
         # [{"v:1", "'dp":"home"},{],..}
 
@@ -291,16 +291,18 @@ class Result(object):
     def __init__(
         self, test_case: TestCase, checklist_expected: list, checklist_actual: list
     ):
-        self.test_case = test_case  # entire TestCase object  # TODO replace by content
+        self.test_case = (
+            test_case  # entire TestCase object  # TODO P1 replace by content
+        )
         self.checklist_expected = (
-            checklist_expected  # TODO rename to checklist_expected _events
+            checklist_expected  # TODO P1 rename to checklist_expected _events
         )
         self.checklist_actual = checklist_actual  # TODO same
         # self.comparison = None
 
     # TODO method to return merged results : comparison of both tracker and hits list
 
-    # TODO was_sucessful()
+    # TODO P1 was_sucessful()
 
     def get_status_expected_events(self) -> list:
         """Returns expected event and their status
