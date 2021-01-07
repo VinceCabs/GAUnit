@@ -21,5 +21,5 @@ tracking_plan = gaunit.TrackingPlan.from_spreadsheet(gsheet)
 # check GA events in a HAR file against tracking plan and print results
 har_path = join(dirname(realpath(__file__)), "demo_store_add_to_cart.har")
 r = gaunit.check_har("ga_demo_store_add_to_cart", tracking_plan, har_path=har_path)
-print(r.checklist_expected)
+print(r.checklist_expected_events)
 # TODO fix numbers (param pr1pr)

@@ -63,7 +63,7 @@ def check_har():
     r = gaunit.check_har(args.test_case, tracking_plan=tp, har_path=args.har_file)
 
     r.print_result(display_ok=args.all)
-    if False in r.checklist_expected:
+    if False in r.checklist_expected_events:
         sys.exit(1)  # end with return code 1 if check failed
     # r.print_status_actual_events()
 

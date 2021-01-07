@@ -175,6 +175,12 @@ class test_Result(unittest.TestCase):
         expected_events = [{"dp": "A"}, {"dp": "B"}, {"dp": "C"}]
         self.tc = gaunit.TestCase("home_engie", expected_events=expected_events)
 
+    def test_was_successful(self):
+        har = generate_mock_har("A", "B", "C")
+        self.tc.load_har(har)
+        r = self.tc.result()
+        self.assertTrue(r.was_successful())
+
     def test_get_status_expected_events(self):
         har = generate_mock_har("A", "B")
         self.tc.load_har(har)

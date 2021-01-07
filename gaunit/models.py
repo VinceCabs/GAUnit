@@ -86,7 +86,7 @@ class TrackingPlan(object):
     def from_spreadsheet(cls, sheet: Spreadsheet) -> TrackingPlan:
         """creates an instance of :class:`TrackingPlan` from a Google Spreadsheet
 
-        This method uses gspread to connect to Google Sheets to import test cases and 
+        This method uses gspread to connect to Google Sheets to import test cases and
         expected events. See Documentation for the spreadsheet format.
 
         Examples:
@@ -131,7 +131,7 @@ class TrackingPlan(object):
 
         Raises:
             AttributeError: if format of expected_events is not valid
-        """  
+        """
         # events : list of dict
         # [{"v:1", "'dp":"home"},{],..}
 
@@ -318,27 +318,40 @@ class TestCase(object):
 
 
 class Result(object):
-    """Created by a TestCase object. Stores results from a check
+    """Let you store, get or print results from a test case in various forms
+
+    Usually, Result will be returned by :class:`TestCase` or main API methods.
+
+    See also :
+        :func:`TestCase.result()`, :func:`gaunit.check_har()`
 
     Attributes:
-        test_case (TestCase): test case these results are coming from
+        expected_events (list): events from tracking plan
+        actual_events (list): events found during test run
+        checklist_expected_events (list):  checklist of events from tracking plan which
+        are missing (False if missing)
+        checklist_actual_events (list): checklist of events found in log which corresponds
+                to an expected event
     """
 
     def __init__(
         self, test_case: TestCase, checklist_expected: list, checklist_actual: list
     ):
-        self.test_case = (
-            test_case  # entire TestCase object  # TODO P1 replace by content
-        )
-        self.checklist_expected = (
-            checklist_expected  # TODO P1 rename to checklist_expected _events
-        )
-        self.checklist_actual = checklist_actual  # TODO same
+        self.expected_events = test_case.expected_events
+        self.actual_events = test_case.actual_events
+        self.checklist_expected_events = checklist_expected
+        self.checklist_actual_events = checklist_actual  # TODO same
         # self.comparison = None
 
     # TODO method to return merged results : comparison of both tracker and hits list
 
-    # TODO P1 was_sucessful()
+    def was_successful(self) -> bool:
+        """returns the result of test case
+
+        Returns:
+            bool: True if test case was successful
+        """
+        return all(self.checklist_expected_events)
 
     def get_status_expected_events(self) -> list:
         """Returns expected event and their status
@@ -347,14 +360,13 @@ class Result(object):
             list: list of expected events and their status (``True`` if found in actual events))
 
         Example:
-            >>> r = gaunit.check_har("my_test_case", "tracking_plan.json", har=har)
+            >>> r = gaunit.check_har("my_test_case", tracking_plan, har=har)
             >>> r.get_status_expected_events()
             [{'event':{'t':'pageview', 'dp': 'home'}, 'found': True},..]
         """
 
-        tc = self.test_case
-        events = tc.expected_events
-        chcklst = self.checklist_expected
+        events = self.expected_events
+        chcklst = self.checklist_expected_events
 
         return [{"event": h, "found": c} for (h, c) in zip(events, chcklst)]
 
@@ -370,9 +382,8 @@ class Result(object):
             [{'event:{'t':'pageview', 'dp': 'home'}, 'expected': True}
         """
 
-        tc = self.test_case
-        events = tc.actual_events
-        chcklst = self.checklist_actual
+        events = self.actual_events
+        chcklst = self.checklist_actual_events
 
         return [{"event": h, "expected": c} for (h, c) in zip(events, chcklst)]
 
@@ -389,8 +400,8 @@ class Result(object):
             all (bool, optional): if False, print only missing events if True, print all.
                 Defaults to False.
         """
-        expected = self.test_case.expected_events
-        chcklst = self.checklist_expected
+        expected = self.expected_events
+        chcklst = self.checklist_expected_events
         init(autoreset=True)  # colorama
 
         print("events in tracking plan: %s" % len(expected))
@@ -425,9 +436,9 @@ class Result(object):
             ""
 
         """
-        expected = self.test_case.expected_events
-        actual = self.test_case.actual_events
-        chcklst = self.checklist_expected
+        expected = self.expected_events
+        actual = self.actual_events
+        chcklst = self.checklist_expected_events
         total_found, expected_found = len(actual), len([c for c in chcklst if c])
         missing = len(expected) - expected_found
 
@@ -449,9 +460,8 @@ class Result(object):
 
         says which analytics hit was in tracking plan ("OK" or "skip"), used in CLI
         """
-        tc = self.test_case
-        events = tc.actual_events
-        chcklst = self.checklist_actual
+        events = self.actual_events
+        chcklst = self.checklist_actual_events
 
         init(autoreset=True)  # colorama
         args = (
