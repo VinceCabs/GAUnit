@@ -29,7 +29,7 @@ setuptools.setup(
         ]
     },
     license="MIT",
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     install_requires=["colorama==0.4.4", "gspread==3.6.0"],
     classifiers=[
         "Development Status :: 3 - Alpha",
