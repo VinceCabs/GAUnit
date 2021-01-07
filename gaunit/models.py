@@ -56,7 +56,19 @@ class TrackingPlan(object):
 
     @classmethod
     def from_json(cls, path: str) -> TrackingPlan:
-        # TODO P1 docstring
+        """creates an instance of :class:`TrackingPlan` from a JSON file
+
+        see Documentation for the JSON file format
+
+        Args:
+            path (str): path to JSON file representing the tracking plan
+
+        Raises:
+            KeyError: if format is not valid
+
+        Returns:
+            TrackingPlan: tracking plan to be used in a test case
+        """
         d = open_json(path)
         try:
             test_cases = d["test_cases"]
@@ -72,7 +84,23 @@ class TrackingPlan(object):
 
     @classmethod
     def from_spreadsheet(cls, sheet: Spreadsheet) -> TrackingPlan:
-        # TODO P1 docstring
+        """creates an instance of :class:`TrackingPlan` from a Google Spreadsheet
+
+        This method uses gspread to connect to Google Sheets to import test cases and 
+        expected events. See Documentation for the spreadsheet format.
+
+        Examples:
+            >>> import gspread
+            >>> gc = gspread.service_account()  # authentication
+            >>> sh = gc.open("Example spreadsheet")  # open spreadsheet
+            >>> tp = TrackingPlan.from_spreadsheet(sh)  # import tracking plan
+
+        Args:
+            sheet (gspread.Spreadsheet): gspread instance of the spreadsheet to import
+
+        Returns:
+            TrackingPlan: tracking plan to be used in a test case.
+        """
         worksheets = sheet.worksheets()
         tp = {}
         for w in worksheets:
@@ -81,21 +109,29 @@ class TrackingPlan(object):
             tp.update({w.title: {"events": events}})
         return TrackingPlan(test_cases=tp)
 
-    @classmethod
-    def from_csv(cls, path: str) -> TrackingPlan:
-        # TODO P1
-        pass
+    # @classmethod
+    # def from_csv(cls, path: str) -> TrackingPlan:
+    #     # TODO P1
+    #     pass
 
-    @classmethod
-    def from_array(cls, array: List[list]) -> TrackingPlan:
-        # First column has the name of the test_case
-        # each row corresponds to an event
-        # [[["test_case","dp","v"],["home_engie","home","1"],...]]
-        # TODO
-        pass
+    # @classmethod
+    # def from_array(cls, array: List[list]) -> TrackingPlan:
+    #     # First column has the name of the test_case
+    #     # each row corresponds to an event
+    #     # [[["test_case","dp","v"],["home_engie","home","1"],...]]
+    #     # TODO
+    #     pass
 
     def update_test_case(self, test_case_id: str, expected_events: List[dict]):
-        # TODO P1 docstring
+        """add or update expected events for a given test case
+
+        Args:
+            test_case_id (str): id of the test case
+            expected_events (List[dict]): list of expected events for the given test case
+
+        Raises:
+            AttributeError: if format of expected_events is not valid
+        """  
         # events : list of dict
         # [{"v:1", "'dp":"home"},{],..}
 
