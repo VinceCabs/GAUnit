@@ -7,66 +7,74 @@ from tests.utils import generate_mock_har, generate_mock_perf_log
 
 
 class test_TrackingPlan(unittest.TestCase):
-    def test_init_events_wrong_format_1(self):
-        test_cases = {"dummy": "dummy"}
-        with self.assertRaises(Exception):
-            gaunit.TrackingPlan(test_cases=test_cases)
-
-    def test_init_wrong_format_2(self):
-        test_cases = {"home_engie": {"dummy": "dummy"}}
-        with self.assertRaises(Exception):
-            gaunit.TrackingPlan(test_cases=test_cases)
-
     def test_from_json_OK(self):
         here = dirname(realpath(__file__))
         path = join(here, "tracking_plan.json")
         tp = gaunit.TrackingPlan.from_json(path)
         self.assertEqual(
-            tp.test_cases.get("home_engie", None).get("events", None),
+            tp.content.get("home_engie", None).get("events", None),
             [{"dp": "A"}, {"dp": "B"}, {"dp": "C"}],
         )
 
-    def test_update_test_case_create_OK(self):
+    # TODO with unittest.mock
+    # def test_from_json_wrong_format_1(self):
+    #     test_cases = {"dummy": "dummy"}
+    #     with self.assertRaises(Exception):
+    #         gaunit.TrackingPlan(test_cases=test_cases)
+
+    # def test_from_json_wrong_format_2(self):
+    #     test_cases = {"home_engie": {"dummy": "dummy"}}
+    #     with self.assertRaises(Exception):
+    #         gaunit.TrackingPlan(test_cases=test_cases)
+
+    # def test_from_spreadsheet(self):
+
+    def test_add_test_case_create_OK(self):
         events = [{"dp": "A"}]
         tp = gaunit.TrackingPlan()
-        tp.update_test_case("home_engie", events)
-        self.assertEqual(tp.test_cases, {"home_engie": {"events": events}})
+        tp.add_test_case("home_engie", events)
+        self.assertEqual(tp.content, {"home_engie": {"events": events}})
 
     def test_update_test_case_OK(self):
         # all events are replaced by new events
         events = [{"dp": "A"}]
-        test_cases = {"home_engie": {"events": events}}
-        tp = gaunit.TrackingPlan(test_cases=test_cases)
-        tp.update_test_case("home_engie", [{"dp": "X"}])
-        self.assertEqual(tp.test_cases, {"home_engie": {"events": [{"dp": "X"}]}})
+        tp = gaunit.TrackingPlan()
+        tp.add_test_case("home_engie", events)
+        tp.add_test_case("home_engie", [{"dp": "X"}])
+        self.assertEqual(tp.content, {"home_engie": {"events": [{"dp": "X"}]}})
 
     def test_get_expected_events_missing_test_case(self):
-        test_cases = {"not_my_test_case": {"events": []}}
-        tp = gaunit.TrackingPlan(test_cases=test_cases)
+        events = []
+        tp = gaunit.TrackingPlan()
+        tp.add_test_case("not_my_test_case", events)
         with self.assertRaises(Exception):
             tp.get_expected_events("home_engie")
 
     def test_get_expected_events_OK(self):
-        test_cases = {"home_engie": {"events": [{"t": "pageview"}]}}
-        tp = gaunit.TrackingPlan(test_cases=test_cases)
+        events = [{"t": "pageview"}]
+        tp = gaunit.TrackingPlan()
+        tp.add_test_case("home_engie", events)
         events = tp.get_expected_events("home_engie")
         self.assertEqual([{"t": "pageview"}], events)
 
     def test_get_expected_events_with_int_OK(self):
-        test_cases = {"home_engie": {"events": [{"ev": 1}]}}
-        tp = gaunit.TrackingPlan(test_cases=test_cases)
+        events = [{"ev": 1}]
+        tp = gaunit.TrackingPlan()
+        tp.add_test_case("home_engie", events)
         events = tp.get_expected_events("home_engie")
         self.assertEqual([{"ev": "1"}], events)
 
     def test_get_expected_events_with_float_OK(self):
-        test_cases = {"home_engie": {"events": [{"ev": 1.0}]}}
-        tp = gaunit.TrackingPlan(test_cases=test_cases)
+        events = [{"ev": 1.0}]
+        tp = gaunit.TrackingPlan()
+        tp.add_test_case("home_engie", events)
         events = tp.get_expected_events("home_engie")
         self.assertEqual([{"ev": "1.0"}], events)
 
     def test_get_expected_events_with_url_decode_OK(self):
-        test_cases = {"home_engie": {"events": [{"dl": "%2F"}]}}
-        tp = gaunit.TrackingPlan(test_cases=test_cases)
+        events = [{"dl": "%2F"}]
+        tp = gaunit.TrackingPlan()
+        tp.add_test_case("home_engie", events)
         events = tp.get_expected_events("home_engie")
         self.assertEqual([{"dl": "/"}], events)
 

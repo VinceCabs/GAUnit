@@ -26,20 +26,8 @@ from .utils import (
 
 
 class TrackingPlan(object):
-    def __init__(self, test_cases=None):
-        # Default empty dicts/lists for dict/lists params.
-        test_cases = {} if test_cases is None else test_cases
-
-        # TODO change test cases data model and factorize this
-        try:
-            for tc in test_cases:
-                events = test_cases[tc]["events"]
-                events = format_events(events)
-                test_cases[tc]["events"] = events
-        except (KeyError, TypeError):
-            raise Exception("test cases are not valid: %s" % test_cases)
-
-        self.test_cases = test_cases
+    def __init__(self):
+        self.content = {}
 
     def get_expected_events(self, test_case_id: str) -> list:
         """get expected events for a given test case
@@ -47,8 +35,7 @@ class TrackingPlan(object):
         Args:
             test_case_id (str):  test case id
         """
-
-        events = self.test_cases[test_case_id]["events"]
+        events = self.content[test_case_id]["events"]
         if events:
             return events
         else:
@@ -69,6 +56,7 @@ class TrackingPlan(object):
         Returns:
             TrackingPlan: tracking plan to be used in a test case
         """
+        tp = TrackingPlan()
         d = open_json(path)
         try:
             test_cases = d["test_cases"]
@@ -76,7 +64,7 @@ class TrackingPlan(object):
                 events = test_cases[tc]["events"]
                 events = format_events(events)
                 test_cases[tc]["events"] = events
-            tp = TrackingPlan(test_cases=test_cases)
+            tp.content = test_cases
             return tp
         except KeyError:
             # TODO custom Exceptions
@@ -101,13 +89,13 @@ class TrackingPlan(object):
         Returns:
             TrackingPlan: tracking plan to be used in a test case.
         """
+        tp = TrackingPlan()
         worksheets = sheet.worksheets()
-        tp = {}
         for w in worksheets:
             events = w.get_all_records()
             events = format_events(events)
-            tp.update({w.title: {"events": events}})
-        return TrackingPlan(test_cases=tp)
+            tp.add_test_case(w.title, events)
+        return tp
 
     # @classmethod
     # def from_csv(cls, path: str) -> TrackingPlan:
@@ -135,7 +123,7 @@ class TrackingPlan(object):
         try:
             expected_events = format_events(expected_events)
             d = {test_case_id: {"events": expected_events}}
-            self.test_cases.update(d)
+            self.content.update(d)
         except AttributeError:
             raise AttributeError(
                 "no proper format for expected events: %s" % expected_events
@@ -346,7 +334,7 @@ class Result(object):
         self.expected_events = test_case.expected_events
         self.actual_events = test_case.actual_events
         self.checklist_expected_events = checklist_expected
-        self.checklist_actual_events = checklist_actual  # TODO same
+        self.checklist_actual_events = checklist_actual
         # self.comparison = None
 
     # TODO method to return merged results : comparison of both tracker and hits list

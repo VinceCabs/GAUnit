@@ -5,8 +5,6 @@ This modules makes gaunit nicer to use
 """
 from .models import Result, TestCase, TrackingPlan
 
-# TODO add methods to generate tracking plans
-
 
 def check_har(
     test_case_id: str, tracking_plan: TrackingPlan, har=None, har_path=None
