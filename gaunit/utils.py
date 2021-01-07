@@ -194,7 +194,7 @@ def unquote_values(d: dict) -> dict:
     return d
 
 
-def format_events(events: list) -> dict:
+def format_events(events: list) -> list:
     events = [unquote_values(e) for e in events]
     events = [remove_empty_values(e) for e in events]
     return events
