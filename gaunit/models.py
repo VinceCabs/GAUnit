@@ -122,8 +122,8 @@ class TrackingPlan(object):
     #     # TODO
     #     pass
 
-    def update_test_case(self, test_case_id: str, expected_events: List[dict]):
-        """add or update expected events for a given test case
+    def add_test_case(self, test_case_id: str, expected_events: List[dict]):
+        """add or update expected events for a given test case.
 
         Args:
             test_case_id (str): id of the test case
@@ -132,9 +132,6 @@ class TrackingPlan(object):
         Raises:
             AttributeError: if format of expected_events is not valid
         """
-        # events : list of dict
-        # [{"v:1", "'dp":"home"},{],..}
-
         try:
             expected_events = format_events(expected_events)
             d = {test_case_id: {"events": expected_events}}
@@ -143,6 +140,20 @@ class TrackingPlan(object):
             raise AttributeError(
                 "no proper format for expected events: %s" % expected_events
             )
+
+    def update_test_case(self, test_case_id: str, expected_events: List[dict]):
+        """Simple alias for :func:`add_test_case()`
+
+        add or update expected events for a given test case
+
+        Args:
+            test_case_id (str): id of the test case
+            expected_events (List[dict]): list of expected events for the given test case
+
+        Raises:
+            AttributeError: if format of expected_events is not valid
+        """
+        self.add_test_case(test_case_id, expected_events)
 
 
 class TestCase(object):
@@ -164,11 +175,6 @@ class TestCase(object):
 
     Attributes:
         id (str): test case id (same id used to match with tracking plan)
-        expected_events (list) : list of Google Analytics event in tracking plan.
-            Each event is represented by a dict of params.
-            Example: ``[{"t":"pageview","dt":"home"},...]``.
-            This parameter prevails over ``tracking_plan`` parameter.
-            Defaults to None.
         tracking_plan (TrackingPlan): tracking plan containing expected events for this
             test case. Defaults to None
         har (dict): actual har for this test case in dict format. Defaults to None

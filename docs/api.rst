@@ -16,6 +16,8 @@ All the methods you will need for general usage.
 Classes
 ----------
 
+.. autoclass:: TrackingPlan
+    :members:
 .. autoclass:: TestCase
     :members:
 .. autoclass:: Result
