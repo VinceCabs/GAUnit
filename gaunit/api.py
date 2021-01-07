@@ -27,7 +27,8 @@ def check_har(
     Args:
         test_case_id (str): test case id (same id used to match with tracking plan)
         tracking_plan (TrackingPlan): tracking plan containing expected events for this
-            test case. Defaults to None        har (dict): actual har for this test case in dict format. Defaults to None
+            test case. Defaults to None        
+        har (dict): actual har for this test case in dict format. Defaults to None
         har_path (str) : path to HAR file for this test case (standard HAR JSON). Defaults to None
 
     Note:
