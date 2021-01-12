@@ -48,8 +48,9 @@ class TrackingPlan(object):
         (only for one test case)
 
         Example :
+            >>> from gaunit import TrackingPlan
             >>> expected_events = [{"t":"pageview","dt":"home"},...]
-            >>> tracking_plan = gaunit.TrackingPlan.from_events("my_test_case", expected_events)
+            >>> tracking_plan = TrackingPlan.from_events("my_test_case", expected_events)
 
         Args:
             test_case_id (str): [description]
@@ -69,6 +70,10 @@ class TrackingPlan(object):
         """creates an instance of :class:`TrackingPlan` from a JSON file
 
         see Documentation for the JSON file format
+
+        Example:
+            >>> from gaunit import TrackingPlan
+            >>> tracking_plan = TrackingPlan.from_json("tracking_plan.json")
 
         Args:
             path (str): path to JSON file representing the tracking plan
@@ -102,6 +107,7 @@ class TrackingPlan(object):
 
         Examples:
             >>> import gspread
+            >>> from gaunit import TrackingPlan
             >>> gc = gspread.service_account()  # authentication
             >>> sh = gc.open("Example spreadsheet")  # open spreadsheet
             >>> tp = TrackingPlan.from_spreadsheet(sh)  # import tracking plan
@@ -136,6 +142,17 @@ class TrackingPlan(object):
     def add_test_case(self, test_case_id: str, expected_events: List[dict]):
         """add or update expected events for a given test case.
 
+        Example:
+
+            >>> from gaunit import TrackingPlan
+            >>> expected_events = [{"t":"pageview","dt":"home"},...]
+            >>> tracking_plan = gaunit.TrackingPlan()
+            >>> tracking_plan.add_test_case("my_test_case", expected_events)
+
+
+        See also:
+            :func:TrackingPlan.from_events()
+
         Args:
             test_case_id (str): id of the test case
             expected_events (List[dict]): list of expected events for the given test case
@@ -153,17 +170,7 @@ class TrackingPlan(object):
             )
 
     def update_test_case(self, test_case_id: str, expected_events: List[dict]):
-        """Simple alias for :func:`add_test_case()`
-
-        add or update expected events for a given test case
-
-        Args:
-            test_case_id (str): id of the test case
-            expected_events (List[dict]): list of expected events for the given test case
-
-        Raises:
-            AttributeError: if format of expected_events is not valid
-        """
+        """Simple alias for :func:`add_test_case()`"""
         self.add_test_case(test_case_id, expected_events)
 
 
@@ -176,6 +183,7 @@ class TestCase(object):
         one and one only argument must be given: ``har`` or ``har_path``
 
     Example :
+        >>> from gaunit import TestCase
         >>> events = [{"t":"pageview","dt":"home"},...]
         tc = TestCase("my_test_case", expected_events=events)
         >>> r = tc.check_har(har=har)  # or tc.check_har(har_path=path) for a HAR file
@@ -375,6 +383,7 @@ class Result(object):
             list: list of expected events and their status (``True`` if found in actual events))
 
         Example:
+            >>> from gaunit import TestCase
             >>> r = gaunit.check_har("my_test_case", tracking_plan, har=har)
             >>> r.get_status_expected_events()
             [{'event':{'t':'pageview', 'dp': 'home'}, 'found': True},..]
@@ -392,6 +401,7 @@ class Result(object):
             list: list of actual hits
 
         Example:
+            >>> from gaunit import TestCase
             >>> r = gaunit.check_har("my_test_case", "tracking_plan.json", har=har)
             >>> r.get_status_actual_events()
             [{'event:{'t':'pageview', 'dp': 'home'}, 'expected': True}
