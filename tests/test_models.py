@@ -81,15 +81,15 @@ class test_TrackingPlan(unittest.TestCase):
 
 class test_TestCase(unittest.TestCase):
     def setUp(self) -> None:
-        self.expected_events = [{"dp": "A"}, {"dp": "B"}, {"dp": "C"}]
-        self.tc = gaunit.TestCase("home_engie", expected_events=self.expected_events)
-
-    def test_constructor_with_tracking_plan(self):
-        # TestCase should be equal to tc_ref
+        events = [{"dp": "A"}, {"dp": "B"}, {"dp": "C"}]
         tp = gaunit.TrackingPlan()
-        tp.update_test_case("home_engie", self.expected_events)
-        tc_ref = gaunit.TestCase("home_engie", tracking_plan=tp)
-        self.assertEqual(self.expected_events, tc_ref.expected_events)
+        tp.add_test_case("home_engie", events)
+        events = tp.get_expected_events("home_engie")
+        self.tc = gaunit.TestCase("home_engie", tp)
+
+    def test_constructor_tracking_plan_wrong_type(self):
+        with self.assertRaises(AttributeError):
+            gaunit.TestCase("home_engie", "wrong")
 
     def test_load_har_ok(self):
         har = {
@@ -180,8 +180,10 @@ class test_TestCase(unittest.TestCase):
 
 class test_Result(unittest.TestCase):
     def setUp(self) -> None:
-        expected_events = [{"dp": "A"}, {"dp": "B"}, {"dp": "C"}]
-        self.tc = gaunit.TestCase("home_engie", expected_events=expected_events)
+        events = [{"dp": "A"}, {"dp": "B"}, {"dp": "C"}]
+        tp = gaunit.TrackingPlan()
+        tp.add_test_case("home_engie", events)
+        self.tc = gaunit.TestCase("home_engie", tp)
 
     def test_was_successful(self):
         har = generate_mock_har("A", "B", "C")

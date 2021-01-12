@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import pprint
 from typing import List, Tuple
-from urllib.parse import unquote
 
 from colorama import Fore, init
 from gspread import Spreadsheet
@@ -40,6 +39,30 @@ class TrackingPlan(object):
             return events
         else:
             raise Exception("test case not found in tracking plan: '%s'" % test_case_id)
+
+    @classmethod
+    def from_events(
+        cls, test_case_id: str, expected_events: List[dict]
+    ) -> TrackingPlan:
+        """Creates an instance of :class:`TrackingPlan` from a list of expected events
+        (only for one test case)
+
+        Example :
+            >>> expected_events = [{"t":"pageview","dt":"home"},...]
+            >>> tracking_plan = gaunit.TrackingPlan.from_events("my_test_case", expected_events)
+
+        Args:
+            test_case_id (str): [description]
+            expected_events (list[Dict]): [description]
+
+        Raises:
+            KeyError: [description]
+            AttributeError: [description]
+
+        Returns:
+            TrackingPlan: [description]
+        """
+        return TrackingPlan().add_test_case(test_case_id, expected_events)
 
     @classmethod
     def from_json(cls, path: str) -> TrackingPlan:
@@ -180,23 +203,21 @@ class TestCase(object):
     def __init__(
         self,
         id: str,
-        expected_events: list = None,
-        tracking_plan: TrackingPlan = None,
+        tracking_plan: TrackingPlan,
         har: dict = None,
         har_path: str = None,
         perf_log: list = None,
     ):
         # Default empty dicts/lists for dict/lists params.
-        expected_events = [] if expected_events is None else expected_events
         har = {} if har is None else har
         perf_log = [] if perf_log is None else perf_log
-
         self.id = id  # test case name
-
-        if expected_events:
-            self.expected_events = format_events(expected_events)
-        elif tracking_plan:
+        try:
             self.expected_events = tracking_plan.get_expected_events(self.id)
+        except AttributeError:
+            raise AttributeError(
+                "tracking plan argument is not valid: %s" % tracking_plan
+            )
         self.actual_events = []
 
         self.har = {}  # for debug, will be killed soon

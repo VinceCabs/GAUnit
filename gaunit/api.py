@@ -12,6 +12,8 @@ def check_har(
     """Performs checks of a har dict or HAR JSON file against a tracking plan
 
     Example:
+        >>> expected_events = [{"t":"pageview","dt":"home"},...]
+        >>> tracking_plan = gaunit.TrackingPlan.from_events("my_test_case", expected_events)
         >>> r = gaunit.check_har("my_test_case", tracking_plan, har=har) # from har dict
         >>> r.was_sucessful()
         True
