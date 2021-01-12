@@ -6,6 +6,7 @@ This module implements main classes used by gaunit: :class:`TrackingPlan,
 """
 from __future__ import annotations
 
+import json
 import pprint
 from typing import List, Tuple
 
@@ -138,6 +139,23 @@ class TrackingPlan(object):
     #     # [[["test_case","dp","v"],["home_engie","home","1"],...]]
     #     # TODO
     #     pass
+
+    def to_json(self, file: str):
+        """Exports tracking plan into a JSON file
+
+        Example :
+            >>> from gaunit import TrackingPlan
+            >>> expected_events = [{"t":"pageview","dt":"home"},...]
+            >>> tracking_plan = gaunit.TrackingPlan.from_events("my_test_case", expected_events)
+            >>> tracking_plan.to_json("tracking_plan.json")
+
+        Args:
+            file (str): target file
+        """
+
+        tracking_plan = {"test_cases": self.content}
+        with open(file, "w", encoding="utf8") as f:
+            json.dump(tracking_plan, f)
 
     def add_test_case(self, test_case_id: str, expected_events: List[dict]):
         """add or update expected events for a given test case.
