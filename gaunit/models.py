@@ -64,7 +64,9 @@ class TrackingPlan(object):
         Returns:
             TrackingPlan: [description]
         """
-        return TrackingPlan().add_test_case(test_case_id, expected_events)
+        tp = TrackingPlan()
+        tp.add_test_case(test_case_id, expected_events)
+        return tp
 
     @classmethod
     def from_json(cls, path: str) -> TrackingPlan:
@@ -164,7 +166,7 @@ class TrackingPlan(object):
 
             >>> from gaunit import TrackingPlan
             >>> expected_events = [{"t":"pageview","dt":"home"},...]
-            >>> tracking_plan = gaunit.TrackingPlan()
+            >>> tracking_plan = TrackingPlan()
             >>> tracking_plan.add_test_case("my_test_case", expected_events)
 
 
