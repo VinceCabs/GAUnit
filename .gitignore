@@ -31,7 +31,6 @@ report.html
 *.har
 !tests/*.har
 !samples/**/*.har
-*.png
 
 # packaging and docs
 dist/

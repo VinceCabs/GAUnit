@@ -1,17 +1,17 @@
 .. howtos:
 
-How Tos
+How Tos (WIP)
 =================
 
-**WIP**
-
-Write a tracking plan 
------------------------
-
-
-Check a HAR file from command line
--------------------------------------
-
-Use GAUnit API in your CI/CD
----------------------------------
+.. 
+  Write a tracking plan 
+  -----------------------
+  in Python
+  ^^^^^^^^^^^^
+  in a JSON file 
+  ^^^^^^^^^^^^^^^
+  in Google Sheet
+  ^^^^^^^^^^^^^^^^
+  Extract existing events for future tests
+  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

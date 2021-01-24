@@ -6,31 +6,120 @@
 Welcome to GAUnit's documentation!
 ===================================
 
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
 .. image:: https://travis-ci.org/VinceCabs/GAUnit.svg?branch=master
    :target: https://travis-ci.org/VinceCabs/GAUnit
 .. image:: https://readthedocs.org/projects/gaunit/badge/?version=latest
    :target: https://gaunit.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 
+GAUnit is a Python library for testing Google Analytics implementations.
+
+It is designed to be used within your pipelines in various environments such as traditional websites, Single Page Applications or Mobile Apps.
+
+Features
+---------------
+
+- Automate tests for Google Analytics implementations
+- Write tracking plans with Python dictionaries, JSON files or Google Sheets
+- Check HAR files against a tracking plan
+- Extract GA events from HAR files
+- Use Python or command line
+
+.. _install:
+
+Installation
+----------------
+
+You will need `Python 3.7+ <https://www.python.org/downloads/>`_.
+
+Use pip:
+
+.. code:: bash
+
+   pip install gaunit
+
+Get a glimpse
+--------------
+
+Let's say you have a new video player on your product page and you want 
+to check if the right Google Analytics event is sent when the user clicks on "Play":
+
+.. code-block:: python
+
+   expected_events = [
+      {
+         "t": "pageview",
+         "dp": "my_product_page_name"
+      },
+      {
+         "t": "event",
+         "ec": "Video",
+         "ea": "Play"
+      }
+   ]
+   
+
+Run a selenium test case, export har and check it against your expected tracking plan:
+
+.. code:: python
+
+   import gaunit
+
+   # Run your Selenium test here and export har
+   # (see Documentation or samples for more details)
+   # ...
+
+   # create your tracking plan from dict, JSON files or Google Sheets
+   tracking_plan = gaunit.TrackingPlan.from_events("my_test_case", expected_events)
+   # check GA events
+   r = gaunit.check_har("my_test_case", tracking_plan, har_path="my_test_case.har")
+   print(r.was_successful())
+   # True
+   # Congrats! both events (pageview and click) were fired.
+
+Or manually check HAR files with command line
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Alternatively to automatic tests, you can manually browse your website, export a 
+HAR file and check it through command line:
+
+.. code:: bash
+
+   $ gaunit test_case.har my_test_case  # passed
+   events in tracking plan: 3
+   --------------------------------------------------------------------------------
+   GA events found: total:4 / ok:3 / missing:0
+   ✔ OK: all expected events found
+
+   $ gaunit test_case.har my_test_case  # failed
+   events in tracking plan: 3
+   ================================================================================
+   {'t': 'event', 'ec': 'Video', 'ea': 'Play'}
+                                                                        ... missing
+   --------------------------------------------------------------------------------
+   GA events found: total:11 / ok:1 / missing:2
+   ❌ FAILED: events missing
+
+
+Robot Framework
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you want to use RobotFramework, check `GAUnit Library for Robot Framework <https://github.com/VinceCabs/robotframework-gaunitlibrary>`_.
+
+
 Usage
 ------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    tutorial
    howtos
 
-
 Reference & documentation
 ---------------------------------------------------------------
 
-Full reference & doc : GAUnit API, classes 
+Full reference & doc : GAUnit API, classes, tracking plan
 
 .. toctree::
    :maxdepth: 2
@@ -43,3 +132,4 @@ Background / Explanation
 -----------------------------
 
 **WIP**
+

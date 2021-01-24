@@ -1,6 +1,6 @@
 .. _command:
 
-Command Line
+Command Line (WIP)
 ===================
 
 **WIP**
