@@ -13,18 +13,21 @@ The Scenario
 
 You will test if the "Add To Cart" *event* is well implemented on Google's 
 `Enhanced Ecommerce Demo Store <https://enhancedecommerce.appspot.com/>`_.
+There are 2 parts in this tutorial:
 
 - Manual test: you will export network traffic recorded in the Chrome console and check if *events* are OK
-- Auto test: then, you will use GAUnit APIs to perfom a full automated test with Selenium and BrowserMob Proxy.
+- Auto test: then, you will use GAUnit APIs to perform a full automated test with Selenium and BrowserMob Proxy.
 
 Your *test case* will consist of a few simple steps:
 
-1. Go to https://enhancedecommerce.appspot.com/ in Chrome browser
+1. Go to https://enhancedecommerce.appspot.com/
 2. Click on the "Compton T-Shirt" product
 3. Click on the "Add To Cart" button
 4. Test if all events are well implemented
 
 .. image:: img/demo_store.gif
+
+**Let's start!**
 
 Write your tracking plan
 ------------------------------
@@ -35,8 +38,8 @@ GAUnit offers various ways to define a *tracking plan*. Below, you will
 use a JSON file. You could also use Google Sheet or Python dictionary to define which
 events you expect for your test case.
 
-First, **let's create a ``tracking_plan.json`` file where you specify the expected 
-events**:
+First, create a ``tracking_plan.json`` file where you specify the expected 
+events:
 
 .. code-block:: JSON
 
@@ -124,7 +127,7 @@ click on the small "Export HAR..." icon:
 Save the HAR file in the same directory you use 
 for this tutorial. Name it ``demo_store_add_to_cart.har``.
 
-Check if Google Analytics hits are OK 
+Check if Google Analytics events are OK 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **Almost done!**
@@ -206,6 +209,6 @@ CI/CD pipelines.
 
 .. What if test fails?
 
-Automatic test case with Selenium & BrowserMob Proxy (WIP)
+Automatic test case with Selenium (WIP)
 ------------------------------------------------------------
 

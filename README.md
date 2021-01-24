@@ -31,7 +31,6 @@ Let's say you have a new video player on your product page and you want
 to check if the right Google Analytics event is sent when the user clicks on "Play":
 
 ```python
-# 
 expected_events = [
     {
         "t": "pageview",
@@ -93,7 +92,9 @@ If you want to use RobotFramework, check [GAUnit Library for Robot Framework](ht
 
 ## Documentation
 
-Documentation is available [here](https://gaunit.readthedocs.io/).
+[Getting Started](https://gaunit.readthedocs.io/en/latest/tutorial.html).
+
+Full documentation is available [here](https://gaunit.readthedocs.io/).
 
 ## Why GAUnit?
 
