@@ -15,8 +15,8 @@ You will test if the "Add To Cart" *event* is well implemented on Google's
 `Enhanced Ecommerce Demo Store <https://enhancedecommerce.appspot.com/>`_.
 There are 2 parts in this tutorial:
 
-- Manual test: you will export network traffic recorded in the Chrome console and check if *events* are OK
-- Auto test: then, you will use GAUnit APIs to perform a full automated test with Selenium and BrowserMob Proxy.
+- Manual test: you will export network traffic recorded in the Chrome console and check if *events* are OK (`source on Github <https://github.com/VinceCabs/GAUnit/tree/master/samples/getting_started>`_)
+- Auto test: then, you will use GAUnit APIs to perform a full automated test with Selenium and BrowserMob Proxy (`source on Github <https://github.com/VinceCabs/GAUnit/tree/master/samples/auto_test_with_proxy>`_).
 
 Your *test case* will consist of a few simple steps:
 
@@ -60,7 +60,7 @@ events:
                   "ec": "ecommerce",
                   "ea": "add_to_cart",
                   "ev": "44",
-                  "pr1nm": "Compton%20T-Shirt",
+                  "pr1nm": "Compton T-Shirt",
                   "pr1pr": "44.00"
                }
             ]
@@ -176,7 +176,7 @@ also get more details. For example:
 .. code:: Python
 
    # Checklist of the expected events actually found in HAR ('True' if present)
-   print( r.checklist_expected_events() )
+   print( r.checklist_expected_events )
    # [True, True, True]
 
    # All GA events actually found in HAR
@@ -198,7 +198,7 @@ Bonus: do the same with command line
 Sometimes, it's better to use command line directly, instead of Python.
 GAUnit lets you do that:
 
-.. code:: bash
+.. code:: console
 
    $ gaunit demo_store_add_to_cart.har demo_store_add_to_cart
 
