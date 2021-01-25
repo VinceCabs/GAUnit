@@ -1,5 +1,5 @@
 """"
-tracking_plan_from_gsheet.py
+Tracking Plan from Google Sheet
 
 Code sample: import your tracking plan from Google Sheet. Tracking plan can have several
 tests cases (one tab each). See gspread documentation (https://gspread.readthedocs.io/) 

@@ -1,3 +1,10 @@
+""""
+Automatic test with Perf Logs
+
+Code sample: an "add to cart" scenario using Selenium and Chrome Performance log to 
+automatically test tracking on Google online store demo.
+Warning : this method will not work with GA4
+"""
 from os.path import abspath, dirname, join
 from time import sleep
 
@@ -15,7 +22,7 @@ def run():
 
     # start test case
     driver.implicitly_wait(10)
-    driver.get("http://enhancedecommerce.appspot.com/")
+    driver.get("https://enhancedecommerce.appspot.com/")
     sleep(2)
     driver.find_element_by_id("homepage-9bdd2-1").click()
     sleep(2)

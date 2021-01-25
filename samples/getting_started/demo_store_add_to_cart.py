@@ -12,4 +12,3 @@ r = gaunit.check_har(
 )
 print(r.was_successful())
 # True
-
