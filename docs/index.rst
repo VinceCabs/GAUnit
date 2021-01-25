@@ -34,7 +34,7 @@ You will need `Python 3.7+ <https://www.python.org/downloads/>`_.
 
 Use pip:
 
-.. code:: bash
+.. code:: console
 
    pip install gaunit
 
@@ -83,7 +83,7 @@ Or manually check HAR files with command line
 Alternatively to automatic tests, you can manually browse your website, export a 
 HAR file and check it through command line:
 
-.. code:: bash
+.. code:: console
 
    $ gaunit test_case.har my_test_case  # passed
    events in tracking plan: 3
