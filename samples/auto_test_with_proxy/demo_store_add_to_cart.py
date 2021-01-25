@@ -1,5 +1,5 @@
 """"
-ga_demo_store.py
+Automatic test with proxy
 
 Code sample: an "add to cart" scenario using Selenium and a proxy to automatically test 
 tracking on Google online store demo.
@@ -16,7 +16,7 @@ from selenium import webdriver
 def run():
 
     # set up proxy
-    server = Server()
+    server = Server()  # or add path to binary: 'Server(path="browsermob-proxy")'
     server.start()
     # 'useEcc' is needed to have decent response time with HTTPS
     proxy = server.create_proxy({"useEcc": True})
@@ -30,7 +30,7 @@ def run():
     # set up Chrome driver
     options = webdriver.ChromeOptions()
     options.add_argument("--proxy-server=%s" % proxy.proxy)
-    # options.add_argument("--headless")
+    # options.add_argument("--headless")  # uncomment if you want headless Chrome
     capabilities = webdriver.DesiredCapabilities.CHROME.copy()
     capabilities["acceptInsecureCerts"] = True
     driver = webdriver.Chrome(chrome_options=options, desired_capabilities=capabilities)
@@ -39,12 +39,12 @@ def run():
     driver.implicitly_wait(10)
     test_case = "ga_demo_store_add_to_cart"
     proxy.new_har(test_case)
-    driver.get("http://enhancedecommerce.appspot.com/")
-    sleep(2)
+    driver.get("https://enhancedecommerce.appspot.com/")
+    # sleep(2)
     driver.find_element_by_id("homepage-9bdd2-1").click()
-    sleep(2)
+    # sleep(2)
     driver.find_element_by_id("addToCart").click()
-    sleep(2)
+    # sleep(2)
 
     # export har and close all
     har = proxy.har

@@ -8,15 +8,17 @@ implementations with GAUnit.
 
 Make sure you have Python and GAUnit installed (see :ref:`install`).
 
+.. _the_scenario:
+
 The Scenario
 ---------------
 
 You will test if the "Add To Cart" *event* is well implemented on Google's 
-`Enhanced Ecommerce Demo Store <https://enhancedecommerce.appspot.com/>`_.
-There are 2 parts in this tutorial:
+`Demo Store <https://enhancedecommerce.appspot.com/>`_.
+There are 2 parts in this tutorial which can be done independantly:
 
-- Manual test: you will export network traffic recorded in the Chrome console and check if *events* are OK (`source on Github <https://github.com/VinceCabs/GAUnit/tree/master/samples/getting_started>`_)
-- Auto test: then, you will use GAUnit APIs to perform a full automated test with Selenium and BrowserMob Proxy (`source on Github <https://github.com/VinceCabs/GAUnit/tree/master/samples/auto_test_with_proxy>`_).
+- :ref:`manual_test`: to get a grasp on how GAUnit works, you will export network traffic recorded in the Chrome console and check if *events* are OK
+- :ref:`automatic_test`: alternatively, you will use GAUnit APIs to perform a full automated test with Selenium and BrowserMob Proxy
 
 Your *test case* will consist of a few simple steps:
 
@@ -29,14 +31,16 @@ Your *test case* will consist of a few simple steps:
 
 **Let's start!**
 
+.. _write_tracking_plan:
+
 Write your tracking plan
 ------------------------------
-
-You need a name for your *test case*. Let's call it ``ga_demo_store_add_to_cart``.
 
 GAUnit offers various ways to define a *tracking plan*. Below, you will
 use a JSON file. You could also use Google Sheet or Python dictionary to define which
 events you expect for your test case.
+
+.. TODO link to howto
 
 First, create a ``tracking_plan.json`` file where you specify the expected 
 events:
@@ -71,11 +75,12 @@ events:
 Few remarks here:
 
 - In a *tracking plan*, you can define more than one *test case*. Which is normal, given that you may have several test case for your website!
+- Here, we gave a name to our *test case*: ``ga_demo_store_add_to_cart``.
 - For this test case, you expect 3 events: 
    - the ``Home`` page view, 
    - the ``Product View`` page view,
    - the ``Add To Cart`` click (with event value and product price)
-- Events are defined by their URL parameters as per the *Measurement Protocol* (`GA <https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters>`_ and `GA4 <https://developers.google.com/analytics/devguides/collection/protocol/ga4>`_). In future versions of GAUnit, you will able to use original API parameters.
+- Events are defined by their URL parameters as per the *Measurement Protocol* (`GA <https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters>`_ and `GA4 <https://developers.google.com/analytics/devguides/collection/protocol/ga4>`_). In future versions of GAUnit, you will be able to use original API parameters.
 
 .. note::
 
@@ -84,6 +89,7 @@ Few remarks here:
    `gtag.js <https://developers.google.com/analytics/devguides/collection/gtagjs>`_ 
    and `GA4 properties <https://developers.google.com/analytics/devguides/collection/ga4>`_
 
+.. _manual_test:
 
 Manual Check
 --------------------------
@@ -94,7 +100,7 @@ Then, **you will use GAUnit to check if tracking plan is OK**.
 .. note::
 
    In this tutorial, we use Chrome, but you could use any tool 
-   to get an HAR file: Firefox Developer Tool, proxies, etc.
+   to get a HAR file: Firefox Developer Tool, proxies, etc.
 
 Open Chrome Network panel
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -142,12 +148,13 @@ Create a new ``demo_store_add_to_cart.py`` Python file.
    Use this command at each step to run the file: 
    ``python demo_store_add_to_cart.py``
 
-First, add these lines to create a :class:`~gaunit.TrackingPlan` and import  
+First, add these lines to create a :class:`~gaunit.TrackingPlan` by importing  
 the ``tracking_plan.json`` file you wrote ealier.
 
 .. code:: Python
 
    import gaunit
+   
    tracking_plan = gaunit.TrackingPlan.from_json("tracking_plan.json")
 
 *Optional*: print the events for your test case with 
@@ -192,6 +199,10 @@ This last line shall print this in console:
 
 **Bravo! You've just made your first GAUnit test!**
 
+.. note::
+
+   Full source code can be found on Github: `GAUnit Getting started sample <https://github.com/VinceCabs/GAUnit/tree/master/samples/getting_started>`_
+
 Bonus: do the same with command line
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -207,8 +218,120 @@ GAUnit lets you do that:
 See :ref:`command` documentation on how to use GAUnit commands. They can be useful for your
 CI/CD pipelines.
 
-.. What if test fails?
+.. TODO What if test fails?
 
-Automatic test case with Selenium (WIP)
+.. _automatic_test:
+
+Automatic test with Selenium
 ------------------------------------------------------------
 
+**Instead of tedious manual tests, let's automate!**
+
+.. _install_selenium_browsermob_proxy:
+
+Install Selenium and BrowserMob Proxy
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+First, you need to install Selenium to automate browsing and 
+BrowserMob Proxy to intercept Google Analytics events.
+
+- Install `Selenium <https://selenium-python.readthedocs.io/>`_ and `Browsermob Proxy <https://browsermob-proxy-py.readthedocs.io>`_ Python packages:
+
+.. code:: console
+
+   pip install selenium browsermob-proxy
+
+- Download `BrowserMob Proxy latest release <https://github.com/lightbody/browsermob-proxy/releases/latest>`_ (note: requires `Java <https://www.oracle.com/java/technologies/javase-jre8-downloads.html>`_).
+   - unzip it where convenient for you
+   - add the ``bin/`` directory to your ``%PATH``
+
+- Download `ChromeDriver <https://sites.google.com/a/chromium.org/chromedriver/downloads>`_
+   - unzip it where convenient for you
+   - add it to your ``%PATH`` or copy it in your working directory (more details `here <https://selenium-python.readthedocs.io/installation.html#drivers>`_)
+
+- Here is a simple way to test if install is OK:
+
+.. code:: console
+
+   $ browsermob-proxy --version
+   BrowserMob Proxy X.X.X
+   $ chromedriver --version
+   ChromeDriver XX.XX.XX (XX)
+
+Full automation with Python
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**You will now fully automate the process of testing GA implementation**.
+
+First, make sure you have done this part: :ref:`write_tracking_plan`
+
+Create a new Python file, for example: ``demo_store_add_to_cart.py`` as in previous section.
+
+Import the required packages for our test:
+
+.. code:: Python
+
+   import gaunit
+   from browsermobproxy import Server
+   from selenium import webdriver
+
+Create a BrowserMob Proxy server and activate it:
+
+.. code:: python
+
+   # set up proxy
+   server = Server()  # or add path to binary: 'Server(path="browsermob-proxy")'
+   server.start()
+   # 'useEcc' is needed to have decent response time with HTTPS
+   proxy = server.create_proxy({"useEcc": True})
+
+Set BrowserMob Proxy to record a new har:
+
+.. code:: python
+
+   proxy.new_har("ga_demo_store_add_to_cart")
+
+Create a webdriver and configure it to use the newly created proxy:
+
+.. code:: python
+
+   options = webdriver.ChromeOptions()
+   options.add_argument("--proxy-server=%s" % proxy.proxy)
+   # options.add_argument("--headless")  # uncomment if you want headless Chrome
+   capabilities = webdriver.DesiredCapabilities.CHROME.copy()
+   capabilities["acceptInsecureCerts"] = True
+   driver = webdriver.Chrome(chrome_options=options, desired_capabilities=capabilities)
+
+Write the test case we described earlier (see :ref:`the_scenario`) with Selenium API: 
+
+.. code:: python
+
+   driver.get("https://enhancedecommerce.appspot.com/")  # go to Demo Store
+   driver.find_element_by_id("homepage-9bdd2-1").click()  # click on Compton T-Shirt
+   driver.find_element_by_id("addToCart").click()  # click on "Add To Cart"
+
+Export har in a Python dict and close all.
+
+.. code:: Python
+
+   har = proxy.har
+   server.stop()
+   driver.quit()
+
+Check the har (code is almost the same as in manual_test_)
+
+.. code:: python
+
+   tracking_plan = gaunit.TrackingPlan.from_json("tracking_plan.json")
+   r = gaunit.check_har("ga_demo_store_add_to_cart", tracking_plan, har=har)
+   print( r.was_successful() )
+   # True
+
+   # Pretty print the result of the test (and display all events)
+   r.print_result(display_ok=True)
+
+.. image:: img/print_result.jpg
+
+.. note::
+
+   Full source code can be found on Github: `GAUnit automatic test sample <https://github.com/VinceCabs/GAUnit/tree/master/samples/auto_test_with_proxy>`_
