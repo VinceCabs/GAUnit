@@ -49,7 +49,7 @@ events:
 
    {
       "test_cases": {
-         "ga_demo_store_add_to_cart": {
+         "demo_store_add_to_cart": {
             "events": [
                {
                   "t": "pageview",
@@ -75,7 +75,7 @@ events:
 Few remarks here:
 
 - In a *tracking plan*, you can define more than one *test case*. Which is normal, given that you may have several test case for your website!
-- Here, we gave a name to our *test case*: ``ga_demo_store_add_to_cart``
+- Here, we gave a name to our *test case*: ``demo_store_add_to_cart``
 - For this test case, you expect at least 3 events: 
    - the ``Home`` page view, 
    - the ``Product View`` page view,
@@ -290,7 +290,7 @@ Set BrowserMob Proxy to record a new har:
 
 .. code:: python
 
-   proxy.new_har("ga_demo_store_add_to_cart")
+   proxy.new_har("demo_store_add_to_cart")
 
 Create a webdriver and configure it to use the newly created proxy:
 
@@ -324,7 +324,7 @@ Check the har (code is almost the same as in manual_test_)
 .. code:: python
 
    tracking_plan = gaunit.TrackingPlan.from_json("tracking_plan.json")
-   r = gaunit.check_har("ga_demo_store_add_to_cart", tracking_plan, har=har)
+   r = gaunit.check_har("demo_store_add_to_cart", tracking_plan, har=har)
    print( r.was_successful() )
    # True
 
