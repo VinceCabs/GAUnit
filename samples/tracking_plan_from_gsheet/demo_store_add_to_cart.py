@@ -17,9 +17,13 @@ gc = gspread.service_account(filename="service_account.json")
 # open demo file and import tracking plan for our test case.
 gsheet = gc.open_by_key("1Kd68s3vLrBqtMDW-PaALZF-5bTm-4J450YbJ3NTbZjQ")
 tracking_plan = gaunit.TrackingPlan.from_spreadsheet(gsheet)
+print(
+    "expected events:\n%s"
+    % tracking_plan.get_expected_events("ga_demo_store_add_to_cart")
+)
 
 # check GA events in a HAR file against tracking plan and print results
 har_path = join(dirname(realpath(__file__)), "demo_store_add_to_cart.har")
 r = gaunit.check_har("ga_demo_store_add_to_cart", tracking_plan, har_path=har_path)
-print(r.checklist_expected_events)
+print(r.was_successful())
 # TODO fix numbers (param pr1pr)
