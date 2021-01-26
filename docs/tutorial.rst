@@ -75,11 +75,12 @@ events:
 Few remarks here:
 
 - In a *tracking plan*, you can define more than one *test case*. Which is normal, given that you may have several test case for your website!
-- Here, we gave a name to our *test case*: ``ga_demo_store_add_to_cart``.
-- For this test case, you expect 3 events: 
+- Here, we gave a name to our *test case*: ``ga_demo_store_add_to_cart``
+- For this test case, you expect at least 3 events: 
    - the ``Home`` page view, 
    - the ``Product View`` page view,
    - the ``Add To Cart`` click (with event value and product price)
+- There might be otherq GA events during the test, but you only want to check those ones
 - Events are defined by their URL parameters as per the *Measurement Protocol* (`GA <https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters>`_ and `GA4 <https://developers.google.com/analytics/devguides/collection/protocol/ga4>`_). In future versions of GAUnit, you will be able to use original API parameters.
 
 .. note::
