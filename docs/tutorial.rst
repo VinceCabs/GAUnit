@@ -49,7 +49,7 @@ events:
 
    {
       "test_cases": {
-         "demo_store_add_to_cart": {
+         "ga_demo_store_add_to_cart": {
             "events": [
                {
                   "t": "pageview",
@@ -177,8 +177,8 @@ Now, let's :meth:`~gaunit.check_har()` and print the result.
    print( r.was_successful() )
    # True
 
-The :meth:`~gaunit.Result.was_successful()` method is the simplest way to get the result, but you can 
-also get more details. For example:
+The :meth:`~gaunit.Result.was_successful()` method is the simplest way to know if the test passed because it gives you a 
+bool ``True`` or ``False``. But you can get more details on the test. For example:
 
 .. code:: Python
 
