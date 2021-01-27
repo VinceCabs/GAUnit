@@ -17,7 +17,9 @@ from .__about__ import __version__
 
 
 def check_har():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description="Check events against an existing tracking plan"
+    )
     parser.add_argument("har_file", type=str, help="path to HAR file")
     parser.add_argument(
         "test_case",
@@ -69,7 +71,9 @@ def check_har():
 
 
 def extract_har():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description="From a HAR file, extract and print GA events"
+    )
     parser.add_argument("har_file", type=str, help="path to HAR file")
     parser.add_argument(
         "-f",
