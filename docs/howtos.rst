@@ -130,14 +130,14 @@ Now, you can create your tracking plan (2 methods):
 You can add as many test cases as you want with the :meth:`~gaunit.TrackingPlan.add_test_case()` method.
 
 Extract existing events for future tests
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------------------------
 
-WIP
+See :ref:`gaextract_command` shell command.
 
 Check a HAR file from command line
 --------------------------------------
 
-WIP
+See :ref:`gaunit_command` shell command.
 
 Use GAUnit in your CI/CD
 -----------------------------------

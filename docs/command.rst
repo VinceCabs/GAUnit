@@ -142,7 +142,7 @@ Optional arguments
 Examples
 ^^^^^^^^^^^^^^
 
-Check a HAR file against a tracking plan:
+Show all events found in a HAR file:
 
 .. code:: console
 
@@ -159,7 +159,7 @@ Filter events. Only show event type and page title (*important*: add ``--filter`
 
 .. code:: console
 
-    $ gaextract demo_store_add_to_cart.har --filter t dt
+    $ gaextract demo_store_add_to_cart.har --filter t dt ea
     [{'dt': 'Home', 't': 'pageview'},
     {'dt': 'Home', 'ea': 'view_item_list', 't': 'event'},
     {'dt': 'Home', 'ea': 'view_promotion', 't': 'event'},
