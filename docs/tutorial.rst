@@ -6,21 +6,27 @@ Getting Started
 This is a simple step by step guide on how to test Google Analytics 
 implementations with GAUnit.
 
-Make sure you have Python and GAUnit installed (see :ref:`install`).
+At the end of this guide, **you will be able to perform manual and automatic tests with GAUnit**.
+
+First, make sure you have Python and GAUnit installed (see :ref:`install`).
 
 .. _the_scenario:
 
-The Scenario
----------------
+The Scenario 👕
+-------------------
 
-You will test if the "Add To Cart" *event* is well implemented on Google's 
-`Demo Store <https://enhancedecommerce.appspot.com/>`_.
-There are 2 parts in this tutorial which can be done independantly:
+**Here is the story**, you want to buy a T-Shirt on Google's 
+`Demo Store <https://enhancedecommerce.appspot.com/>`_ and you will test if the "Add To Cart" *event* is well implemented.
 
+This tutorial has 3 parts:
+
+- :ref:`write_tracking_plan`
 - :ref:`manual_test`: to get a grasp on how GAUnit works, you will export network traffic recorded in the Chrome console and check if *events* are OK
 - :ref:`automatic_test`: alternatively, you will use GAUnit APIs to perform a full automated test with Selenium and BrowserMob Proxy
 
-Your *test case* will consist of a few simple steps:
+*The last 2 parts can be done independantly.*
+
+The *test case* will consist of a few simple steps:
 
 1. Go to https://enhancedecommerce.appspot.com/
 2. Click on the "Compton T-Shirt" product
@@ -33,14 +39,12 @@ Your *test case* will consist of a few simple steps:
 
 .. _write_tracking_plan:
 
-Write your tracking plan
+Write your tracking plan 📑
 ------------------------------
 
 GAUnit offers various ways to define a *tracking plan*. Below, you will
 use a JSON file. You could also use Google Sheet or Python dictionary to define which
-events you expect for your test case.
-
-.. TODO link to howto
+events you expect for your test case, but that's for later (see :ref:`howtos`).
 
 First, create a ``tracking_plan.json`` file where you specify the expected 
 events:
@@ -74,14 +78,12 @@ events:
 
 Few remarks here:
 
-- In a *tracking plan*, you can define more than one *test case*. Which is normal, given that you may have several test case for your website!
-- Here, we gave a name to our *test case*: ``demo_store_add_to_cart``
+- In a *tracking plan*, you can define more than one *test case*. Which is normal, given that you may have several test cases for your website!
+- Here, we named our *test case* ``demo_store_add_to_cart``
 - For this test case, you expect at least 3 events: 
    - the ``Home`` page view, 
    - the ``Product View`` page view,
    - the ``Add To Cart`` click (with event value and product price)
-- There might be otherq GA events during the test, but you only want to check those ones
-- Events are defined by their URL parameters as per the *Measurement Protocol* (`GA <https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters>`_ and `GA4 <https://developers.google.com/analytics/devguides/collection/protocol/ga4>`_). In future versions of GAUnit, you will be able to use original API parameters.
 
 .. note::
 
@@ -92,8 +94,10 @@ Few remarks here:
 
 .. _manual_test:
 
-Manual Check
+Manual Check 🚗
 --------------------------
+
+*Make sure you have done this part:* :ref:`write_tracking_plan`
 
 In this part, you will export network traffic into a HAR file. 
 Then, **you will use GAUnit to check if tracking plan is OK**.
@@ -149,7 +153,7 @@ Create a new ``demo_store_add_to_cart.py`` Python file.
    Use this command at each step to run the file: 
    ``python demo_store_add_to_cart.py``
 
-First, add these lines to create a :class:`~gaunit.TrackingPlan` by importing  
+First, add these lines to create a :class:`~gaunit.TrackingPlan` and import  
 the ``tracking_plan.json`` file you wrote ealier.
 
 .. code:: Python
@@ -223,12 +227,16 @@ CI/CD pipelines.
 
 .. _automatic_test:
 
-Automatic test with Selenium
+Automatic test with Selenium 🚀
 ------------------------------------------------------------
 
 **Instead of tedious manual tests, let's automate!**
 
-.. _install_selenium_browsermob_proxy:
+What if we could automate the whole process?
+
+- browse on the site
+- record all GA events
+- check the events against the tracking plan
 
 Install Selenium and BrowserMob Proxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -262,9 +270,9 @@ BrowserMob Proxy to intercept Google Analytics events.
 Full automation with Python
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**You will now fully automate the process of testing GA implementation**.
+*Make sure you have done this part:* :ref:`write_tracking_plan`
 
-First, make sure you have done this part: :ref:`write_tracking_plan`
+**You will now fully automate the process of testing GA implementation**.
 
 Create a new Python file, for example: ``demo_store_add_to_cart.py`` as in previous section.
 
@@ -319,7 +327,7 @@ Export har in a Python dict and close all.
    server.stop()
    driver.quit()
 
-Check the har (code is almost the same as in manual_test_)
+Check the har (code is almost the same as in :ref:`manual_test`)
 
 .. code:: python
 

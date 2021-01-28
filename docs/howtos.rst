@@ -1,4 +1,4 @@
-.. howtos:
+.. _howtos:
 
 How Tos
 =================
