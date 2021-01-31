@@ -28,7 +28,7 @@ pip install gaunit
 ## Usage
 
 Let's say you have a new video player on your product page and you want 
-to check if the right Google Analytics event is sent when the user clicks on "Play":
+to check that the right Google Analytics event is sent when the user clicks on "Play":
 
 ```python
 expected_events = [
