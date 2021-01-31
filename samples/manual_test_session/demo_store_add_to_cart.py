@@ -16,8 +16,6 @@ import gaunit
 from browsermobproxy import Server
 from selenium import webdriver
 
-# from selenium.common import Alert
-
 
 def run():
 
@@ -49,7 +47,7 @@ def run():
 
     messagebox.showinfo(
         "Manual browsing mode",
-        "Recording network trafic. Browse site and press 'OK' when finished",
+        "Recording network trafic. Browse site, then press 'OK' when you're finished",
     )
 
     # export har and close all
@@ -63,7 +61,7 @@ def run():
     # ) as f:
     #     json.dump(har, f)
 
-    # check hits against tracking plan and print results
+    # check events against tracking plan and print results
     path = join(abspath(dirname(__file__)), "tracking_plan.json")
     tracking_plan = gaunit.TrackingPlan.from_json(path)
     r = gaunit.check_har(test_case, tracking_plan, har=har)

@@ -9,6 +9,12 @@ we advise to read the :ref:`tutorial` section.
 Write a tracking plan
 -------------------------
 
+This part describes several methods to create a :class:`~gaunit.models.TrackingPlan`.
+
+Bear in mind that what we call a *tracking plan* here defines the *expected events* for one or more *test cases*.
+
+.. todo: terminology
+
 with a JSON file 
 ^^^^^^^^^^^^^^^^^
 
@@ -27,7 +33,7 @@ You can then import the file with these 2 lines of code:
 with Google Sheet
 ^^^^^^^^^^^^^^^^^^^^
 
-Google Sheets can be very convenient for tracking plans:
+Google Sheets is very convenient to write tracking plans:
 
 - they are shareable and easily accessible
 - they allow collaborative editing
@@ -90,7 +96,7 @@ In Python
 
 This is very simple. Two methods can help you here: 
 
-- :meth:`~gaunit.TrackingPlan.from_events()` which returns a :class:`~gaunit.TrackingPlan`
+- :meth:`~gaunit.TrackingPlan.from_events()` which returns a :class:`~gaunit.models.TrackingPlan`
 - :meth:`~gaunit.TrackingPlan.add_test_case()` which adds a test case to an existing instance of :class:`~gaunit.TrackingPlan`
 
 We will see them both. First, write the expected events for your test case 
@@ -129,17 +135,112 @@ Now, you can create your tracking plan (2 methods):
 
 You can add as many test cases as you want with the :meth:`~gaunit.TrackingPlan.add_test_case()` method.
 
-Extract existing events for future tests
-------------------------------------------
+Test Google Analytics implementations 
+----------------------------------------
 
-See :ref:`gaextract_command` shell command.
+Once you have a :class:`~gaunit.models.TrackingPlan`, you want to run test cases and check GA events. 
+This part describes various ways to do that.
 
 Check a HAR file from command line
---------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 See :ref:`gaunit_command` shell command.
 
-Use GAUnit in your CI/CD
+Launch a manual browsing session to check events
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Sometimes, automating test cases is too much work if you only want to perform
+a few tests.
+
+What if we could use Python and GAunit to:
+
+- **open a browser session** already set up with a proxy,
+- **manually run** the test case (do the browsing yourself instead of Selenium),
+- when done, **let GAUnit check GA events** against a tracking plan?
+
+This is possible and here is how to do that!
+
+First, you need to :ref:`install_selenium_browsermob`.
+
+.. todo: separated part for install
+
+Create a Python file (for examples, named ``demo_store_add_to_cart.py``).
+Set up a proxy to record network trafic in HAR and create a webdriver using this proxy
+(see :ref:`automatic_test` tutorial in *Getting Started*):
+
+.. code:: Python
+
+    import gaunit
+    from browsermobproxy import Server
+    from selenium import webdriver
+
+    # set up proxy
+    server = Server()  # or add path to binary: 'Server(path="browsermob-proxy")'
+    server.start()
+    # 'useEcc' is needed to have decent response time with HTTPS
+    proxy = server.create_proxy({"useEcc": True})
+
+    proxy.new_har("demo_store_add_to_cart")
+
+    options = webdriver.ChromeOptions()
+    options.add_argument("--proxy-server=%s" % proxy.proxy)
+    # options.add_argument("--headless")  # uncomment if you want headless Chrome
+    capabilities = webdriver.DesiredCapabilities.CHROME.copy()
+    capabilities["acceptInsecureCerts"] = True
+    driver = webdriver.Chrome(chrome_options=options, desired_capabilities=capabilities)
+
+But now it gets different from a full automated test case; let's use a dialog box to pause 
+execution and give hand to the user until he or she says:
+
+.. code:: Python
+
+    from tkinter import messagebox
+
+    messagebox.showinfo(
+        "Manual browsing mode",
+        "Recording network trafic. Browse site, then press 'OK' when you're finished",
+    )
+
+This code will open a dialog box:
+
+.. image:: img/dialog_box.png
+
+The code to run after the user presses 'OK' is: export har, close all, check events againts tracking plan
+(see :ref:`automatic_test` tutorial in *Getting Started* section):
+
+.. code:: Python
+
+    # export har and close all
+    har = proxy.har
+    server.stop()
+    driver.quit()
+
+    # check events against tracking plan and print results
+    tracking_plan = gaunit.TrackingPlan.from_json("tracking_plan.json")
+    r = gaunit.check_har(test_case, tracking_plan, har=har)
+
+    r.print_result(display_ok=True)
+
+.. image:: img/print_result.jpg
+
+**That's it!**
+
+.. note::
+
+   Full source code can be found on Github: `GAUnit manual test session <https://github.com/VinceCabs/GAUnit/tree/master/samples/manual_test_session>`_
+
+Use GAUnit in your CI/CD (WIP)
 -----------------------------------
 
 WIP
+
+Other
+----------
+
+Extract HAR events for future tests
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+See :ref:`gaextract_command` shell command.
+
+
+

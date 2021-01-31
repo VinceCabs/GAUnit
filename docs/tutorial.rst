@@ -238,6 +238,8 @@ What if we could automate the whole process?
 - record all GA events
 - check the events against the tracking plan
 
+.. _install_selenium_browsermob:
+
 Install Selenium and BrowserMob Proxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
