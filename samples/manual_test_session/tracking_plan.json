@@ -1,0 +1,24 @@
+{
+    "test_cases": {
+        "demo_store_add_to_cart": {
+            "events": [
+                {
+                    "t": "pageview",
+                    "dt": "Home"
+                },
+                {
+                    "t": "pageview",
+                    "dt": "Product View"
+                },
+                {
+                    "t": "event",
+                    "ec": "ecommerce",
+                    "ea": "add_to_cart",
+                    "ev": "44",
+                    "pr1nm": "Compton T-Shirt",
+                    "pr1pr": "44.00"
+                }
+            ]
+        }
+    }
+}
