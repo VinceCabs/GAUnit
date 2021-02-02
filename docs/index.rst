@@ -113,7 +113,7 @@ Usage
 .. toctree::
    :maxdepth: 1
 
-   tutorial
+   getting_started
    howtos
 
 Reference & documentation
