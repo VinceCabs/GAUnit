@@ -92,7 +92,7 @@ If you want to use RobotFramework, check [GAUnit Library for Robot Framework](ht
 
 ## Documentation
 
-[Getting Started](https://gaunit.readthedocs.io/en/latest/tutorial.html).
+[Getting Started](https://gaunit.readthedocs.io/en/latest/getting_started.html).
 
 Full documentation is available [here](https://gaunit.readthedocs.io/).
 
