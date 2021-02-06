@@ -1,4 +1,4 @@
-.. _automatic_test:
+.. _getting_started__automatic_test:
 
 Automatic test with Selenium 🚀
 ------------------------------------------------------------
@@ -11,7 +11,7 @@ What if we could automate the whole process?
 - record all GA events
 - check the events against the tracking plan
 
-.. _install_selenium_browsermob:
+.. _getting_started__install_selenium_browsermob:
 
 Install Selenium and BrowserMob Proxy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -45,7 +45,7 @@ BrowserMob Proxy to intercept Google Analytics events.
 Full automation with Python
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-*Make sure you have done this part:* :ref:`write_tracking_plan`
+*Make sure you have done this part:* :ref:`getting_started__write_your_tracking_plan`
 
 **You will now fully automate the process of testing GA implementation**.
 
@@ -86,7 +86,7 @@ Create a webdriver and configure it to use the newly created proxy:
    capabilities["acceptInsecureCerts"] = True
    driver = webdriver.Chrome(chrome_options=options, desired_capabilities=capabilities)
 
-Write the test case we described earlier (see :ref:`the_scenario`) with Selenium API: 
+Write the test case we described earlier (see :ref:`getting_started__the_scenario`) with Selenium API: 
 
 .. code:: python
 
@@ -102,7 +102,7 @@ Export har in a Python dict and close all.
    server.stop()
    driver.quit()
 
-Check the har (code is almost the same as in :ref:`manual_test`)
+Check the har (code is almost the same as in :ref:`getting_started__manual_test`)
 
 .. code:: python
 

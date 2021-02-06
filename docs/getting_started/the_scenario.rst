@@ -1,4 +1,4 @@
-.. _the_scenario:
+.. _getting_started__the_scenario:
 
 The Scenario 👕
 -------------------

@@ -8,8 +8,11 @@ were fired, check if they correspond to what is expected, write a tracking plan 
 
 GAUnit comes with 2 separate commands:
 
-- :ref:`gaunit_command`: from HAR file and a test case name, check events against an existing tracking plan
-- :ref:`gaextract_command`: from a HAR file, extract and print GA events, possibly to add them to a tracking plan
+- |command__gaunit|_: from HAR file and a test case name, check events against an existing tracking plan
+- |command__gaextract|_: from a HAR file, extract and print GA events, possibly to add them to a tracking plan
+
+.. |command__gaunit| replace:: ``gaunit``
+.. |command__gaextract| replace:: ``gaextract``
 
 Examples in this section can be run from the `GAUnit Getting started sample <https://github.com/VinceCabs/GAUnit/tree/master/samples/getting_started>`_
 directory on Github.
@@ -18,7 +21,7 @@ directory on Github.
 
     :ref:`tutorial`
 
-.. _gaunit_command:
+.. _command__gaunit:
 
 ``gaunit``
 --------------------------
@@ -110,7 +113,7 @@ Get GAUnit version:
     $ gaunit --version
     GAUnit X.X.X
 
-.. _gaextract_command:
+.. _command__gaextract:
 
 ``gaextract``
 --------------------------

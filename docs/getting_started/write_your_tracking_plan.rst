@@ -1,4 +1,4 @@
-.. _write_tracking_plan:
+.. _getting_started__write_your_tracking_plan:
 
 Write your tracking plan 📑
 ------------------------------

@@ -1,9 +1,9 @@
-.. _write_a_tracking_plan:
+.. _howtos__write_a_tracking_plan:
 
 Write a tracking plan
 -------------------------
 
-This part describes several methods to create a :class:`~gaunit.models.TrackingPlan`.
+This part describes several methods to create a :class:`~gaunit.TrackingPlan`.
 
 Bear in mind that what we call a *tracking plan* here defines the *expected events* for one or more *test cases*.
 
@@ -12,7 +12,7 @@ Bear in mind that what we call a *tracking plan* here defines the *expected even
 with a JSON file 
 ^^^^^^^^^^^^^^^^^
 
-See :ref:`write_tracking_plan` from *Getting Started* section to get an example 
+See :ref:`getting_started__write_your_tracking_plan` from *Getting Started* section to get an example 
 of a ``tracking_plan.json`` file.
 
 You can then import the file with these 2 lines of code:
@@ -90,7 +90,7 @@ In Python
 
 This is very simple. Two methods can help you here: 
 
-- :meth:`~gaunit.TrackingPlan.from_events()` which returns a :class:`~gaunit.models.TrackingPlan`
+- :meth:`~gaunit.TrackingPlan.from_events()` which returns a :class:`~gaunit.TrackingPlan`
 - :meth:`~gaunit.TrackingPlan.add_test_case()` which adds a test case to an existing instance of :class:`~gaunit.TrackingPlan`
 
 We will see them both. First, write the expected events for your test case 

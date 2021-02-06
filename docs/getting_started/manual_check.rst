@@ -1,9 +1,9 @@
-.. _manual_test:
+.. _getting_started__manual_test:
 
 Manual Check 🚗
 --------------------------
 
-*Make sure you have done this part:** :ref:`write_tracking_plan`.
+*Make sure you have done this part:* :ref:`getting_started__write_your_tracking_plan`.
 
 In this part you will get a grasp on how GAUnit works. 
 

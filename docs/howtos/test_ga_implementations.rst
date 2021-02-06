@@ -1,13 +1,13 @@
 Test Google Analytics implementations 
 ----------------------------------------
 
-Once you have a :class:`~gaunit.models.TrackingPlan`, you want to run test cases and check GA events. 
+Once you have a :class:`~gaunit.TrackingPlan`, you want to run test cases and check GA events. 
 This part describes various ways to do that.
 
 Check a HAR file from command line
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-See :ref:`gaunit_command` shell command.
+See :ref:`command__gaunit` shell command.
 
 Launch a manual browsing session to check events
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -23,13 +23,13 @@ What if we could use Python and GAunit to:
 
 This is possible and here is how to do that!
 
-First, you need to :ref:`install_selenium_browsermob`.
+First, you need to :ref:`getting_started__install_selenium_browsermob`.
 
 .. todo: separated part for install
 
 Create a Python file (for examples, named ``demo_store_add_to_cart.py``).
 Set up a proxy to record network trafic in HAR and create a webdriver using this proxy
-(see :ref:`automatic_test` tutorial in *Getting Started*):
+(see :ref:`getting_started__automatic_test` tutorial in *Getting Started*):
 
 .. code:: Python
 
@@ -69,7 +69,7 @@ This code will open a dialog box:
 .. image:: ../img/dialog_box.png
 
 The code to run after the user presses 'OK' is: export har, close all, check events againts tracking plan
-(see :ref:`automatic_test` tutorial in *Getting Started* section):
+(see :ref:`getting_started__automatic_test` tutorial in *Getting Started* section):
 
 .. code:: Python
 

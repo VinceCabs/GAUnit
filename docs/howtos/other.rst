@@ -4,4 +4,4 @@ Other
 Extract HAR events for future tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-See :ref:`gaextract_command` shell command.
+See :ref:`command__gaextract` shell command.
