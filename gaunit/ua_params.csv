@@ -1,0 +1,101 @@
+an;App name;Applications
+av;App version;Applications
+exd;Exception Description;Applications
+exf;Is Exception Fatal;Applications
+fl;Flash;Browser settings
+je;Java;Browser settings
+sr;Screen resolution;Browser settings
+ua;User Agent Override;Browser settings
+ul;User Language;Browser settings
+v;Version;Browser settings
+vp;Viewport Size;Browser settings
+z;Random (cache buster);Browser settings
+_v;SDK Version;Browser settings
+cc;Campaign content;Campaigns
+ci;Campaign ID;Campaigns
+ck;Campaign keyword;Campaigns
+cm;Campaign medium;Campaigns
+cn;Campaign Name;Campaigns
+cs;Campaign Source;Campaigns
+dclid;Google Display Ads ID;Campaigns
+gclid;Google Adwords ID;Campaigns
+cu;Currency Code;Commerce
+ic;Item Code (SKU);Commerce
+ilXpiYbr;Product Impression Brand - product #Y in list #X;Commerce
+ilXpiYca;Product Impression Category - product #Y in list #X;Commerce
+ilXpiYcdZ;Product Impression Custom Dimension #Z - product #Y in list #X;Commerce
+ilXpiYcmZ;Product Impression Custom Metric #Z - product #Y in list #X;Commerce
+ilXpiYid;Product Impression SKU - product #Y in list #X;Commerce
+ilXpiYnm;Product Impression Name - product #Y in list #X;Commerce
+ilXpiYpr;Product Impression Price - product #Y in list #X;Commerce
+ilXpiYps;Product Impression Position - product #Y in list #X;Commerce
+ilXpiYva;Product Impression Variation - product #Y in list #X;Commerce
+in;Item Name;Commerce
+ip;Items Price;Commerce
+iq;Item Quantity;Commerce
+iv;Item Category;Commerce
+pa;Purchase Action;Commerce
+pal;Product Action List;Commerce
+promoa;Promotion Action;Commerce
+promo1id;Promotion ID;Commerce
+promo1nm;Promotion Name;Commerce
+promo1cr;Promotion Creative;Commerce
+promo1ps;Promotion Position;Commerce
+pr1br;Product Brand;Commerce
+pr1ca;Product Category;Commerce
+pr1id;Product ID;Commerce
+pr1nm;Product Name;Commerce
+pr1pr;Product Price;Commerce
+pr1va;Product Variant;Commerce
+ta;Transaction Affiliation;Commerce
+ti;Transaction ID;Commerce
+tr;Transaction Revenue;Commerce
+ts;Transaction Shipping;Commerce
+tt;Transaction Tax;Commerce
+de;Document Encoding;Content
+dh;Hostname;Content
+dl;Request URI;Content
+dp;Document Path;Content
+dr;Document Referrer;Content
+dt;Document Title;Content
+linkid;Link ID;Content
+xid;Experiment ID;Content experiments
+xvar;Experiment variant;Content experiments
+cdX;Custom dimension #X (1-20 for standard, 1-200 for 360);Custom dimensions
+cm1;Custom metric #X (1-20 for standard, 1-200 for 360);Custom metrics
+ea;Event Action;Events
+ec;Event Category;Events
+el;Event Label;Events
+ev;Event Value;Events
+pdt;Page Download Time;Page performance
+plt;Page Load Time;Page performance
+qt;Queue Time;Page performance
+rrt;Redirect Response Time;Page performance
+srt;Server Response Time;Page performance
+tcp;TCP Connect Time;Page performance
+a;Random number;Session control
+aip;Anonymized;Session control
+cid;Client ID;Session Control
+ds;Data Source;Session control
+geo;Geo. override;Session control
+gjid;Doubleclick join ID;Session control
+gtm;GTM container ID;Session control
+jid;Doubleclick join ID;Session control
+ni;Non-interaction Hit;Session control
+sc;Session Control;Session control
+t;Hit type;Session control
+tid;Web Property ID;Session control
+uid;User ID;Session control
+_gid;User identifier cooke;Session control
+_s;Hit sequence;Session control
+_u;Verification code;Session control
+sa;Social Action;Social media plugins
+sd;Screen Color Depth;Social media plugins
+sn;Social Network;Social media plugins
+st;Social Action Target;Social media plugins
+dit;DOM Interactive Time;Timing
+dns;DNS Lookup Time;Timing
+utc;Timing Category;Timing
+utl;Timing Label;Timing
+utt;Timing Time;Timing
+utv;Timing Variable Name;Timing
