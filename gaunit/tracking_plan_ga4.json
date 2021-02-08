@@ -1,0 +1,48 @@
+{
+    "test_cases": {
+        "demo_store_add_to_cart": {
+            "events": [ 
+                {
+                    "en": "login",
+                    "ep.method": "Email"
+                },
+                [ // API way
+                    "event",
+                    "login",
+                    {
+                        "method": "Email"
+                    }
+                ],
+                {
+                    "en": "add_to_cart",
+                    "cu": "EUR",
+                    "pr1": {  /// prX
+                        "id": 1234,
+                        "nm": "Purple Turing Machine",
+                        "ca": "Abstract machine"
+                    },
+                    //OU
+                    "pr1": "id1234~nmPurple Turing Machine~caAbstract machine~pr100~qt1",
+                    "epn.value": 100
+                },
+                [
+                    "event",
+                    "add_to_cart",
+                    {
+                        "cu": "EUR",
+                        "items": [
+                            {
+                                "id": 1234,
+                                "nm": "Purple Turing Machine",
+                                "ca": "Abstract machine",
+                                "price": 100,
+                                "quantity": 1
+                            }
+                        ],
+                        "value": 100
+                    }
+                ]
+            ]
+        }
+    }
+}

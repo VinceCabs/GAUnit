@@ -1,0 +1,102 @@
+Protocol Version,v,2
+Measurement ID,tid,G-HKDMZHCZ8M
+gtm,gtm,2oe1r0
+Random Page ID,_p,834948128
+Screen Resolution,sr,1920x1080
+Debug View,_dbg,1
+Language,ul,en-us
+Client ID,cid,1288732303.1607898530
+Request Number,_s,1
+Page Location,dl,https://vincecabs.github.io/ga4_with_gtag_js/
+Page Referrer,dr,https://vincecabs.github.io/?gtm_debug=x
+Page Title,dt,
+Session ID,sid,1612645036
+Session Count,sct,8
+Session Engagement,seg,1
+Event Name,en,page_view
+Protocol Version,v,2
+Measurement ID,tid,G-HKDMZHCZ8M
+gtm,gtm,2oe1r0
+Random Page ID,_p,834948128
+Screen Resolution,sr,1920x1080
+Debug View,_dbg,1
+Language,ul,en-us
+System Property,_uei,2
+Client ID,cid,1288732303.1607898530
+Request Number,_s,2
+Page Location,dl,https://vincecabs.github.io/ga4_with_gtag_js/
+Page Referrer,dr,https://vincecabs.github.io/?gtm_debug=x
+Page Title,dt,
+Session ID,sid,1612645036
+Session Count,sct,8
+Session Engagement,seg,1
+Event Name,en,scroll
+Engagement Time,_et,54
+Numeric Event Parameter,epn.percent_scrolled,90
+Protocol Version,v,2
+Measurement ID,tid,G-HKDMZHCZ8M
+gtm,gtm,2oe1r0
+Random Page ID,_p,834948128
+Screen Resolution,sr,1920x1080
+Debug View,_dbg,1
+Language,ul,en-us
+System Property,_uei,2
+Client ID,cid,1288732303.1607898530
+Request Number,_s,3
+Page Location,dl,https://vincecabs.github.io/ga4_with_gtag_js/
+Page Referrer,dr,https://vincecabs.github.io/?gtm_debug=x
+Page Title,dt,
+Currency,cu,EUR
+Session ID,sid,1612645036
+Session Count,sct,8
+Session Engagement,seg,1
+Event Name,en,add_to_cart
+Engagement Time,_et,8028
+Ecommerce Item,pr1,id1234~nmPurple Turing Machine~caAbstract machine~pr100~qt1
+Numeric Event Parameter,epn.value,100
+Protocol Version,v,2
+Measurement ID,tid,G-HKDMZHCZ8M
+gtm,gtm,2oe1r0
+Random Page ID,_p,2024521731
+Screen Resolution,sr,1920x1080
+Debug View,_dbg,1
+Language,ul,en-us
+System Property,_uei,2
+Client ID,cid,1288732303.1607898530
+Request Number,_s,5
+Page Location,dl,https://vincecabs.github.io/ga4_with_gtag_js/
+Page Referrer,dr,https://vincecabs.github.io/?gtm_debug=x
+Page Title,dt,
+Session ID,sid,1612787736
+Session Count,sct,10
+Session Engagement,seg,0
+Event Name,en,login
+Engagement Time,_et,423
+Event Parameter,ep.method,Email
+Protocol Version,v,2
+Measurement ID,tid,G-M8211W0Q97
+gtm,gtm,2oe1r0
+Random Page ID,_p,705169753
+Screen Resolution,sr,1920x1080
+Debug View,_dbg,1
+Language,ul,en-us
+Client ID,cid,2012903963.1598561571
+Request Number,_s,1
+Page Location,dl,https://particuliers.engie.fr/?gtm_debug=x
+Page Referrer,dr,https://tagassistant.google.com/
+Page Title,dt,engie_fournisseur_d_electricite_et_de_gaz_naturel
+Custom User ID,uid,
+Session ID,sid,1612806536
+Session Count,sct,17
+Session Engagement,seg,0
+Event Name,en,page_view
+Start of Session,_ss,2
+Event Parameter,ep.page_name_apps_1,
+Event Parameter,ep.page_cat1,
+Event Parameter,ep.page_cat2,
+User Property,up.client_compteur_gazpar,
+User Property,up.client_prelevement_auto,
+User Property,up.client_segment,
+User Property,up.user_id_v2,
+User Property,up.user_energy_type,
+User Property,up.user_service_prelevement_auto,
