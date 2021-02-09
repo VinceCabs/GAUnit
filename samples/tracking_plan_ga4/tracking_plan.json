@@ -1,0 +1,22 @@
+{
+    "test_cases": {
+        "ga4_add_to_cart": {
+            "events": [
+                {
+                    "en": "page_view",
+                    "dl": "https://vincecabs.github.io/ga4_with_gtag_js/"
+                },
+                {
+                    "en": "add_to_cart",
+                    "cu": "EUR",
+                    "pr1": "id1234~nmPurple Turing Machine~caAbstract machine~pr100~qt1",
+                    "epn.value": 100
+                },
+                {
+                    "en": "login",
+                    "ep.method": "Email"
+                }
+            ]
+        }
+    }
+}
