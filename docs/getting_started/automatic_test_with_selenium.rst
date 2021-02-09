@@ -84,7 +84,7 @@ Create a webdriver and configure it to use the newly created proxy:
    # options.add_argument("--headless")  # uncomment if you want headless Chrome
    capabilities = webdriver.DesiredCapabilities.CHROME.copy()
    capabilities["acceptInsecureCerts"] = True
-   driver = webdriver.Chrome(chrome_options=options, desired_capabilities=capabilities)
+   driver = webdriver.Chrome(options=options, desired_capabilities=capabilities)
 
 Write the test case we described earlier (see :ref:`getting_started__the_scenario`) with Selenium API: 
 
