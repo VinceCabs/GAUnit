@@ -18,7 +18,7 @@ def run():
     # set up proxy
     server = Server()  # or add path to binary: 'Server(path="browsermob-proxy")'
     server.start()
-    # 'useEcc' is needed to have decent response time with HTTPS
+    # require 'useEcc' for decent response time with HTTPS
     proxy = server.create_proxy({"useEcc": True})
 
     # set up Geckodriver/Firefox
@@ -33,11 +33,12 @@ def run():
     # options.add_argument("--headless")  # uncomment if you want headless Chrome
     capabilities = webdriver.DesiredCapabilities.CHROME.copy()
     capabilities["acceptInsecureCerts"] = True
-    driver = webdriver.Chrome(chrome_options=options, desired_capabilities=capabilities)
+    driver = webdriver.Chrome(options=options, desired_capabilities=capabilities)
 
     # start test case
     driver.implicitly_wait(10)
     test_case = "ga4_add_to_cart"
+    # require 'captureContent' for POST requests in GA4 or transport beacon
     proxy.new_har(test_case, {"captureContent": True})
     driver.get("https://vincecabs.github.io/ga4_with_gtag_js/")
     sleep(2)
@@ -51,16 +52,15 @@ def run():
     driver.quit()
 
     # uncomment if you need to export the har
-    with open(
-        join(abspath(dirname(__file__)), test_case) + ".har", "w", encoding="utf8"
-    ) as f:
-        json.dump(har, f)
+    # with open(
+    #     join(abspath(dirname(__file__)), test_case) + ".har", "w", encoding="utf8"
+    # ) as f:
+    #     json.dump(har, f)
 
     # check hits against tracking plan and print results
     path = join(abspath(dirname(__file__)), "tracking_plan.json")
     tracking_plan = gaunit.TrackingPlan.from_json(path)
     r = gaunit.check_har(test_case, tracking_plan, har=har)
-    print(r.actual_events)
 
     r.print_result(display_ok=True)
 
