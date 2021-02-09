@@ -91,4 +91,4 @@ The code to run after the user presses 'OK' is: export har, close all, check eve
 
 .. note::
 
-   Full source code can be found on Github: `GAUnit manual test session <https://github.com/VinceCabs/GAUnit/tree/master/samples/manual_test_session>`_
+   Full source code can be found on Github: `GAUnit manual test session <https://github.com/VinceCabs/GAUnit/tree/master/examples/manual_test_session>`_

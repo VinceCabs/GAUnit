@@ -14,7 +14,7 @@ GAUnit comes with 2 separate commands:
 .. |command__gaunit| replace:: ``gaunit``
 .. |command__gaextract| replace:: ``gaextract``
 
-Examples in this section can be run from the `GAUnit Getting started sample <https://github.com/VinceCabs/GAUnit/tree/master/samples/getting_started>`_
+Examples in this section can be run from the `GAUnit Getting started sample <https://github.com/VinceCabs/GAUnit/tree/master/examples/getting_started>`_
 directory on Github.
 
 .. seealso::

@@ -114,7 +114,7 @@ This last line shall print this in console:
 
 .. note::
 
-   Full source code can be found on Github: `GAUnit Getting started sample <https://github.com/VinceCabs/GAUnit/tree/master/samples/getting_started>`_
+   Full source code can be found on Github: `GAUnit Getting started sample <https://github.com/VinceCabs/GAUnit/tree/master/examples/getting_started>`_
 
 Bonus: do the same with command line
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

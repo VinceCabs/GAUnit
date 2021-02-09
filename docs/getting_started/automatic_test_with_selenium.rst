@@ -117,4 +117,4 @@ Check the har (code is almost the same as in :ref:`getting_started__manual_test`
 
 .. note::
 
-   Full source code can be found on Github: `GAUnit automatic test sample <https://github.com/VinceCabs/GAUnit/tree/master/samples/auto_test_with_proxy>`_
+   Full source code can be found on Github: `GAUnit automatic test sample <https://github.com/VinceCabs/GAUnit/tree/master/examples/auto_test_with_proxy>`_
