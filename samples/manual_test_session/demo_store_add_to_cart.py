@@ -37,7 +37,7 @@ def run():
     # options.add_argument("--headless")  # uncomment if you want headless Chrome
     capabilities = webdriver.DesiredCapabilities.CHROME.copy()
     capabilities["acceptInsecureCerts"] = True
-    driver = webdriver.Chrome(chrome_options=options, desired_capabilities=capabilities)
+    driver = webdriver.Chrome(options=options, desired_capabilities=capabilities)
 
     # start test case
     driver.implicitly_wait(10)

@@ -50,7 +50,7 @@ Set up a proxy to record network trafic in HAR and create a webdriver using this
     # options.add_argument("--headless")  # uncomment if you want headless Chrome
     capabilities = webdriver.DesiredCapabilities.CHROME.copy()
     capabilities["acceptInsecureCerts"] = True
-    driver = webdriver.Chrome(chrome_options=options, desired_capabilities=capabilities)
+    driver = webdriver.Chrome(options=options, desired_capabilities=capabilities)
 
 But now it gets different from a full automated test case; let's use a dialog box to pause 
 execution and give hand to the user until he or she says:
