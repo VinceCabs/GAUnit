@@ -53,7 +53,7 @@ def run():
 
     # uncomment if you need to export the har
     # with open(
-    #     join(abspath(dirname(__file__)), test_case), "w", encoding="utf8"
+    #     join(abspath(dirname(__file__)), test_case) + ".har", "w", encoding="utf8"
     # ) as f:
     #     json.dump(har, f)
 
