@@ -43,7 +43,8 @@ Set up a proxy to record network trafic in HAR and create a webdriver using this
     # 'useEcc' is needed to have decent response time with HTTPS
     proxy = server.create_proxy({"useEcc": True})
 
-    proxy.new_har("demo_store_add_to_cart")
+    # 'captureContent' for POST requests
+    proxy.new_har("demo_store_add_to_cart", options={"captureContent": True})
 
     options = webdriver.ChromeOptions()
     options.add_argument("--proxy-server=%s" % proxy.proxy)

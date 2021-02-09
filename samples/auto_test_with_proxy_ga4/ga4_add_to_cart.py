@@ -38,8 +38,8 @@ def run():
     # start test case
     driver.implicitly_wait(10)
     test_case = "ga4_add_to_cart"
-    # require 'captureContent' for POST requests in GA4 or transport beacon
-    proxy.new_har(test_case, {"captureContent": True})
+    # 'captureContent' for POST requests
+    proxy.new_har(test_case, options={"captureContent": True})
     driver.get("https://vincecabs.github.io/ga4_with_gtag_js/")
     sleep(2)
     driver.find_element_by_id("add_to_cart").click()

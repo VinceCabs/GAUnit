@@ -64,16 +64,16 @@ Create a BrowserMob Proxy server and activate it:
 .. code:: python
 
    # set up proxy
-   server = Server()  # or add path to binary: 'Server(path="browsermob-proxy")'
+   server = Server()
    server.start()
    # 'useEcc' is needed to have decent response time with HTTPS
    proxy = server.create_proxy({"useEcc": True})
 
-Set BrowserMob Proxy to record a new har:
+Set BrowserMob Proxy to record network traffic in a new har:
 
 .. code:: python
 
-   proxy.new_har("demo_store_add_to_cart")
+   proxy.new_har("demo_store_add_to_cart", options={"captureContent": True})
 
 Create a webdriver and configure it to use the newly created proxy:
 
@@ -81,7 +81,6 @@ Create a webdriver and configure it to use the newly created proxy:
 
    options = webdriver.ChromeOptions()
    options.add_argument("--proxy-server=%s" % proxy.proxy)
-   # options.add_argument("--headless")  # uncomment if you want headless Chrome
    capabilities = webdriver.DesiredCapabilities.CHROME.copy()
    capabilities["acceptInsecureCerts"] = True
    driver = webdriver.Chrome(options=options, desired_capabilities=capabilities)
