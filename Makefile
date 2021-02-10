@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 .PHONY: docs
 SRC_FILES = ./gaunit ./tests setup.py
-FORMAT_FILES = ./gaunit ./tests setup.py ./samples 
+FORMAT_FILES = ./gaunit ./tests setup.py ./examples 
 PACKAGE = gaunit
 
 ##### Dev
@@ -12,20 +12,20 @@ docs: ## Build html documentation
 pip-comp: ## Compile requirements files
 	pip-compile requirements/base.in
 	pip-compile requirements/dev.in
-	pip-compile requirements/samples.in
+	pip-compile requirements/examples.in
 
 pip-up: ## Update requirements files
 	pip-compile --upgrade requirements/base.in
 	pip-compile --upgrade requirements/dev.in
-	pip-compile --upgrade requirements/samples.in
+	pip-compile --upgrade requirements/examples.in
 
 install-dev: ## * Install dev requirements
 	pip install -e .
 	pip install -r requirements/dev.txt
 
-install-samples: ## Install samples requirements
+install-examples: ## Install examples requirements
 	pip install -e .
-	pip install -r requirements/samples.txt
+	pip install -r requirements/examples.txt
 
 clean-logs:  ## Remove all log & RF report files
 	rm *.log log.html output.xml report.html || true

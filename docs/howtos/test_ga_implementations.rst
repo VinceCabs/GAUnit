@@ -43,14 +43,15 @@ Set up a proxy to record network trafic in HAR and create a webdriver using this
     # 'useEcc' is needed to have decent response time with HTTPS
     proxy = server.create_proxy({"useEcc": True})
 
-    proxy.new_har("demo_store_add_to_cart")
+    # 'captureContent' for POST requests
+    proxy.new_har("demo_store_add_to_cart", options={"captureContent": True})
 
     options = webdriver.ChromeOptions()
     options.add_argument("--proxy-server=%s" % proxy.proxy)
     # options.add_argument("--headless")  # uncomment if you want headless Chrome
     capabilities = webdriver.DesiredCapabilities.CHROME.copy()
     capabilities["acceptInsecureCerts"] = True
-    driver = webdriver.Chrome(chrome_options=options, desired_capabilities=capabilities)
+    driver = webdriver.Chrome(options=options, desired_capabilities=capabilities)
 
 But now it gets different from a full automated test case; let's use a dialog box to pause 
 execution and give hand to the user until he or she says:
@@ -90,4 +91,4 @@ The code to run after the user presses 'OK' is: export har, close all, check eve
 
 .. note::
 
-   Full source code can be found on Github: `GAUnit manual test session <https://github.com/VinceCabs/GAUnit/tree/master/samples/manual_test_session>`_
+   Full source code can be found on Github: `GAUnit manual test session <https://github.com/VinceCabs/GAUnit/tree/master/examples/manual_test_session>`_

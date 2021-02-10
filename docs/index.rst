@@ -66,7 +66,7 @@ Run a selenium test case, export har and check it against your expected tracking
    import gaunit
 
    # Run your Selenium test here and export har
-   # (see Documentation or samples for more details)
+   # (see Documentation or examples for more details)
    # ...
 
    # create your tracking plan from dict, JSON files or Google Sheets

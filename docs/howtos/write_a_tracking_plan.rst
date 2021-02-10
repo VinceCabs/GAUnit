@@ -82,7 +82,7 @@ Now, we can open the Spreadsheet and import it with :meth:`~gaunit.TrackingPlan.
 .. note::
 
     Full source code can be found on Github:
-    `Tracking Plan from Gsheet sample <https://github.com/VinceCabs/GAUnit/tree/master/samples/tracking_plan_from_gsheet>`_
+    `Tracking Plan from Gsheet sample <https://github.com/VinceCabs/GAUnit/tree/master/examples/tracking_plan_from_gsheet>`_
 
 
 In Python

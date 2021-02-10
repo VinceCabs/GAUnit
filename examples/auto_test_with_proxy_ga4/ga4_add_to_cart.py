@@ -18,7 +18,7 @@ def run():
     # set up proxy
     server = Server()  # or add path to binary: 'Server(path="browsermob-proxy")'
     server.start()
-    # 'useEcc' is needed to have decent response time with HTTPS
+    # require 'useEcc' for decent response time with HTTPS
     proxy = server.create_proxy({"useEcc": True})
 
     # set up Geckodriver/Firefox
@@ -33,18 +33,18 @@ def run():
     # options.add_argument("--headless")  # uncomment if you want headless Chrome
     capabilities = webdriver.DesiredCapabilities.CHROME.copy()
     capabilities["acceptInsecureCerts"] = True
-    driver = webdriver.Chrome(chrome_options=options, desired_capabilities=capabilities)
+    driver = webdriver.Chrome(options=options, desired_capabilities=capabilities)
 
     # start test case
     driver.implicitly_wait(10)
-    test_case = "ga_demo_store_add_to_cart"
-    proxy.new_har(test_case)
-    driver.get("https://enhancedecommerce.appspot.com/")
-    # sleep(2)
-    driver.find_element_by_id("homepage-9bdd2-1").click()
-    # sleep(2)
-    driver.find_element_by_id("addToCart").click()
-    # sleep(2)
+    test_case = "ga4_add_to_cart"
+    # 'captureContent' for POST requests
+    proxy.new_har(test_case, options={"captureContent": True})
+    driver.get("https://vincecabs.github.io/ga4_with_gtag_js/")
+    sleep(2)
+    driver.find_element_by_id("add_to_cart").click()
+    driver.find_element_by_id("login").click()
+    sleep(3)
 
     # export har and close all
     har = proxy.har
@@ -53,7 +53,7 @@ def run():
 
     # uncomment if you need to export the har
     # with open(
-    #     join(abspath(dirname(__file__)), test_case), "w", encoding="utf8"
+    #     join(abspath(dirname(__file__)), test_case) + ".har", "w", encoding="utf8"
     # ) as f:
     #     json.dump(har, f)
 

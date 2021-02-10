@@ -1,12 +1,16 @@
 """"
-Automatic test with proxy
+Open a manual test session
 
-Code sample: an "add to cart" scenario using Selenium and a proxy to automatically test 
-tracking on Google online store demo.
+Code sample: opens a new browser session and records a har. At the end of the session, 
+it checks the har against tracking plan. Tracking plan is the "add to cart" scenario on 
+Google online store demo described in GAUnit Documentation: 
+https://gaunit.readthedocs.io/en/latest/tutorial.html
 """
 import json
 from os.path import abspath, dirname, join
 from time import sleep
+from tkinter import messagebox
+
 
 import gaunit
 from browsermobproxy import Server
@@ -33,17 +37,19 @@ def run():
     # options.add_argument("--headless")  # uncomment if you want headless Chrome
     capabilities = webdriver.DesiredCapabilities.CHROME.copy()
     capabilities["acceptInsecureCerts"] = True
-    driver = webdriver.Chrome(chrome_options=options, desired_capabilities=capabilities)
+    driver = webdriver.Chrome(options=options, desired_capabilities=capabilities)
 
     # start test case
     driver.implicitly_wait(10)
-    test_case = "ga4_add_to_cart"
-    proxy.new_har(test_case, {"captureContent": True})
-    driver.get("https://vincecabs.github.io/ga4_with_gtag_js/")
-    sleep(2)
-    driver.find_element_by_id("add_to_cart").click()
-    driver.find_element_by_id("login").click()
-    sleep(3)
+    test_case = "demo_store_add_to_cart"
+    # 'captureContent' for POST requests
+    proxy.new_har(test_case, options={"captureContent": True})
+    driver.get("https://enhancedecommerce.appspot.com/")
+
+    messagebox.showinfo(
+        "Manual browsing mode",
+        "Recording network trafic. Browse site, then press 'OK' when you're finished",
+    )
 
     # export har and close all
     har = proxy.har
@@ -51,16 +57,15 @@ def run():
     driver.quit()
 
     # uncomment if you need to export the har
-    with open(
-        join(abspath(dirname(__file__)), test_case) + ".har", "w", encoding="utf8"
-    ) as f:
-        json.dump(har, f)
+    # with open(
+    #     join(abspath(dirname(__file__)), test_case) + ".har", "w", encoding="utf8"
+    # ) as f:
+    #     json.dump(har, f)
 
-    # check hits against tracking plan and print results
+    # check events against tracking plan and print results
     path = join(abspath(dirname(__file__)), "tracking_plan.json")
     tracking_plan = gaunit.TrackingPlan.from_json(path)
     r = gaunit.check_har(test_case, tracking_plan, har=har)
-    print(r.actual_events)
 
     r.print_result(display_ok=True)
 

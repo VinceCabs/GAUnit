@@ -64,16 +64,16 @@ Create a BrowserMob Proxy server and activate it:
 .. code:: python
 
    # set up proxy
-   server = Server()  # or add path to binary: 'Server(path="browsermob-proxy")'
+   server = Server()
    server.start()
    # 'useEcc' is needed to have decent response time with HTTPS
    proxy = server.create_proxy({"useEcc": True})
 
-Set BrowserMob Proxy to record a new har:
+Set BrowserMob Proxy to record network traffic in a new har:
 
 .. code:: python
 
-   proxy.new_har("demo_store_add_to_cart")
+   proxy.new_har("demo_store_add_to_cart", options={"captureContent": True})
 
 Create a webdriver and configure it to use the newly created proxy:
 
@@ -81,10 +81,9 @@ Create a webdriver and configure it to use the newly created proxy:
 
    options = webdriver.ChromeOptions()
    options.add_argument("--proxy-server=%s" % proxy.proxy)
-   # options.add_argument("--headless")  # uncomment if you want headless Chrome
    capabilities = webdriver.DesiredCapabilities.CHROME.copy()
    capabilities["acceptInsecureCerts"] = True
-   driver = webdriver.Chrome(chrome_options=options, desired_capabilities=capabilities)
+   driver = webdriver.Chrome(options=options, desired_capabilities=capabilities)
 
 Write the test case we described earlier (see :ref:`getting_started__the_scenario`) with Selenium API: 
 
@@ -118,4 +117,4 @@ Check the har (code is almost the same as in :ref:`getting_started__manual_test`
 
 .. note::
 
-   Full source code can be found on Github: `GAUnit automatic test sample <https://github.com/VinceCabs/GAUnit/tree/master/samples/auto_test_with_proxy>`_
+   Full source code can be found on Github: `GAUnit automatic test sample <https://github.com/VinceCabs/GAUnit/tree/master/examples/auto_test_with_proxy>`_
