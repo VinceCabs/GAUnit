@@ -9,6 +9,25 @@ Check a HAR file from command line
 
 See :ref:`command__gaunit` shell command.
 
+Automated testing for GA4 implementations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you followed :ref:`getting_started__automatic_test` tutorial in *Getting Started* section, you already know
+how to build full automated tests for GA and GA4 implementations. But at the time of writing this documention, 
+there is no proper GA4 Demo website we know of, so the tutorial above is based on a simple Google Analytics (not GA4) demo website from Google.
+
+This said, **you might want to test GAUnit with a real GA4 implementation anyway**, and we totally understand that!
+
+Don't worry, we have built a very simple demo website with GA4 implementation and we provide you with a full working GAUnit example:
+
+- Demo website: https://vincecabs.github.io/ga4_with_gtag_js/
+- full working example on Github: https://github.com/VinceCabs/GAUnit/blob/master/examples/auto_test_with_proxy_ga4/
+
+.. note::
+
+    As said just above, except for events parameters which are different, **there is no difference between GA and GA4 testing with GAUnit**.
+    If you are here to learn how to test GA and GA4 implementations, be sure to follow :ref:`tutorial` tutorial.
+
 Launch a manual browsing session to check events
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
