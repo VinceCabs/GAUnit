@@ -123,13 +123,13 @@ class test_utils(unittest.TestCase):
     def test_load_dict_xor_json_too_many_args(self):
         d = {"dummy": "dummy"}
         json_path = "dummy.json"
-        with self.assertRaises(ValueError):
+        with self.assertRaises(gaunit.exceptions.DictXORJsonPathError):
             gaunit.utils.load_dict_xor_json(d, json_path)
 
     def test_load_dict_xor_json_no_args(self):
         d = None
         json_path = None
-        with self.assertRaises(ValueError):
+        with self.assertRaises(gaunit.exceptions.DictXORJsonPathError):
             gaunit.utils.load_dict_xor_json(d, json_path)
 
     # def get_ga_request_type(self):
