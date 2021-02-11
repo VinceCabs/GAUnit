@@ -41,11 +41,11 @@ def run():
     # 'captureContent' for POST requests
     proxy.new_har(test_case, options={"captureContent": True})
     driver.get("https://enhancedecommerce.appspot.com/")
-    # sleep(2)
+    sleep(2)
     driver.find_element_by_id("homepage-9bdd2-1").click()
-    # sleep(2)
+    sleep(2)
     driver.find_element_by_id("addToCart").click()
-    # sleep(2)
+    sleep(2)
 
     # export har and close all
     har = proxy.har
