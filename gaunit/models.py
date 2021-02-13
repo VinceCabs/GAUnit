@@ -13,6 +13,7 @@ from typing import List, Tuple
 from colorama import Fore, init
 from gspread import Spreadsheet
 
+from .exceptions import TestCaseCheckError, TrackingPlanError
 from .utils import (
     format_events,
     get_ga_requests_from_browser_perf_log,
@@ -34,12 +35,18 @@ class TrackingPlan(object):
 
         Args:
             test_case_id (str):  test case id
+
+        Raises:
+            TrackingPlanError: if test case is not found in tracking plan
         """
-        events = self.content[test_case_id]["events"]
-        if events:
-            return events
-        else:
-            raise Exception("test case not found in tracking plan: '%s'" % test_case_id)
+        try:
+            tc = self.content[test_case_id]
+        except KeyError:
+            raise TrackingPlanError(
+                "test case not found in tracking plan: '%s'" % test_case_id
+            )
+        events = tc["events"]
+        return events
 
     @classmethod
     def from_events(
@@ -56,10 +63,6 @@ class TrackingPlan(object):
         Args:
             test_case_id (str): [description]
             expected_events (list[Dict]): [description]
-
-        Raises:
-            KeyError: [description]
-            AttributeError: [description]
 
         Returns:
             TrackingPlan: [description]
@@ -82,7 +85,7 @@ class TrackingPlan(object):
             path (str): path to JSON file representing the tracking plan
 
         Raises:
-            KeyError: if format is not valid
+            TrackingPlanError: if tracking plan format is not valid
 
         Returns:
             TrackingPlan: tracking plan to be used in a test case
@@ -99,7 +102,9 @@ class TrackingPlan(object):
             return tp
         except KeyError:
             # TODO custom Exceptions
-            raise KeyError("tracking plan is not valid (see Documentation) '%s'" % path)
+            raise TrackingPlanError(
+                "Tracking plan is not valid (see Documentation) '%s'" % path
+            )
 
     @classmethod
     def from_spreadsheet(cls, sheet: Spreadsheet) -> TrackingPlan:
@@ -185,8 +190,9 @@ class TrackingPlan(object):
             d = {test_case_id: {"events": expected_events}}
             self.content.update(d)
         except AttributeError:
-            raise AttributeError(
-                "no proper format for expected events: %s" % expected_events
+            raise TypeError(
+                "Invalid events type: '%s'. Please provide a list of events"
+                % expected_events
             )
 
     def update_test_case(self, test_case_id: str, expected_events: List[dict]):
@@ -239,16 +245,19 @@ class TestCase(object):
         # Default empty dicts/lists for dict/lists params.
         har = {} if har is None else har
         perf_log = [] if perf_log is None else perf_log
+
         self.id = id  # test case name
-        try:
+        if isinstance(tracking_plan, TrackingPlan):
             self.expected_events = tracking_plan.get_expected_events(self.id)
-        except AttributeError:
-            raise AttributeError(
-                "tracking plan argument is not valid: %s" % tracking_plan
+        else:
+            raise TypeError(
+                "Invalid tracking plan type: '%s'. Please provide a 'TrackingPlan' instance."
+                % tracking_plan
             )
         self.actual_events = []
 
-        self.har = {}  # for debug, will be killed soon
+        self.har = har  # for debug, will be killed soon
+        self.perf_log = perf_log
         # self.page_flow = [] # will store urls from pages TODO
         # self.page_flow_ids = [] # will store har ids for pages
         if har or har_path:
@@ -267,8 +276,6 @@ class TestCase(object):
             har (dict, optional): [description]. Defaults to None.
             har_path (str, optional): [description]. Defaults to None.
 
-        Raises:
-            ValueError: if zero or two arguments are given.
         """
 
         har = load_dict_xor_json(har, har_path)
@@ -300,6 +307,7 @@ class TestCase(object):
         urls = get_ga_requests_from_browser_perf_log(perf_log)
         events = [parse_ga_url(url) for url in urls]
 
+        self.perf_log = perf_log
         self.actual_events = events
 
     def check(self, ordered=True) -> Tuple[list, list]:
@@ -311,8 +319,7 @@ class TestCase(object):
                 order (default behavior)
 
         Raises:
-            Exception: if something's missing (tracking plan, test case log entries or
-                analytics events)
+            TestCaseCheckError: if no valid HAR or Perf log were provided before check
 
         Returns:
             Tuple[list, list]: 2 checklists:
@@ -322,30 +329,27 @@ class TestCase(object):
         """
 
         # check if everything needed is defined
-        message = "tried to check tracking but something is missing: %s"
-        missing = []
-        if not self.expected_events:
-            missing.append("tracking plan")
-        if missing:
-            raise Exception(message % ", ".join(missing))
-        if not self.actual_events:
-            raise Exception("no actual analytics event found in log")
+        if not self.har and not self.perf_log:
+            raise TestCaseCheckError(
+                "HAR and Perf log are both missing or empty. Please load one before performing a check"
+            )
 
         # start checking
         expected = self.expected_events
         actual = self.actual_events
         chklst_expected = []
         chklst_actual = [False] * len(actual)
-        pos = 0  # position of last checked hit
+        pos = 0  # last checked hit position
         for t in expected:
             check = False
             for index, hit in enumerate(actual[pos:]):
                 if t.items() <= hit.items():
-                    # expected event is present : all params are there
+                    # expected event found: all params are there
                     check = True
                     chklst_actual[pos + index] = True
                     if ordered:
-                        pos += index  # if we want hits to respect tracking plan order (default)
+                        # update last checked hit position to respect tracking plan order (default)
+                        pos += index
                     break
                 # expected event is not here
             chklst_expected.append(check)

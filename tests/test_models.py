@@ -47,7 +47,7 @@ class test_TrackingPlan(unittest.TestCase):
         events = []
         tp = gaunit.TrackingPlan()
         tp.add_test_case("not_my_test_case", events)
-        with self.assertRaises(Exception):
+        with self.assertRaises(gaunit.exceptions.TrackingPlanError):
             tp.get_expected_events("home_engie")
 
     def test_get_expected_events_OK(self):
@@ -88,7 +88,7 @@ class test_TestCase(unittest.TestCase):
         self.tc = gaunit.TestCase("home_engie", tp)
 
     def test_constructor_tracking_plan_wrong_type(self):
-        with self.assertRaises(AttributeError):
+        with self.assertRaises(TypeError):
             gaunit.TestCase("home_engie", "wrong")
 
     def test_load_har_ok(self):

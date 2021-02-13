@@ -9,6 +9,8 @@ import sys
 from typing import Tuple
 from urllib.parse import parse_qs, unquote, urlparse
 
+from .exceptions import DictXORJsonPathError
+
 
 def open_json(json_path) -> dict:
     """convert JSON file into a dict"""
@@ -133,11 +135,11 @@ def load_dict_xor_json(d: dict, json_path: str) -> dict:
         dict : d XOR dict with json file content
 
     Raises:
-        ValueError: if zero or two arguments are given
+        DictXORJsonPathError: if zero or two arguments are given
     """
     # both arguments
     if d and json_path:
-        raise ValueError(
+        raise DictXORJsonPathError(
             "too many arguments (dict and json_path). only one argument must be given"
         )
     # dict load
@@ -149,7 +151,9 @@ def load_dict_xor_json(d: dict, json_path: str) -> dict:
         return j
     # no arguments
     else:
-        raise ValueError("arguments given are both empty (dict or JSON file path)")
+        raise DictXORJsonPathError(
+            "arguments given are both empty (dict or JSON file path)"
+        )
 
 
 def parse_ga_url(url: str) -> dict:
