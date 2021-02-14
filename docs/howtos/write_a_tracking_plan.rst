@@ -12,8 +12,8 @@ Bear in mind that what we call a *tracking plan* here defines the *expected even
 with a JSON file 
 ^^^^^^^^^^^^^^^^^
 
-See :ref:`getting_started__write_your_tracking_plan` from *Getting Started* section to get an example 
-of a ``tracking_plan.json`` file.
+See :ref:`getting_started__write_your_tracking_plan` from *Getting Started* section and to see how to create a
+``tracking_plan.json`` JSON file.
 
 You can then import the file with these 2 lines of code:
 
@@ -51,8 +51,8 @@ This Spreadsheet publicly is available `here <https://docs.google.com/spreadshee
 Create a Python file where you will import the Google Spreadsheet.
 For example, name it ``demo_store_add_to_cart.py``.
 
-First, we need to authenticate with gspread. Have a look at documentation 
-(`gspread authentication <https://gspread.readthedocs.io/en/latest/oauth2.html>`_) to choose the method that suits you.
+First, you need to authenticate with gspread. Have a look at gspread documentation on
+(`authentication <https://gspread.readthedocs.io/en/latest/oauth2.html>`_) to choose the method that suits you best.
 In this example, we use *Service Account* authentication :
 
 .. code:: python
@@ -85,7 +85,7 @@ Now, we can open the Spreadsheet and import it with :meth:`~gaunit.TrackingPlan.
     `Tracking Plan from Gsheet sample <https://github.com/VinceCabs/GAUnit/tree/master/examples/tracking_plan_from_gsheet>`_
 
 
-In Python
+With Python
 ^^^^^^^^^^^^
 
 This is very simple. Two methods can help you here: 
@@ -93,7 +93,7 @@ This is very simple. Two methods can help you here:
 - :meth:`~gaunit.TrackingPlan.from_events()` which returns a :class:`~gaunit.TrackingPlan`
 - :meth:`~gaunit.TrackingPlan.add_test_case()` which adds a test case to an existing instance of :class:`~gaunit.TrackingPlan`
 
-We will see them both. First, write the expected events for your test case 
+We will see them both. First, write the *expected events* for your test case 
 called ``demo_store_add_to_cart`` in a list:
 
 .. code:: python

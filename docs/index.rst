@@ -12,9 +12,11 @@ Welcome to GAUnit's documentation!
    :target: https://gaunit.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 
-GAUnit is a Python library for testing Google Analytics implementations.
+GAUnit is a Python library used for Google Analytics implementations testing.
 
-It is designed to be used within your pipelines in various environments such as traditional websites, Single Page Applications or Mobile Apps.
+It is designed to be used within your pipelines in various environments such as traditional websites or Single Page Applications.
+
+GAUnit is compatible for `GA4 <https://developers.google.com/analytics/devguides/collection/ga4>`_.
 
 Features
 ---------------
@@ -38,7 +40,7 @@ Use pip:
 
    pip install gaunit
 
-Get a glimpse
+Usage
 --------------
 
 Let's say you have a new video player on your product page and you want 
@@ -57,7 +59,9 @@ to check if the right Google Analytics event is sent when the user clicks on "Pl
          "ea": "Play"
       }
    ]
-   
+
+Run an automated test with Python
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Run a selenium test case, export har and check it against your expected tracking plan:
 
@@ -119,14 +123,12 @@ Usage
 Reference & documentation
 ---------------------------------------------------------------
 
-Full reference & doc : GAUnit API, classes, tracking plan
-
 .. toctree::
    :maxdepth: 2
 
    command
    api
-   trackingplan
+   tracking_plan
 
 Background / Explanation
 -----------------------------

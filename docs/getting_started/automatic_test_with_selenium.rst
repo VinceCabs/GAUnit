@@ -7,7 +7,7 @@ Automatic test with Selenium 🚀
 
 What if we could automate the whole process?
 
-- browse on the site
+- browse your website
 - record all GA events
 - check the events against the tracking plan
 
@@ -25,11 +25,13 @@ BrowserMob Proxy to intercept Google Analytics events.
 
    pip install selenium browsermob-proxy
 
-- Download `BrowserMob Proxy latest release <https://github.com/lightbody/browsermob-proxy/releases/latest>`_ (note: requires `Java <https://www.oracle.com/java/technologies/javase-jre8-downloads.html>`_).
+- Install BrowserMob Proxy: 
+   - Download `BrowserMob Proxy latest release <https://github.com/lightbody/browsermob-proxy/releases/latest>`_ (note: requires `Java <https://www.oracle.com/java/technologies/javase-jre8-downloads.html>`_).
    - unzip it where convenient for you
    - add the ``bin/`` directory to your ``%PATH``
 
-- Download `ChromeDriver <https://sites.google.com/a/chromium.org/chromedriver/downloads>`_
+- Download ChromeDriver:
+   - Download `ChromeDriver <https://sites.google.com/a/chromium.org/chromedriver/downloads>`_ (choose the right version)
    - unzip it where convenient for you
    - add it to your ``%PATH`` or copy it in your working directory (more details `here <https://selenium-python.readthedocs.io/installation.html#drivers>`_)
 
@@ -101,7 +103,7 @@ Export har in a Python dict and close all.
    server.stop()
    driver.quit()
 
-Check the har (code is almost the same as in :ref:`getting_started__manual_test`)
+Now, let’s :meth:`~gaunit.check_har()` and print the result:
 
 .. code:: python
 

@@ -4,7 +4,7 @@ Write your tracking plan 📑
 ------------------------------
 
 GAUnit offers various ways to define a *tracking plan*. Below, you will
-use a JSON file. You could also use Google Sheet or Python dictionary to define which
+use a JSON file. You could also use Google Sheets or Python dictionaries to define which
 events you expect for your test case, but that's for later (see :ref:`howtos`).
 
 First, create a ``tracking_plan.json`` file where you specify the expected 
@@ -44,7 +44,7 @@ Few remarks here:
 - For this test case, you expect at least 3 events: 
    - the ``Home`` page view, 
    - the ``Product View`` page view,
-   - the ``Add To Cart`` click (with event value and product price)
+   - the ``Add To Cart`` click (with event value ``"ev"`` and product price ``"pr1pr"``)
 
 .. note::
 

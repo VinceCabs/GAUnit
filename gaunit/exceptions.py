@@ -6,7 +6,7 @@ class GAUnitException(Exception):
 
 
 class TrackingPlanError(GAUnitException):
-    """TrackingPlan is invalid"""
+    """Failed to instantiate :class:`~gaunit.TrackingPlan` or :class:`~gaunit.TrackingPlan` is invalid"""
 
 
 class DictXORJsonPathError(GAUnitException):

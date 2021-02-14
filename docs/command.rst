@@ -19,7 +19,7 @@ directory on Github.
 
 .. seealso::
 
-    :ref:`tutorial`
+    :ref:`getting_started`
 
 .. _command__gaunit:
 
@@ -119,7 +119,7 @@ Get GAUnit version:
 --------------------------
 
 This command takes a HAR file, extracts all Google Analytics events and
-prints them in the console (Python dict format). You can filter parameters.
+prints them in the console (Python dict format). You can also filter events parameters.
 
 Purposes of this command are :
 
@@ -140,7 +140,9 @@ Optional arguments
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 ``--filter``, ``-f``
-    list of events parameters you want to extract, seperated by a space (other params are filtered out). Example: ``--filter a b c``
+    List of events parameters you want to extract, separated by a space character (``--filter a b c``).
+    Other parameters are filtered out. 
+    
 
 Examples
 ^^^^^^^^^^^^^^

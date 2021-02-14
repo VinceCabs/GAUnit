@@ -9,7 +9,7 @@ from .models import Result, TestCase, TrackingPlan
 def check_har(
     test_case_id: str, tracking_plan: TrackingPlan, har=None, har_path=None
 ) -> Result:
-    """Performs checks of a har dict or HAR JSON file against a tracking plan
+    """Performs checks of a har dict or HAR JSON file against a :class:`~gaunit.TrackingPlan`.
 
     Example:
         >>> expected_events = [{"t":"pageview","dt":"home"},...]
@@ -21,18 +21,15 @@ def check_har(
         >>> r.was_sucessful()
         True
 
-    See also :
-        :func:`gaunit.check_perf_log`
-
     Args:
         test_case_id (str): test case id (same id used to match with tracking plan)
-        tracking_plan (TrackingPlan): tracking plan containing expected events for this
+        tracking_plan (:class:`~gaunit.TrackingPlan`): tracking plan containing expected events for this
             test case. Defaults to None
         har (dict): actual har for this test case in dict format. Defaults to None
         har_path (str) : path to HAR file for this test case (standard HAR JSON). Defaults to None
 
     Note:
-        one and one only argument must be given: ``har`` or ``har_path``
+        One and one only argument must be given: ``har`` or ``har_path``
 
     Returns:
         :class:`gaunit.Result`: complete results of your test case.
@@ -44,25 +41,21 @@ def check_har(
 def check_perf_log(
     test_case_id: str, tracking_plan: TrackingPlan, perf_log: list
 ) -> Result:
-    """Performs checks of a Performance log against a tracking plan
+    """Performs checks of a Performance log against a :class:`~gaunit.TrackingPlan`.
 
-    For more info on Performance Log and how to get it, see
-    https://chromedriver.chromium.org/logging/performance-log
 
-    See also :
-        :func:`gaunit.check_har`
+    Warning:
+        Performance logs do not record POST requests (massively used with GA4 and soon, according to
+        Google, with gtag.js). This method will be
+        deprecated in future versions. We advise you to use :func:`gaunit.check_har` instead
 
     Example:
-        >>> perf_log = driver.get_log("performance")  # selenium driver
-        >>> r = gaunit.check_perf_log("my_test_case", tracking_plan, perf_log)
-        >>> r.checklist_expected_events
-        [True, True]
-        >>> r.was_sucessful()
-        True
+        See full example on Github
+        `here <https://github.com/VinceCabs/GAUnit/tree/master/examples/auto_test_with_perf_log>`_.
 
     Args:
         test_case_id (str): test case id (same id used to match with tracking plan)
-        tracking_plan (TrackingPlan): tracking plan containing expected events for this
+        tracking_plan (:class:`~gaunit.TrackingPlan`): tracking plan containing expected events for this
             test case. Defaults to None
         perf_log (list): log entries from driver
 

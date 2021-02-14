@@ -2,7 +2,7 @@
 Getting Started
 
 Code sample: This is the code from the "Getting Started" GAUnit Documentation : 
-https://gaunit.readthedocs.io/en/latest/tutorial.html
+https://gaunit.readthedocs.io/en/latest/getting_started.html
 """
 import gaunit
 

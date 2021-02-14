@@ -4,7 +4,7 @@ Open a manual test session
 Code sample: opens a new browser session and records a har. At the end of the session, 
 it checks the har against tracking plan. Tracking plan is the "add to cart" scenario on 
 Google online store demo described in GAUnit Documentation: 
-https://gaunit.readthedocs.io/en/latest/tutorial.html
+https://gaunit.readthedocs.io/en/latest/getting_started.html
 """
 import json
 from os.path import abspath, dirname, join
