@@ -18,6 +18,58 @@
 
 ### Features
 
-* **example:** add manual browsing session sample ([fcbc686](https://github.com/engie-b2c-perf/ga-unit/commit/fcbc6862ccf53b089884afd6dc8be467e5b98ae0))
+* **examples:** add manual browsing session sample ([fcbc686](https://github.com/engie-b2c-perf/ga-unit/commit/fcbc6862ccf53b089884afd6dc8be467e5b98ae0))
+* **cli:** add description to shell commands
 
 
+
+## [0.3.2](https://github.com/engie-b2c-perf/ga-unit/compare/v0.3.1...v0.3.2) (2021-01-25)
+
+
+### Features
+
+* **models:** add export tracking plan to JSON method: `TrackingPlan.to json()`
+* **docs:** add more examples in docstrings
+
+### Bug Fixes
+
+* **models:** fix `TrackingPlan.from_events()` method
+
+### BREAKING CHANGES
+
+* **models:** remove `expected_events=` parameter in `TrackingPlan` constructor
+* **api:** adapt api to change above
+
+
+
+## [0.3.1](https://github.com/engie-b2c-perf/ga-unit/compare/v0.3.0...v0.3.1) (2021-01-08)
+
+### Features
+
+* **examples:** add import tracking plan from gsheet
+* **examples:** all samples rely on enhanced e-commerce demo website
+
+### BREAKING CHANGES
+
+* **models:** simplify `TrackingPlan()` constructor
+* **models:** add `TrackingPlan.add_test_case()` alias method to add or update test cases
+* **models:** add `TestCase.was_succesful()` method
+* require Python 3.7+
+
+
+
+## [0.3.0](https://github.com/engie-b2c-perf/ga-unit/compare/v0.2.1...v0.3.0) (2021-01-05)
+
+### Features
+
+* **models:** accept numbers in tracking plan
+* **cli:** new `gaextract`command
+
+### Bug Fixes
+
+* **models:** process events parameters to manage numbers and URL encoding
+
+### BREAKING CHANGES
+
+* **models:** add `TrackingPlan` class for more import capabilities
+* **cli:** much better cli ( output, arguments, exit code, etc.)
