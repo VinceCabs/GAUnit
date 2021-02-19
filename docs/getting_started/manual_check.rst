@@ -7,7 +7,7 @@ Manual Check 🚗
 
 In this part you will get a grasp on how GAUnit works. 
 
-You will export network traffic recorded in the Chrome console in a HAR file.
+You will export network traffic recorded from the Chrome console in a HAR file.
 Then, **you will use GAUnit to check if tracking plan is OK**.
 
 .. note::
@@ -51,8 +51,8 @@ Check if Google Analytics events are OK
 
 **Almost done!**
 
-You will write a simple Python script to check if the expected events (defined in
-tracking plan) were fired.
+You will write a simple Python script to check if the *expected events* (defined in
+*tracking plan*) were fired.
 
 Create a new ``demo_store_add_to_cart.py`` Python file.
 
@@ -61,8 +61,7 @@ Create a new ``demo_store_add_to_cart.py`` Python file.
    Use this command at each step to run the file: 
    ``python demo_store_add_to_cart.py``
 
-First, add these lines to create a :class:`~gaunit.TrackingPlan` and import  
-the ``tracking_plan.json`` file you wrote ealier.
+First, add these lines to create a :class:`~gaunit.TrackingPlan`. 
 
 .. code:: Python
 
@@ -70,8 +69,10 @@ the ``tracking_plan.json`` file you wrote ealier.
    
    tracking_plan = gaunit.TrackingPlan.from_json("tracking_plan.json")
 
-*Optional*: print the events for your test case with 
-:meth:`~gaunit.TrackingPlan.get_expected_events()`
+This will import the ``tracking_plan.json`` file you wrote ealier.
+
+Have a look at the events now contained in your test case with 
+:meth:`~gaunit.TrackingPlan.get_expected_events()`:
 
 .. code:: Python
 
@@ -106,7 +107,7 @@ bool ``True`` or ``False``. But you can get more details on the test. For exampl
    # Pretty print the result of the test (and display all events)
    r.print_result(display_ok=True)
 
-This last line shall print this in console:
+This last line shall print this in your console:
 
 .. image:: ../img/print_result.jpg
 
@@ -114,7 +115,7 @@ This last line shall print this in console:
 
 .. note::
 
-   Full source code can be found on Github: `GAUnit Getting started sample <https://github.com/VinceCabs/GAUnit/tree/master/samples/getting_started>`_
+   Full source code can be found on Github: `GAUnit Getting started sample <https://github.com/VinceCabs/GAUnit/tree/master/examples/getting_started>`_
 
 Bonus: do the same with command line
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -1,4 +1,4 @@
-.. _trackingplan:
+.. _tracking_plan:
 
 Tracking Plan Documentation (WIP)
 =================================

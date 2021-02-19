@@ -5,7 +5,7 @@ How Tos
 =================
 
 In this part, we assume you already have the basics of GAUnit. If not,
-we advise to read the :ref:`tutorial` section.
+we advise you to read the :ref:`getting_started` section.
 
 .. toctree::
     :maxdepth: 2

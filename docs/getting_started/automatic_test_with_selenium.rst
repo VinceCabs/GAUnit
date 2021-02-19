@@ -7,7 +7,7 @@ Automatic test with Selenium 🚀
 
 What if we could automate the whole process?
 
-- browse on the site
+- browse your website
 - record all GA events
 - check the events against the tracking plan
 
@@ -25,11 +25,13 @@ BrowserMob Proxy to intercept Google Analytics events.
 
    pip install selenium browsermob-proxy
 
-- Download `BrowserMob Proxy latest release <https://github.com/lightbody/browsermob-proxy/releases/latest>`_ (note: requires `Java <https://www.oracle.com/java/technologies/javase-jre8-downloads.html>`_).
+- Install BrowserMob Proxy: 
+   - Download `BrowserMob Proxy latest release <https://github.com/lightbody/browsermob-proxy/releases/latest>`_ (note: requires `Java <https://www.oracle.com/java/technologies/javase-jre8-downloads.html>`_).
    - unzip it where convenient for you
    - add the ``bin/`` directory to your ``%PATH``
 
-- Download `ChromeDriver <https://sites.google.com/a/chromium.org/chromedriver/downloads>`_
+- Download ChromeDriver:
+   - Download `ChromeDriver <https://sites.google.com/a/chromium.org/chromedriver/downloads>`_ (choose the right version)
    - unzip it where convenient for you
    - add it to your ``%PATH`` or copy it in your working directory (more details `here <https://selenium-python.readthedocs.io/installation.html#drivers>`_)
 
@@ -64,16 +66,16 @@ Create a BrowserMob Proxy server and activate it:
 .. code:: python
 
    # set up proxy
-   server = Server()  # or add path to binary: 'Server(path="browsermob-proxy")'
+   server = Server()
    server.start()
    # 'useEcc' is needed to have decent response time with HTTPS
    proxy = server.create_proxy({"useEcc": True})
 
-Set BrowserMob Proxy to record a new har:
+Set BrowserMob Proxy to record network traffic in a new har:
 
 .. code:: python
 
-   proxy.new_har("demo_store_add_to_cart")
+   proxy.new_har("demo_store_add_to_cart", options={"captureContent": True})
 
 Create a webdriver and configure it to use the newly created proxy:
 
@@ -81,7 +83,6 @@ Create a webdriver and configure it to use the newly created proxy:
 
    options = webdriver.ChromeOptions()
    options.add_argument("--proxy-server=%s" % proxy.proxy)
-   # options.add_argument("--headless")  # uncomment if you want headless Chrome
    capabilities = webdriver.DesiredCapabilities.CHROME.copy()
    capabilities["acceptInsecureCerts"] = True
    driver = webdriver.Chrome(options=options, desired_capabilities=capabilities)
@@ -102,7 +103,7 @@ Export har in a Python dict and close all.
    server.stop()
    driver.quit()
 
-Check the har (code is almost the same as in :ref:`getting_started__manual_test`)
+Now, let’s :meth:`~gaunit.check_har()` and print the result:
 
 .. code:: python
 
@@ -118,4 +119,4 @@ Check the har (code is almost the same as in :ref:`getting_started__manual_test`
 
 .. note::
 
-   Full source code can be found on Github: `GAUnit automatic test sample <https://github.com/VinceCabs/GAUnit/tree/master/samples/auto_test_with_proxy>`_
+   Full source code can be found on Github: `GAUnit automatic test sample <https://github.com/VinceCabs/GAUnit/tree/master/examples/auto_test_with_proxy>`_

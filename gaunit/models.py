@@ -2,7 +2,7 @@
 gaunit.models
 
 This module implements main classes used by gaunit: :class:`TrackingPlan, 
-:class:`TestCase` and :class:`Result`. 
+:class:`~gaunit.TestCase` and :class:`~gaunit.Result`. 
 """
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ from typing import List, Tuple
 from colorama import Fore, init
 from gspread import Spreadsheet
 
+from .exceptions import TestCaseCheckError, TrackingPlanError
 from .utils import (
     format_events,
     get_ga_requests_from_browser_perf_log,
@@ -26,26 +27,40 @@ from .utils import (
 
 
 class TrackingPlan(object):
+    """User-defined class object representing a :class:`~gaunit.TrackingPlan`.
+
+    Used as an input to perform a check or create a :class:`~gaunit.TestCase`.
+
+    Example:
+        See Documentation :ref:`getting_started` or :ref:`howtos` for more details.
+    """
+
     def __init__(self):
         self.content = {}
 
     def get_expected_events(self, test_case_id: str) -> list:
-        """get expected events for a given test case
+        """Get expected events for a given test case.
 
         Args:
             test_case_id (str):  test case id
+
+        Raises:
+            :exception:`gaunit.TrackingPlanError`: if test case is not found in tracking plan
         """
-        events = self.content[test_case_id]["events"]
-        if events:
-            return events
-        else:
-            raise Exception("test case not found in tracking plan: '%s'" % test_case_id)
+        try:
+            tc = self.content[test_case_id]
+        except KeyError:
+            raise TrackingPlanError(
+                "test case not found in tracking plan: '%s'" % test_case_id
+            )
+        events = tc["events"]
+        return events
 
     @classmethod
     def from_events(
         cls, test_case_id: str, expected_events: List[dict]
     ) -> TrackingPlan:
-        """Creates an instance of :class:`TrackingPlan` from a list of expected events
+        """Creates an instance of :class:`~gaunit.TrackingPlan` from a list of expected events
         (only for one test case)
 
         Example :
@@ -54,15 +69,11 @@ class TrackingPlan(object):
             >>> tracking_plan = TrackingPlan.from_events("my_test_case", expected_events)
 
         Args:
-            test_case_id (str): [description]
-            expected_events (list[Dict]): [description]
-
-        Raises:
-            KeyError: [description]
-            AttributeError: [description]
+            test_case_id (str): test case id
+            expected_events (list[Dict]): expected events for this tests case
 
         Returns:
-            TrackingPlan: [description]
+            :class:`~gaunit.TrackingPlan` instance
         """
         tp = TrackingPlan()
         tp.add_test_case(test_case_id, expected_events)
@@ -70,9 +81,9 @@ class TrackingPlan(object):
 
     @classmethod
     def from_json(cls, path: str) -> TrackingPlan:
-        """creates an instance of :class:`TrackingPlan` from a JSON file
+        """Creates an instance of :class:`TrackingPlan` from a JSON file
 
-        see Documentation for the JSON file format
+        See Documentation for the JSON file format.
 
         Example:
             >>> from gaunit import TrackingPlan
@@ -82,10 +93,10 @@ class TrackingPlan(object):
             path (str): path to JSON file representing the tracking plan
 
         Raises:
-            KeyError: if format is not valid
+            :exception:`gaunit.TrackingPlanError`: if tracking plan format is not valid
 
         Returns:
-            TrackingPlan: tracking plan to be used in a test case
+            :class:`~gaunit.TrackingPlan` instance.
         """
         tp = TrackingPlan()
         d = open_json(path)
@@ -99,13 +110,15 @@ class TrackingPlan(object):
             return tp
         except KeyError:
             # TODO custom Exceptions
-            raise KeyError("tracking plan is not valid (see Documentation) '%s'" % path)
+            raise TrackingPlanError(
+                "Tracking plan is not valid (see Documentation) '%s'" % path
+            )
 
     @classmethod
     def from_spreadsheet(cls, sheet: Spreadsheet) -> TrackingPlan:
-        """creates an instance of :class:`TrackingPlan` from a Google Spreadsheet
+        """Creates an instance of :class:`~gaunit.TrackingPlan` from a Google Spreadsheet.
 
-        This method uses gspread to connect to Google Sheets to import test cases and
+        This method uses gspread to connect to Google Sheets and import test cases and
         expected events. See Documentation for the spreadsheet format.
 
         Examples:
@@ -119,7 +132,7 @@ class TrackingPlan(object):
             sheet (gspread.Spreadsheet): gspread instance of the spreadsheet to import
 
         Returns:
-            TrackingPlan: tracking plan to be used in a test case.
+            :class:`TrackingPlan` instance.
         """
         tp = TrackingPlan()
         worksheets = sheet.worksheets()
@@ -143,9 +156,9 @@ class TrackingPlan(object):
     #     pass
 
     def to_json(self, file: str):
-        """Exports tracking plan into a JSON file
+        """Exports :class:`~gaunit.TrackingPlan` instance into a JSON file.
 
-        Example :
+        Example:
             >>> from gaunit import TrackingPlan
             >>> expected_events = [{"t":"pageview","dt":"home"},...]
             >>> tracking_plan = gaunit.TrackingPlan.from_events("my_test_case", expected_events)
@@ -160,7 +173,7 @@ class TrackingPlan(object):
             json.dump(tracking_plan, f)
 
     def add_test_case(self, test_case_id: str, expected_events: List[dict]):
-        """add or update expected events for a given test case.
+        """Add or update expected events for a given test case.
 
         Example:
 
@@ -171,26 +184,27 @@ class TrackingPlan(object):
 
 
         See also:
-            :func:TrackingPlan.from_events()
+            :func:`TrackingPlan.from_events()`
 
         Args:
             test_case_id (str): id of the test case
             expected_events (List[dict]): list of expected events for the given test case
 
         Raises:
-            AttributeError: if format of expected_events is not valid
+            TypeError: if format of ``expected_events`` is not valid.
         """
         try:
             expected_events = format_events(expected_events)
             d = {test_case_id: {"events": expected_events}}
             self.content.update(d)
         except AttributeError:
-            raise AttributeError(
-                "no proper format for expected events: %s" % expected_events
+            raise TypeError(
+                "Invalid events type: '%s'. Please provide a list of events"
+                % expected_events
             )
 
     def update_test_case(self, test_case_id: str, expected_events: List[dict]):
-        """Simple alias for :func:`add_test_case()`"""
+        """Simple alias for :func:`TrackingPlan.add_test_case()`."""
         self.add_test_case(test_case_id, expected_events)
 
 
@@ -200,32 +214,30 @@ class TestCase(object):
     Used to get results between runned test case and expected tracking plan.
 
     Note:
-        one and one only argument must be given: ``har`` or ``har_path``
+        One and one only argument must be given: ``har`` or ``har_path``
 
-    Example :
+    Example:
         >>> from gaunit import TestCase
         >>> events = [{"t":"pageview","dt":"home"},...]
-        tc = TestCase("my_test_case", expected_events=events)
+        >>> tc = TestCase("my_test_case", expected_events=events)
         >>> r = tc.check_har(har=har)  # or tc.check_har(har_path=path) for a HAR file
-        >>> r.checklist_expected_events
-        [True, True]
         >>> r.was_sucessful()
         True
 
-    Attributes:
-        id (str): test case id (same id used to match with tracking plan)
-        tracking_plan (TrackingPlan): tracking plan containing expected events for this
-            test case. Defaults to None
-        har (dict): actual har for this test case in dict format. Defaults to None
-        har_path (str) : path to HAR file for this test case (standard HAR JSON).
-            Defaults to None.
-        perf_log (list) : browser performance log
+    See also:
+        :func:`gaunit.check_har()` is more straight forward to use.
 
-        actual_events (list) : list of GA events params parsed from HAR or http log
+    Attributes:
+        id (str): Test case id (same id used to match with tracking plan)
+        tracking_plan (:class:`~gaunit.TrackingPlan`): Tracking plan containing expected events for this
+            test case. Defaults to None
+        har (dict): Actual har for this test case in dict format. Defaults to None
+        har_path (str) : Path to HAR file for this test case (standard HAR JSON).
+            Defaults to None.
+        perf_log (list) : Browser performance log
+        actual_events (list) : List of GA events params parsed from HAR or http log
             Each event is represented by a dict of params (same as `expected_events`).
             Example: ``[{"t":"pageview","dt":"home"},...]``
-            note that TestCase.check() will compare ``expected_events`` and
-            ``actual_events``, which makes sense!
     """
 
     def __init__(
@@ -239,16 +251,19 @@ class TestCase(object):
         # Default empty dicts/lists for dict/lists params.
         har = {} if har is None else har
         perf_log = [] if perf_log is None else perf_log
+
         self.id = id  # test case name
-        try:
+        if isinstance(tracking_plan, TrackingPlan):
             self.expected_events = tracking_plan.get_expected_events(self.id)
-        except AttributeError:
-            raise AttributeError(
-                "tracking plan argument is not valid: %s" % tracking_plan
+        else:
+            raise TypeError(
+                "Invalid tracking plan type: '%s'. Please provide a 'TrackingPlan' instance."
+                % tracking_plan
             )
         self.actual_events = []
 
-        self.har = {}  # for debug, will be killed soon
+        self.har = har  # for debug, will be killed soon
+        self.perf_log = perf_log
         # self.page_flow = [] # will store urls from pages TODO
         # self.page_flow_ids = [] # will store har ids for pages
         if har or har_path:
@@ -258,17 +273,15 @@ class TestCase(object):
             self.load_perf_log(perf_log)
 
     def load_har(self, har=None, har_path=None):
-        """extracts and stores analytics hits from a har
+        """Extracts and stores analytics events from a har.
 
-        updates attributes `actual_events` (wip: page_flow).
+        Updates :attr:`actual_events`.
         Takes one and one only argument : dict or path to a json file
 
         Args:
             har (dict, optional): [description]. Defaults to None.
             har_path (str, optional): [description]. Defaults to None.
 
-        Raises:
-            ValueError: if zero or two arguments are given.
         """
 
         har = load_dict_xor_json(har, har_path)
@@ -286,66 +299,67 @@ class TestCase(object):
         # page_flow_ids = get_pages_ids_from_har(har)
 
     def load_perf_log(self, perf_log: list):
-        """extracts and stores analytics events from Performance Log
+        """Extracts and stores analytics events from Performance Log.
 
         For more info on Performance Log, see https://chromedriver.chromium.org/logging/performance-log
 
+        Warning:
+            Performance logs do not record POST requests (massively used with GA4 and soon, according to
+            Google, with gtag.js). This method will be
+            deprecated in future versions. We advise you to use :func:`gaunit.check_har` or
+            :func:`TestCase.load_har` instead.
+
         Args:
             perf_log (list): log entries from ``driver.get_log("performance")``
-
-        See also :
-            :func:`TestCase.load_har`
         """
         # TODO GA4 check that there are no POST methods, otherwise throw an error or warning
         urls = get_ga_requests_from_browser_perf_log(perf_log)
         events = [parse_ga_url(url) for url in urls]
 
+        self.perf_log = perf_log
         self.actual_events = events
 
     def check(self, ordered=True) -> Tuple[list, list]:
         # TODO make private?
-        """compares hits from tracking plan and from log and returns 2 checklists
+        """Compares events from tracking plan and from log and returns 2 checklists.
+
+        Compares :attr:`expected_events` and :attr:`actual_events`, which makes sense!
 
         Args:
             ordered (bool, optional): True if we want hits to respect tracking plan
                 order (default behavior)
 
         Raises:
-            Exception: if something's missing (tracking plan, test case log entries or
-                analytics events)
+            :exception:`gaunit.TestCaseCheckError`: if no valid HAR or Perf log were provided before check
 
         Returns:
-            Tuple[list, list]: 2 checklists:
-                First checklist tells which event in tracking plan is missing
-                Second checklist tells which analytics event from test case corresponds
-                to an expected event
+            Tuple[list, list]: 2 checklists; First checklist tells which event in tracking plan is
+            missing. Second checklist tells which analytics event from test case corresponds
+            to an expected event.
         """
 
         # check if everything needed is defined
-        message = "tried to check tracking but something is missing: %s"
-        missing = []
-        if not self.expected_events:
-            missing.append("tracking plan")
-        if missing:
-            raise Exception(message % ", ".join(missing))
-        if not self.actual_events:
-            raise Exception("no actual analytics event found in log")
+        if not self.har and not self.perf_log:
+            raise TestCaseCheckError(
+                "HAR and Perf log are both missing or empty. Please load one before performing a check"
+            )
 
         # start checking
         expected = self.expected_events
         actual = self.actual_events
         chklst_expected = []
         chklst_actual = [False] * len(actual)
-        pos = 0  # position of last checked hit
+        pos = 0  # last checked hit position
         for t in expected:
             check = False
             for index, hit in enumerate(actual[pos:]):
                 if t.items() <= hit.items():
-                    # expected event is present : all params are there
+                    # expected event found: all params are there
                     check = True
                     chklst_actual[pos + index] = True
                     if ordered:
-                        pos += index  # if we want hits to respect tracking plan order (default)
+                        # update last checked hit position to respect tracking plan order (default)
+                        pos += index
                     break
                 # expected event is not here
             chklst_expected.append(check)
@@ -353,7 +367,7 @@ class TestCase(object):
         return chklst_expected, chklst_actual
 
     def result(self):
-        """performs tracking checks and return a Result class object"""
+        """Performs tracking checks and return a :class:`Result` instance"""
 
         expected, actual = self.check()
         r = Result(self, expected, actual)
@@ -363,17 +377,17 @@ class TestCase(object):
 class Result(object):
     """Let you store, get or print results from a test case in various forms
 
-    Usually, Result will be returned by :class:`TestCase` or main API methods.
+    Usually, :class:`Result` will be returned by main API methods or :func:`TestCase.result()` .
 
     See also :
-        :func:`TestCase.result()`, :func:`gaunit.check_har()`
+        :func:`gaunit.check_har()`, :func:`TestCase.result()`
 
     Attributes:
-        expected_events (list): events from tracking plan
-        actual_events (list): events found during test run
-        checklist_expected_events (list):  checklist of events from tracking plan which
-        are missing (False if missing)
-        checklist_actual_events (list): checklist of events found in log which corresponds
+        expected_events (list): Events from tracking plan
+        actual_events (list): Events found during test run
+        checklist_expected_events (list): Checklist of events from tracking plan which
+            are missing (``False`` if missing)
+        checklist_actual_events (list): Checklist of events found in log which corresponds
                 to an expected event
     """
 
@@ -433,6 +447,38 @@ class Result(object):
         return [{"event": h, "expected": c} for (h, c) in zip(events, chcklst)]
 
     def print_result(self, display_ok=False):
+        """Pretty print result of a test.
+
+        Two parts: prints the expected events that are missing by defaults or all expected events
+        if ``display_ok=True`` then prints a summary.
+
+        Example:
+            >>> from gaunit import TestCase
+            >>> r = gaunit.check_har("my_test_case", "tracking_plan.json", har=har)
+            >>> r.print_result(display_ok=True)
+            events in tracking plan: 3
+            ================================================================================
+            {'t': 'pageview', 'dt': 'Home'}
+                                                                                    ... OK
+            ================================================================================
+            {'t': 'pageview', 'dt': 'Product View'}
+                                                                                    ... OK
+            ================================================================================
+            {'t': 'event',
+            'ec': 'ecommerce',
+            'ea': 'add_to_cart',
+            'ev': '44',
+            'pr1nm': 'Compton T-Shirt',
+            'pr1pr': '44.00'}
+                                                                                    ... OK
+            --------------------------------------------------------------------------------
+            GA events found: total:9 / ok:3 / missing:0
+            ✔ OK: all expected events found
+
+        Args:
+            display_ok (bool, optional): if set to ``True``, print all expected events, not only
+                missing events. Defaults to ``False``.
+        """
         self._print_expected_events(all=display_ok)
         self._print_summary()
 

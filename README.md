@@ -3,9 +3,11 @@
 [![Build Status](https://travis-ci.org/VinceCabs/GAUnit.svg?branch=master)](https://travis-ci.org/VinceCabs/GAUnit)
 [![Documentation Status](https://readthedocs.org/projects/gaunit/badge/?version=latest)](https://gaunit.readthedocs.io/en/latest/?badge=latest)
 
-GAUnit is a Python library for testing Google Analytics implementations.
+GAUnit is a Python library used for Google Analytics implementations testing.
 
-It is designed to be used within your pipelines in various environments such as traditional websites, Single Page Applications or Mobile Apps.
+It is designed to be used within your pipelines in various environments such as traditional websites or Single Page Applications.
+
+GAUnit is compatible for [GA4](https://developers.google.com/analytics/devguides/collection/ga4).
 
 ## Features
 
@@ -46,13 +48,13 @@ expected_events = [
 
 ### Run an automated test with Python
 
-Run a selenium test case, export har and check it against your expected tracking plan:
+Run a selenium test case, export har and check it against your expected *tracking plan^*:
 
 ```python
 import gaunit
 
 # Run your Selenium test here and export har
-# (see Documentation or samples for more details)
+# (see Documentation or examples for more details)
 # ...
 
 # create your tracking plan from dict, JSON files or Google Sheets
@@ -114,9 +116,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENCE) file
 
 ## Acknowledgments
 
-GAUnit was inspired by [WAUnit](https://github.com/joaolcorreia/WAUnit). We decided to create a new library commpatible with Python 3 and easier to set up.
+GAUnit was inspired by [WAUnit](https://github.com/joaolcorreia/WAUnit). We decided to create a new library compatible with Python 3 and easier to set up.
 
 ## Roadmap
 
+- Mobile Apps
 - Tracking plan using analytics.js, GTM or GA4 API syntax
-- Dockerize (for simpler set up)
+- Dockerize (for simpler set up and CI/CD)
