@@ -7,11 +7,11 @@ This part describes various ways to do that.
 Check a HAR file from command line
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-See  |command__gaunit|_ shell command.
+See  |command__ga_check|_ shell command.
 
-.. |command__gaunit| replace:: ``gaunit``
+.. |command__ga_check| replace:: ``ga check``
 
-.. _command__gaunit: ../command.html#command-gaunit
+.. _command__ga_check: ../command.html#command-ga-check
 
 Automated testing for GA4 implementations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
