@@ -1,11 +1,9 @@
-import argparse
 import pprint
 import sys
 
-from colorama import Fore, Style, init
+import click
 
 import gaunit
-from gaunit.models import Result
 from gaunit.utils import (
     filter_keys,
     get_ga_requests_from_har,
@@ -16,39 +14,37 @@ from gaunit.utils import (
 from .__about__ import __version__
 
 
-def check_har():
-    parser = argparse.ArgumentParser(
-        description="Check events against an existing tracking plan"
-    )
-    parser.add_argument("har_file", type=str, help="path to HAR file")
-    parser.add_argument(
-        "test_case",
-        type=str,
-        help="name of test case if more than one test in tracking plan",
-    )
-    parser.add_argument(
-        "-t",
-        "--tracking-plan",
-        type=str,
-        help="path to tracking plan",
-        default="./tracking_plan.json",
-    )
-    parser.add_argument(
-        "-a",
-        "--all",
-        help="print all expected events (missing and found)",
-        action="store_true",
-        dest="all",
-    )
-    parser.add_argument(
-        "--version",
-        help="print GAUnit version",
-        action="version",
-        version="GAUnit %s" % __version__,
-    )
+@click.group(context_settings={"help_option_names": ["-h", "--help", "help"]})
+@click.version_option(
+    prog_name="GAUnit", version=__version__, message="%(prog)s %(version)s"
+)
+@click.pass_context
+def cli(context):
+    pass
 
-    args = parser.parse_args()
 
+@click.command(help="Print this help")
+def help():
+    with click.Context(cli) as context:
+        click.echo(cli.get_help(context))
+
+
+@click.command("check", help="Check events against an existing tracking plan")
+@click.argument("har_file", type=click.Path())
+@click.argument("test_case")
+@click.option(
+    "-t",
+    "--tracking_plan",
+    type=click.Path(),
+    default="./tracking_plan.json",
+)
+@click.option(
+    "-a",
+    "--all",
+    is_flag=True,
+    help="print all expected events (missing and found)",
+)
+def check(test_case, har_file, tracking_plan, all):
     # TODO : test_case should be optionnal if tracking plan has only one test_case
     # if args.tracking_plan:
     #  ..
@@ -61,37 +57,38 @@ def check_har():
     #     # print("error: more than one test case in tracking plan, please specify a '--test-case' parameter ")
     #     # pass
 
-    tp = gaunit.TrackingPlan.from_json(args.tracking_plan)
-    r = gaunit.check_har(args.test_case, tracking_plan=tp, har_path=args.har_file)
+    tp = gaunit.TrackingPlan.from_json(tracking_plan)
+    r = gaunit.check_har(test_case, tracking_plan=tp, har_path=har_file)
 
-    r.print_result(display_ok=args.all)
+    r.print_result(display_ok=all)
     if False in r.checklist_expected_events:
         sys.exit(1)  # end with return code 1 if check failed
-    # r.print_status_actual_events()
 
 
-def extract_har():
-    parser = argparse.ArgumentParser(
-        description="From a HAR file, extract and print GA events"
-    )
-    parser.add_argument("har_file", type=str, help="path to HAR file")
-    parser.add_argument(
-        "-f",
-        "--filter",
-        help="list of specific events parameters to extract (other params are filtered out). Example: '--filter a b c'",
-        nargs="+",
-        dest="param_filter",
-    )
+@click.command("extract", help="From a HAR file, extract and print GA events")
+@click.argument("har_file")
+@click.option(
+    "-f",
+    "--filter",
+    help="list of specific events parameters to extract seperated by `,` (other params are filtered out). Example: '--filter a,b,c'",
+)
+def extract(har_file, filter):
 
-    args = parser.parse_args()
-
-    har = open_json(args.har_file)
+    har = open_json(har_file)
     requests = get_ga_requests_from_har(har)
     events = []
     for r in requests:
         events.extend(parse_ga_request(r))
 
-    if args.param_filter:
-        param_filter = list(args.param_filter)
+    if filter:
+        param_filter = filter.split(",")
         events = [filter_keys(e, param_filter) for e in events]
     pprint.pprint(events)
+
+
+cli.add_command(help)
+cli.add_command(check)
+cli.add_command(extract)
+
+if __name__ == "__main__":
+    cli()  # pylint: disable=no-value-for-parameter
