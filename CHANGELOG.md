@@ -1,3 +1,22 @@
+# [0.5.0](https://github.com/engie-b2c-perf/ga-unit/compare/v0.4.0...v0.5.0) (2021-02-22)
+
+
+### Bug Fixes
+
+* **examples:** add sleep to let GA events launch ([fc78b49](https://github.com/engie-b2c-perf/ga-unit/commit/fc78b49812cc95994d487a14b7782571e806db91))
+
+
+### Features
+
+* **cli:** change for better cli commands ([6953475](https://github.com/engie-b2c-perf/ga-unit/commit/69534750786a69a6909eeae8133244a69d1d2207))
+
+
+### BREAKING CHANGES
+
+* **cli:** `gaunit` and `gaextract` are replaced by nested commands
+
+
+
 # [0.4.0](https://github.com/engie-b2c-perf/ga-unit/compare/v0.3.3...v0.4.0) (2021-02-11)
 
 
