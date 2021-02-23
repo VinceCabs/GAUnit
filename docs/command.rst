@@ -8,11 +8,11 @@ were fired, check if they correspond to what is expected, write a tracking plan 
 
 GAUnit comes with 2 separate commands:
 
-- |command__gaunit|_: from HAR file and a test case name, check events against an existing tracking plan
-- |command__gaextract|_: from a HAR file, extract and print GA events, possibly to add them to a tracking plan
+- |command__ga_check|_: from HAR file and a test case name, check events against an existing tracking plan
+- |command__ga_extract|_: from a HAR file, extract and print GA events, possibly to add them to a tracking plan
 
-.. |command__gaunit| replace:: ``gaunit``
-.. |command__gaextract| replace:: ``gaextract``
+.. |command__ga_check| replace:: ``ga check``
+.. |command__ga_extract| replace:: ``ga extract``
 
 Examples in this section can be run from the `GAUnit Getting started sample <https://github.com/VinceCabs/GAUnit/tree/master/examples/getting_started>`_
 directory on Github.
@@ -21,9 +21,33 @@ directory on Github.
 
     :ref:`getting_started`
 
-.. _command__gaunit:
 
-``gaunit``
+
+``ga``
+--------------------------
+
+Arguments
+^^^^^^^^^^^^^^^^
+
+``--version``
+    Show GAUnit version
+
+``--help``, ``-h``
+    Show help on this command
+
+Examples
+^^^^^^^^^^^^^^
+
+Get GAUnit version:
+
+.. code:: console
+
+    $ ga --version
+    GAUnit X.X.X
+
+.. _command__ga_check:
+
+``ga check``
 --------------------------
 
 This command takes a test case name, a HAR file and a tracking plan 
@@ -35,7 +59,7 @@ Arguments
 
 .. code:: console
 
-    $ gaunit file.har test_case
+    $ ga check file.har test_case
 
 
 ``file.har``
@@ -47,14 +71,11 @@ Arguments
 Optional arguments
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-``--tracking-plan``, ``-t``
+``--tracking_plan``, ``-t``
     Path to tracking plan JSON file (``tracking_plan.json`` by default)
 
 ``--all``, ``-a``
     Print all expected events from tracking plan (not only the missing ones)
-
-``--version``
-    Show GAUnit version
 
 ``--help``, ``-h``
     Show help on this command
@@ -66,7 +87,7 @@ Check a HAR file against a tracking plan:
 
 .. code:: console
 
-    $ gaunit demo_store_add_to_cart.har demo_store_add_to_cart
+    $ ga check demo_store_add_to_cart.har demo_store_add_to_cart
     events in tracking plan: 3
     --------------------------------------------------------------------------------
     GA events found: total:9 / ok:3 / missing:0
@@ -76,7 +97,7 @@ Specific path for the tracking plan:
 
 .. code:: console
 
-    $ gaunit -t tracking_plan.json demo_store_add_to_cart.har demo_store_add_to_cart
+    $ ga check -t tracking_plan.json demo_store_add_to_cart.har demo_store_add_to_cart
     events in tracking plan: 3
     --------------------------------------------------------------------------------
     GA events found: total:9 / ok:3 / missing:0
@@ -86,7 +107,7 @@ Print all events (not only the missing ones):
 
 .. code:: console
 
-    $ gaunit -a demo_store_add_to_cart.har demo_store_add_to_cart
+    $ ga check -a demo_store_add_to_cart.har demo_store_add_to_cart
     events in tracking plan: 3
     ================================================================================
     {'t': 'pageview', 'dt': 'Home'}
@@ -106,16 +127,9 @@ Print all events (not only the missing ones):
     GA events found: total:9 / ok:3 / missing:0
     ✔ OK: all expected events found
 
-Get GAUnit version:
+.. _command__ga_extract:
 
-.. code:: console
-
-    $ gaunit --version
-    GAUnit X.X.X
-
-.. _command__gaextract:
-
-``gaextract``
+``ga extract``
 --------------------------
 
 This command takes a HAR file, extracts all Google Analytics events and
@@ -131,7 +145,7 @@ Arguments
 
 .. code:: console
 
-    $ gextract file.har
+    $ ga extract file.har
 
 ``file.har``
     Path to HAR file containing GA events
@@ -142,7 +156,9 @@ Optional arguments
 ``--filter``, ``-f``
     List of events parameters you want to extract, separated by a space character (``--filter a b c``).
     Other parameters are filtered out. 
-    
+
+``--help``, ``-h``
+    Show help on this command
 
 Examples
 ^^^^^^^^^^^^^^
@@ -151,7 +167,7 @@ Show all events found in a HAR file:
 
 .. code:: console
 
-    $ gaextract demo_store_add_to_cart.har 
+    $ ga extract demo_store_add_to_cart.har 
     [{'_v': 'j87', 'a': '1597243964', 'dt': 'Home', 't': 'pageview', 'v': '1'},
     {'_gid': '1844211766.1609794530',
     '_s': '2',
@@ -164,7 +180,7 @@ Filter events. Only show event type and page title (*important*: add ``--filter`
 
 .. code:: console
 
-    $ gaextract demo_store_add_to_cart.har --filter t dt ea
+    $ ga extract demo_store_add_to_cart.har --filter t dt ea
     [{'dt': 'Home', 't': 'pageview'},
     {'dt': 'Home', 'ea': 'view_item_list', 't': 'event'},
     {'dt': 'Home', 'ea': 'view_promotion', 't': 'event'},
@@ -174,4 +190,3 @@ Filter events. Only show event type and page title (*important*: add ``--filter`
     {'dt': 'Product View', 'ea': 'view_promotion', 't': 'event'},
     {'dt': 'Product View', 'ea': 'view_item_list', 't': 'event'},
     {'dt': 'Product View', 'ea': 'add_to_cart', 't': 'event'}]
-

@@ -4,8 +4,8 @@ Other
 Extract HAR events for future tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-See  |command__gaextract|_ shell command.
+See  |command__ga_extract|_ shell command.
 
-.. |command__gaextract| replace:: ``gaextract``
+.. |command__ga_extract| replace:: ``ga extract``
 
-.. _command__gaextract: ../command.html#command-gaextract
+.. _command__ga_extract: ../command.html#ga-extract

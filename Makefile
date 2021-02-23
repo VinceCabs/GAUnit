@@ -22,6 +22,7 @@ pip-up: ## Update requirements files
 install-dev: ## * Install dev requirements
 	pip install -e .
 	pip install -r requirements/dev.txt
+	npm install -g conventional-changelog-cli
 
 install-examples: ## Install examples requirements
 	pip install -e .
@@ -41,10 +42,11 @@ test-lint: ## Run code linting tests
 test-unit:  ## Run unit tests (with coverage run)
 	coverage run -m unittest discover tests
 
-test-cli : ## Run a test on gaunit command
-	gaunit --version
-	gaunit tests/test_cli_mock.har home_engie -t tests/tracking_plan.json
-	gaextract tests/test_cli_mock.har -f dp
+test-cli : ## Run tests on gaunit command
+	ga --version
+	ga check tests/test_cli_mock.har home_engie -t tests/tracking_plan.json
+	ga check tests/test_cli_mock.har home_engie -t tests/tracking_plan.json --all
+	ga extract tests/test_cli_mock.har -f dp
 	
 test-unit-v:  ## Run unit tests (verbose)
 	coverage run -m unittest discover tests -v
@@ -65,6 +67,9 @@ build-package:   ## Build a python package ready to upload to pypi
 
 push-package: test-package ## * Build, test and push python packages to pypi
 	python -m twine upload --skip-existing dist/${PACKAGE}-*.tar.gz
+
+changelog:  ## updates CHANGELOG.md
+	conventional-changelog -p angular -i CHANGELOG.md -s
 
 release: tests ## * Test, create a release tag and push it to repos (origin and public)
 	$(MAKE) retag release-public release-origin TAG=v$(shell make version)
