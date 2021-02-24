@@ -14,14 +14,6 @@ GAUnit comes with 2 separate commands:
 .. |command__ga_check| replace:: ``ga check``
 .. |command__ga_extract| replace:: ``ga extract``
 
-Examples in this section can be run from the `GAUnit Getting started sample <https://github.com/VinceCabs/GAUnit/tree/master/examples/getting_started>`_
-directory on Github.
-
-.. seealso::
-
-    :ref:`getting_started`
-
-
 
 ``ga``
 --------------------------
@@ -83,6 +75,9 @@ Optional arguments
 Examples
 ^^^^^^^^^^^^^^
 
+*Examples can be run from the* `GAUnit Getting started sample <https://github.com/VinceCabs/GAUnit/tree/master/examples/getting_started>`_
+*directory on Github.*
+
 Check a HAR file against a tracking plan:
 
 .. code:: console
@@ -107,7 +102,7 @@ Print all events (not only the missing ones):
 
 .. code:: console
 
-    $ ga check -a demo_store_add_to_cart.har demo_store_add_to_cart
+    $ ga check --all demo_store_add_to_cart.har demo_store_add_to_cart
     events in tracking plan: 3
     ================================================================================
     {'t': 'pageview', 'dt': 'Home'}
@@ -154,7 +149,7 @@ Optional arguments
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 ``--filter``, ``-f``
-    List of events parameters you want to extract, separated by a space character (``--filter a b c``).
+    List of events parameters you want to extract, separated by a comma (``--filter a,b,c``).
     Other parameters are filtered out. 
 
 ``--help``, ``-h``
@@ -163,30 +158,33 @@ Optional arguments
 Examples
 ^^^^^^^^^^^^^^
 
+*Examples can be run from the* `GAUnit Getting started sample <https://github.com/VinceCabs/GAUnit/tree/master/examples/getting_started>`_
+*directory on Github.*
+
 Show all events found in a HAR file:
 
 .. code:: console
 
     $ ga extract demo_store_add_to_cart.har 
     [{'_v': 'j87', 'a': '1597243964', 'dt': 'Home', 't': 'pageview', 'v': '1'},
-    {'_gid': '1844211766.1609794530',
-    '_s': '2',
-    '_u': 'aGBAAUALAAAAAC~',
-    '_v': 'j87',
-    'a': '2035613723',
-    ...
+     {'_gid': '1844211766.1609794530',
+      '_s': '2',
+      '_u': 'aGBAAUALAAAAAC~',
+      '_v': 'j87',
+      'a': '2035613723',
+      ...
 
-Filter events. Only show event type and page title (*important*: add ``--filter`` argument at the end):
+Filter events. Only show event type and page title :
 
 .. code:: console
 
-    $ ga extract demo_store_add_to_cart.har --filter t dt ea
+    $ ga extract --filter t,dt,ea demo_store_add_to_cart.har
     [{'dt': 'Home', 't': 'pageview'},
-    {'dt': 'Home', 'ea': 'view_item_list', 't': 'event'},
-    {'dt': 'Home', 'ea': 'view_promotion', 't': 'event'},
-    {'dt': 'Home', 'ea': 'select_content', 't': 'event'},
-    {'dt': 'Product View', 't': 'pageview'},
-    {'dt': 'Product View', 'ea': 'view_item', 't': 'event'},
-    {'dt': 'Product View', 'ea': 'view_promotion', 't': 'event'},
-    {'dt': 'Product View', 'ea': 'view_item_list', 't': 'event'},
-    {'dt': 'Product View', 'ea': 'add_to_cart', 't': 'event'}]
+     {'dt': 'Home', 'ea': 'view_item_list', 't': 'event'},
+     {'dt': 'Home', 'ea': 'view_promotion', 't': 'event'},
+     {'dt': 'Home', 'ea': 'select_content', 't': 'event'},
+     {'dt': 'Product View', 't': 'pageview'},
+     {'dt': 'Product View', 'ea': 'view_item', 't': 'event'},
+     {'dt': 'Product View', 'ea': 'view_promotion', 't': 'event'},
+     {'dt': 'Product View', 'ea': 'view_item_list', 't': 'event'},
+     {'dt': 'Product View', 'ea': 'add_to_cart', 't': 'event'}]

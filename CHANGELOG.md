@@ -13,11 +13,11 @@
 
 ### BREAKING CHANGES
 
-* **cli:** `gaunit` and `gaextract` are replaced by nested commands
+* **cli:** `gaunit` and `gaextract` are replaced by nested commands `ga check` and `ga extract`
 
 
 
-# [0.4.0](https://github.com/engie-b2c-perf/ga-unit/compare/v0.3.3...v0.4.0) (2021-02-11)
+## [0.4.0](https://github.com/engie-b2c-perf/ga-unit/compare/v0.3.3...v0.4.0) (2021-02-11)
 
 
 ### Bug Fixes
