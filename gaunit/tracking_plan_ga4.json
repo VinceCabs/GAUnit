@@ -6,13 +6,6 @@
                     "en": "login",
                     "ep.method": "Email"
                 },
-                [ // API way
-                    "event",
-                    "login",
-                    {
-                        "method": "Email"
-                    }
-                ],
                 {
                     "en": "add_to_cart",
                     "cu": "EUR",
@@ -25,6 +18,14 @@
                     "pr1": "id1234~nmPurple Turing Machine~caAbstract machine~pr100~qt1",
                     "epn.value": 100
                 },
+                // API way
+                [ 
+                    "event",
+                    "login",
+                    {
+                        "method": "Email"
+                    }
+                ],
                 [
                     "event",
                     "add_to_cart",
