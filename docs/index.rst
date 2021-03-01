@@ -16,7 +16,7 @@ GAUnit is a Python library used for Google Analytics implementations testing.
 
 It is designed to be used within your pipelines in various environments such as traditional websites or Single Page Applications.
 
-GAUnit is compatible for `GA4 <https://developers.google.com/analytics/devguides/collection/ga4>`_.
+GAUnit is compatible with `GA4 <https://developers.google.com/analytics/devguides/collection/ga4>`_.
 
 Features
 ---------------
