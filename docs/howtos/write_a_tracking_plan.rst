@@ -44,7 +44,7 @@ In this Spreadsheet, we import one test case named ``ga_demo_store_add_to_cart``
 
 .. image:: ../img/tracking_plan_gsheet.png
 
-This Spreadsheet publicly is available `here <https://docs.google.com/spreadsheets/d/1Kd68s3vLrBqtMDW-PaALZF-5bTm-4J450YbJ3NTbZjQ>`_
+This Spreadsheet is publicly available `here <https://docs.google.com/spreadsheets/d/1Kd68s3vLrBqtMDW-PaALZF-5bTm-4J450YbJ3NTbZjQ>`_
 
 **Let's see how to do that!**
 

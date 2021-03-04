@@ -31,8 +31,6 @@ class TrackingPlan(object):
 
     Used as an input to perform a check or create a :class:`~gaunit.TestCase`.
 
-    Example:
-        See Documentation :ref:`getting_started` or :ref:`howtos` for more details.
     """
 
     def __init__(self):

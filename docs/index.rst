@@ -133,5 +133,8 @@ Reference & documentation
 Background / Explanation
 -----------------------------
 
-**WIP**
+.. toctree::
+   :maxdepth: 2
+
+   explanation
 
