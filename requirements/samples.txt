@@ -4,10 +4,19 @@
 #
 #    pip-compile requirements/examples.in
 #
-browsermob-proxy==0.8.0   # via -r requirements/examples.in
-certifi==2020.12.5        # via requests
-chardet==4.0.0            # via requests
-idna==2.10                # via requests
-requests==2.25.1          # via browsermob-proxy
-selenium==3.141.0         # via -r requirements/examples.in
-urllib3==1.26.3           # via requests, selenium
+browsermob-proxy==0.8.0
+    # via -r samples.in
+certifi==2020.12.5
+    # via requests
+chardet==4.0.0
+    # via requests
+idna==2.10
+    # via requests
+requests==2.25.1
+    # via browsermob-proxy
+selenium==3.141.0
+    # via -r samples.in
+urllib3==1.26.5
+    # via
+    #   requests
+    #   selenium
