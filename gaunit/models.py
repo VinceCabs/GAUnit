@@ -541,10 +541,13 @@ class Result(object):
                 "GA events found: total:%s / ok:%s / missing:%s"
                 % (total_found, expected_found, missing)
             )
-        if False in chcklst:
-            print("\N{Cross Mark} FAILED: events missing")
-        else:
-            print("\N{Heavy Check Mark} OK: all expected events found")
+        try:
+            if False in chcklst:
+                print("\N{Cross Mark} FAILED: events missing")
+            else:
+                print("\N{Heavy Check Mark} OK: all expected events found")
+        except UnicodeEncodeError:
+            pass
 
     def print_actual_events(self):
         """pretty print list of analytics hits from test case
