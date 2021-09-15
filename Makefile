@@ -45,9 +45,9 @@ test-unit:  ## Run unit tests (with coverage run)
 test-cli : ## Run tests on gaunit command
 	ga --version
 	ga check tests/test_cli_mock.har home_engie -t tests/tracking_plan.json
-	ga check tests/test_cli_mock.har home_engie -t tests/tracking_plan.json > tests/output.txt
+	ga check tests/test_cli_mock.har home_engie -t tests/tracking_plan.json | grep "OK: all expected events found"  # test for https://github.com/VinceCabs/GAUnit/issues/3
 	ga check tests/test_cli_mock.har home_engie -t tests/tracking_plan.json --all
-	ga extract tests/test_cli_mock.har -f dp
+	ga extract tests/test_cli_mock.har -f dp | grep "[{'dp': 'A'}, {'dp': 'B'}, {'dp': 'C'}, {'dp': 'X'}]"
 	
 test-unit-v:  ## Run unit tests (verbose)
 	coverage run -m unittest discover tests -v
