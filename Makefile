@@ -72,7 +72,7 @@ push-package: test-package ## * Build, test and push python packages to pypi
 changelog:  ## updates CHANGELOG.md
 	conventional-changelog ---preset angular --infile CHANGELOG.md --same-file
 
-release: tests ## * Test, create a release tag and push it to repos (origin and public)
+release: tests ## * Test, create a release tag and push it to repos (origin)
 	$(MAKE) retag release-origin TAG=v$(shell make version)
 
 retag:
@@ -85,12 +85,6 @@ release-origin:
 	git push origin
 	git push origin :$(TAG) || true
 	git push origin $(TAG)
-
-release-public:
-	@echo "=== Pushing tag $(TAG) to public"
-	git push public
-	git push public :$(TAG) || true
-	git push public $(TAG)
 
 ###### Additional commands
 
