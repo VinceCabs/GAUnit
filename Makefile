@@ -15,9 +15,9 @@ pip-comp: ## Compile requirements files
 	pip-compile requirements/samples.in
 
 pip-up: ## Update requirements files
-	pip-compile --upgrade requirements/base.in
-	pip-compile --upgrade requirements/dev.in
-	pip-compile --upgrade requirements/samples.in
+	pip-compile --upgrade --resolver=backtracking requirements/base.in
+	pip-compile --upgrade --resolver=backtracking requirements/dev.in
+	pip-compile --upgrade --resolver=backtracking requirements/samples.in
 
 install-dev: ## * Install dev requirements
 	pip install -e .
@@ -73,7 +73,7 @@ changelog:  ## updates CHANGELOG.md
 	conventional-changelog ---preset angular --infile CHANGELOG.md --same-file
 
 release: tests ## * Test, create a release tag and push it to repos (origin and public)
-	$(MAKE) retag release-public release-origin TAG=v$(shell make version)
+	$(MAKE) retag release-origin TAG=v$(shell make version)
 
 retag:
 	@echo "=== Creating tag $(TAG)"
