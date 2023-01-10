@@ -70,7 +70,7 @@ push-package: test-package ## * Build, test and push python packages to pypi
 	python -m twine upload --skip-existing dist/${PACKAGE}-*.tar.gz
 
 changelog:  ## updates CHANGELOG.md
-	conventional-changelog -p angular -i CHANGELOG.md -s
+	conventional-changelog ---preset angular --infile CHANGELOG.md --same-file
 
 release: tests ## * Test, create a release tag and push it to repos (origin and public)
 	$(MAKE) retag release-public release-origin TAG=v$(shell make version)
