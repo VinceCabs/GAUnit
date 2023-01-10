@@ -72,13 +72,13 @@ Alternatively to automatic tests, you can manually browse your website, export a
 HAR file and check it through command line:
 
 ```sh
-$ gaunit test_case.har my_test_case  # passed
+$ ga check test_case.har my_test_case  # passed
 events in tracking plan: 3
 --------------------------------------------------------------------------------
 GA events found: total:4 / ok:3 / missing:0
 ✔ OK: all expected events found
 
-$ gaunit test_case.har my_test_case  # failed
+$ ga check test_case.har my_test_case  # failed
 events in tracking plan: 3
 ================================================================================
 {'t': 'event', 'ec': 'Video', 'ea': 'Play'}
