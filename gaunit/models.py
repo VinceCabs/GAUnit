@@ -499,7 +499,7 @@ class Result(object):
         args = (
             {"sort_dicts": False} if get_py_version() >= (3, 8) else {}
         )  # preserve dict params order when printing (only for Python>=3.8)
-        for (event, check) in zip(expected, chcklst):
+        for event, check in zip(expected, chcklst):
             if not check:
                 print(80 * "=")
                 pprint.pprint(event, **args)  # pylint: disable=E1123
@@ -564,7 +564,7 @@ class Result(object):
         args = (
             {"sort_dicts": False} if get_py_version() >= (3, 8) else {}
         )  # preserve dict params order when printing (only for Python>=3.8)
-        for (event, check) in zip(events, chcklst):
+        for event, check in zip(events, chcklst):
             print(80 * "=")
             pprint.pprint(event, **args)  # pylint: disable=E1123
             if check:

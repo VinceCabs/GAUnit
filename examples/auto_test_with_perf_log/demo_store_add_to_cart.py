@@ -14,7 +14,6 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 def run():
-
     # set up webdriver
     capabilities = DesiredCapabilities.CHROME
     capabilities["goog:loggingPrefs"] = {"performance": "ALL"}  # chromedriver 75+
