@@ -165,15 +165,19 @@ def parse_ga_url(url: str) -> dict:
     return event_params
 
 
-def is_ga_url(url: str) -> bool:
+def is_ga_url(
+    url: str, transport_url: str = "https://www.google-analytics.com"
+) -> bool:
     # TODO check if rule is enough (no need of v=1 or v=2 params?)
     # TODO return GA event type (GA or GA4)
+    # TODO propagate transport_url in function calls
+    # transport_url = "https://xxxx"  # transport_url for server-side
     r = False
     # GA
-    if re.search(r"www\.google-analytics\.com\/(j\/|)collect.*", url):
+    if re.search(transport_url + r"\/(j\/|)collect.*", url):
         r = True
     # GA4
-    if re.search(r"www\.google-analytics\.com\/g\/collect.*", url):
+    if re.search(transport_url + r"\/g\/collect.*", url):
         r = True
     return r
 
