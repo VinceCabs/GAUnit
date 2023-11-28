@@ -73,7 +73,6 @@ def check(test_case, har_file, tracking_plan, all):
     help="list of specific events parameters to extract seperated by `,` (other params are filtered out). Example: '--filter a,b,c'",
 )
 def extract(har_file, filter):
-
     har = open_json(har_file)
     requests = get_ga_requests_from_har(har)
     events = []
