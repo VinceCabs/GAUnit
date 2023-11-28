@@ -7,9 +7,17 @@ PACKAGE="gaunit"
 ##### Dev
 
 docs() {  ## Build html documentation
-    # TODO
-    #$(MAKE) -C docs
-	echo "docs"
+    ( cd docs; sphinx-build -b html -a -E "." "build/html" )
+}
+
+docs-open() {
+	DOCS_PATH="docs/build/html/index.html"
+	if command -v start &> /dev/null  # Windows
+	then
+		start $DOCS_PATH
+	else
+		xdg-open $DOCS_PATH
+	fi
 }
 
 pip-comp() { ## Compile requirements files
