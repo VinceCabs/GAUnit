@@ -44,7 +44,13 @@ def help():
     is_flag=True,
     help="print all expected events (missing and found)",
 )
-def check(test_case, har_file, tracking_plan, all):
+@click.option(
+    "-tu",
+    "--transport_url",
+    help="custom transport URL for server side GTM",
+    default="https://www.google-analytics.com",
+)
+def check(test_case, har_file, tracking_plan, all, transport_url):
     # TODO : test_case should be optionnal if tracking plan has only one test_case
     # if args.tracking_plan:
     #  ..
@@ -58,7 +64,9 @@ def check(test_case, har_file, tracking_plan, all):
     #     # pass
 
     tp = gaunit.TrackingPlan.from_json(tracking_plan)
-    r = gaunit.check_har(test_case, tracking_plan=tp, har_path=har_file)
+    r = gaunit.check_har(
+        test_case, tracking_plan=tp, har_path=har_file, transport_url=transport_url
+    )
 
     r.print_result(display_ok=all)
     if False in r.checklist_expected_events:
@@ -72,9 +80,15 @@ def check(test_case, har_file, tracking_plan, all):
     "--filter",
     help="list of specific events parameters to extract seperated by `,` (other params are filtered out). Example: '--filter a,b,c'",
 )
-def extract(har_file, filter):
+@click.option(
+    "-tu",
+    "--transport_url",
+    help="custom transport URL for server side GTM",
+    default="https://www.google-analytics.com",
+)
+def extract(har_file, filter, transport_url):
     har = open_json(har_file)
-    requests = get_ga_requests_from_har(har)
+    requests = get_ga_requests_from_har(har, transport_url)
     events = []
     for r in requests:
         events.extend(parse_ga_request(r))
