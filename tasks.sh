@@ -114,14 +114,16 @@ release() {  ## * Test, create a release tag and push it to repos (origin)
 
 ###### Additional commands
 
-version() {  ## Print the current tutor version
+version() {  ## Print the current version
 	python -c "import io, os; about = {}; exec(io.open(os.path.join('$PACKAGE', '__about__.py'), 'rt', encoding='utf-8').read(), about); print(about['__version__'])"
 }
 
-help() {
-    echo "$0 <task> <args>"
-    echo "Tasks:"
-    compgen -A function | grep -v "^_" | cat -n
+help() {  ## print this help
+	echo "$0 <task> <args>"
+	grep -E '^([a-zA-Z_-]+\(\) {.*?## .*|######* .+)$$' $0 \
+		| sed 's/######* \(.*\)/\n               \1/g' \
+		| awk 'BEGIN {FS = "{.*?## "}; {printf "\033[93m%-30s\033[0m %s\033[0m\n", $1, $2}'
+		# | sed 's/[a-zA-Z_-]+(\(\)*)/  /g' \  # TODO remove "()"
 }
 
 default() {
