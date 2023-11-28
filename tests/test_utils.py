@@ -19,6 +19,22 @@ class test_utils(unittest.TestCase):
             [{"url": "https://www.google-analytics.com/collect"}], requests
         )
 
+    def test_get_ga_requests_from_har_transport_url_OK(self):
+        har = {
+            "log": {
+                "entries": [
+                    {"request": {"url": "https://domain.com"}},
+                    {"request": {"url": "https://tracking.example.com/collect"}},
+                    {"request": {"url": "https://www.google-analytics.com/collect"}},
+                    {"request": {"url": "https://domain.com"}},
+                ]
+            }
+        }
+        requests = gaunit.utils.get_ga_requests_from_har(
+            har, transport_url="https://tracking.example.com"
+        )
+        self.assertEqual([{"url": "https://tracking.example.com/collect"}], requests)
+
     # other test_get_ga_requests_from_har ?
 
     def test_parse_ga_request_GET(self):
@@ -156,7 +172,16 @@ class test_utils(unittest.TestCase):
 
     def test_is_ga_url(self):
         self.assertTrue(
-            gaunit.utils.is_ga_url("https://www.google-analytics.com/collect")
+            gaunit.utils.is_ga_url("https://www.google-analytics.com/collect"),
+            gaunit.utils.is_ga_url("https://www.google-analytics.com/g/collect"),
+        )
+
+    def test_is_ga_url_with_transport_url(self):
+        self.assertTrue(
+            gaunit.utils.is_ga_url(
+                "https://tracking.example.com/g/collect",
+                transport_url="https://tracking.example.com",
+            )
         )
 
 

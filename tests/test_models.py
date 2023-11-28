@@ -178,6 +178,67 @@ class test_TestCase(unittest.TestCase):
             self.tc.check()
 
 
+class test_TestCase_with_transport_url(unittest.TestCase):
+    def setUp(self) -> None:
+        events = [{"dp": "A"}, {"dp": "B"}, {"dp": "C"}]
+        tp = gaunit.TrackingPlan()
+        tp.add_test_case("home_engie", events)
+        events = tp.get_expected_events("home_engie")
+        self.tc = gaunit.TestCase(
+            "home_engie", tp, transport_url="https://tracking.example.com"
+        )
+
+    def test_load_har_ok(self):
+        har = {
+            "log": {
+                "entries": [
+                    {
+                        "request": {
+                            "method": "GET",
+                            "url": "https://tracking.example.com/collect?v=1&t=pageview&dp=A",
+                        }
+                    }
+                ]
+            }
+        }
+        self.tc.load_har(har)
+        self.assertEqual(
+            self.tc.actual_events,
+            [
+                {
+                    "v": "1",
+                    "t": "pageview",
+                    "dp": "A",
+                }
+            ],
+        )
+
+    def test_check_OK(self):
+        har = generate_mock_har(
+            "A", "B", "C", transport_url="https://tracking.example.com"
+        )
+        self.tc.load_har(har)
+        checklist_expected, checklist_actual = self.tc.check()
+        self.assertEqual(checklist_expected, [True, True, True])
+        self.assertEqual(checklist_actual, [True, True, True])
+
+    def test_load_perf_log_ok(self):
+        perf_log = generate_mock_perf_log(
+            "B", transport_url="https://tracking.example.com"
+        )
+        self.tc.load_perf_log(perf_log)
+        self.assertEqual(
+            self.tc.actual_events,
+            [
+                {
+                    "v": "1",
+                    "t": "pageview",
+                    "dp": "B",
+                }
+            ],
+        )
+
+
 class test_Result(unittest.TestCase):
     def setUp(self) -> None:
         events = [{"dp": "A"}, {"dp": "B"}, {"dp": "C"}]
