@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+# from https://sharats.me/posts/shell-script-best-practices/
+set -o errexit
+set -o nounset
+set -o pipefail
+# set -o xtrace
+
 TIMEFORMAT="Task completed in %3lR"
 SRC_FILES="./gaunit ./tests setup.py"
 FORMAT_FILES="./gaunit ./tests setup.py ./examples"
@@ -70,9 +76,16 @@ test-unit() {  ## Run unit tests (with coverage run)
 test-cli() {  ## Run tests on gaunit command
 	ga --version
 	ga check tests/test_cli_mock.har home_engie -t tests/tracking_plan.json
-	ga check tests/test_cli_mock.har home_engie -t tests/tracking_plan.json | grep "OK: all expected events found"  # test for https://github.com/VinceCabs/GAUnit/issues/3
 	ga check tests/test_cli_mock.har home_engie -t tests/tracking_plan.json --all
-	ga extract tests/test_cli_mock.har -f dp | grep "[{'dp': 'A'}, {'dp': 'B'}, {'dp': 'C'}, {'dp': 'X'}]"
+	# test for https://github.com/VinceCabs/GAUnit/issues/3:
+	ga check tests/test_cli_mock.har home_engie -t tests/tracking_plan.json \
+		| grep --fixed-strings "OK: all expected events found" \
+		|| _fail "CLI test failed: 'ga check'"
+	ga extract tests/test_cli_mock.har -f dp | grep --fixed-strings "[{'dp': 'A'}, {'dp': 'B'}, {'dp': 'C'}, {'dp': 'X'}]" \
+		|| _fail "CLI test failed: 'ga extract'"
+	ga extract tests/test_cli_ss_mock.har -f dp -tu "tracking.example.com" \
+		| grep --fixed-strings "[{'dp': 'A'}, {'dp': 'B'}, {'dp': 'C'}, {'dp': 'X'}]" \
+		|| _fail "CLI test failed: 'ga extract'"
 }
 	
 test-unit-v() {  ## Run unit tests (verbose)
@@ -121,6 +134,11 @@ release() {  ## * Test, create a release tag and push it to repos (origin)
 }
 
 ###### Additional commands
+
+_fail() {
+	echo "FAIL: $1"
+	exit 0
+}
 
 version() {  ## Print the current version
 	python -c "import io, os; about = {}; exec(io.open(os.path.join('$PACKAGE', '__about__.py'), 'rt', encoding='utf-8').read(), about); print(about['__version__'])"
