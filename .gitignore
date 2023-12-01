@@ -1,3 +1,5 @@
+# secrets
+service_account.json
 
 ## Project related
 .wip
@@ -29,9 +31,11 @@ report.html
 !tests/*.log
 *.har
 !tests/*.har
-*.png
+!examples/**/*.har
+tests/output.txt
 
 # packaging and docs
 dist/
 *.egg-info/
 build/
+_build/

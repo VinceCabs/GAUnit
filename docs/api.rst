@@ -16,12 +16,24 @@ All the methods you will need for general usage.
 Classes
 ----------
 
+.. autoclass:: TrackingPlan
+    :members:
 .. autoclass:: TestCase
     :members:
 .. autoclass:: Result
     :members:
-    
-Lower-level functions 
------------------------
 
-.. automodule:: gaunit.utils
+Exceptions 
+------------
+
+.. autoexception:: GAUnitException
+    :members:
+
+.. autoexception:: TrackingPlanError
+    :members:
+
+.. autoexception:: DictXORJsonPathError
+    :members:
+
+.. autoexception:: TestCaseCheckError
+    :members:

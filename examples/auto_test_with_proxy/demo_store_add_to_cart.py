@@ -1,3 +1,10 @@
+""""
+Automatic test with proxy
+
+Code sample: an "add to cart" scenario using Selenium and a proxy to automatically test 
+tracking on Google online store demo.
+"""
+import json
 from os.path import abspath, dirname, join
 from time import sleep
 
@@ -7,9 +14,8 @@ from selenium import webdriver
 
 
 def run():
-
     # set up proxy
-    server = Server()
+    server = Server()  # or add path to binary: 'Server(path="browsermob-proxy")'
     server.start()
     # 'useEcc' is needed to have decent response time with HTTPS
     proxy = server.create_proxy({"useEcc": True})
@@ -23,20 +29,21 @@ def run():
     # set up Chrome driver
     options = webdriver.ChromeOptions()
     options.add_argument("--proxy-server=%s" % proxy.proxy)
-    # options.add_argument("--headless")
+    # options.add_argument("--headless")  # uncomment if you want headless Chrome
     capabilities = webdriver.DesiredCapabilities.CHROME.copy()
     capabilities["acceptInsecureCerts"] = True
-    driver = webdriver.Chrome(chrome_options=options, desired_capabilities=capabilities)
+    driver = webdriver.Chrome(options=options, desired_capabilities=capabilities)
 
     # start test case
     driver.implicitly_wait(10)
-    test_case = "home_engie"
-    proxy.new_har(test_case)
-    driver.get("https://particuliers.engie.fr")
+    test_case = "ga_demo_store_add_to_cart"
+    # 'captureContent' for POST requests
+    proxy.new_har(test_case, options={"captureContent": True})
+    driver.get("https://enhancedecommerce.appspot.com/")
     sleep(2)
-    driver.find_element_by_id(
-        "engie_fournisseur_d_electricite_et_de_gaz_naturel_headerhp_souscrire_a_une_offre_d_energie"
-    ).click()  # clic on "souscrire" button
+    driver.find_element_by_id("homepage-9bdd2-1").click()
+    sleep(2)
+    driver.find_element_by_id("addToCart").click()
     sleep(2)
 
     # export har and close all
@@ -44,13 +51,18 @@ def run():
     server.stop()
     driver.quit()
 
+    # uncomment if you need to export the har
+    # with open(
+    #     join(abspath(dirname(__file__)), test_case) + ".har", "w", encoding="utf8"
+    # ) as f:
+    #     json.dump(har, f)
+
     # check hits against tracking plan and print results
-    tracking_plan = join(abspath(dirname(__file__)), "tracking_plan.json")
+    path = join(abspath(dirname(__file__)), "tracking_plan.json")
+    tracking_plan = gaunit.TrackingPlan.from_json(path)
     r = gaunit.check_har(test_case, tracking_plan, har=har)
 
-    print(
-        "=== GAUnit == tracking checklist: %s ===" % r.checklist_expected
-    )  # [True, True, True] tracking is correct !
+    r.print_result(display_ok=True)
 
 
 if __name__ == "__main__":

@@ -3,9 +3,9 @@
     "version": "0.1",
     "test_cases": {
         "home_engie": {
-            "description": "tracking plan for unittestig",
+            "description": "tracking plan for unittesting",
             "author": "VinceCabs",
-            "hits": [
+            "events": [
                 {
                     "dp": "A"
                 },

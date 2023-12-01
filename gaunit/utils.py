@@ -5,17 +5,11 @@ This module implements general methods used by gaunits.
 """
 import json
 import re
-from urllib.parse import parse_qs, urlparse
+import sys
+from typing import Tuple
+from urllib.parse import parse_qs, unquote, urlparse
 
-
-def get_events_from_tracking_plan(test_case: str, tracking_plan: str) -> list:
-    """load tracking plan file and extract hits for a given test case
-
-    Args:
-        tracking_plan (str): path to tracking plan JSON file (see Documentation for tracking plan expected format)
-    """
-    tp = open_json(tracking_plan)
-    return get_event_params_from_tp_dict(test_case, tp)
+from .exceptions import DictXORJsonPathError
 
 
 def open_json(json_path) -> dict:
@@ -26,39 +20,95 @@ def open_json(json_path) -> dict:
     return content
 
 
-def get_event_params_from_tp_dict(tc: str, tp: dict) -> list:
-    """extract GA event params from tracking plan dict"""
-    try:
-        d = tp["test_cases"].get(tc, None)
-        if d:
-            return d["hits"]
-        else:
-            raise Exception("no test case '%s' found in tracking plan" % tc)
-    except KeyError as e:
-        raise KeyError(
-            "tracking plan format is not valid (see Documentation). '%s'" % tc
-        )
-
-
-def get_requests_from_har(har: dict) -> list:
-    """returns a list of HTTP requests urls found in har
+def get_ga_requests_from_har(
+    har: dict, transport_url: str = "https://www.google-analytics.com"
+) -> list:
+    """extract HAR requests from GA
 
     Args:
-        har (dict): list of urls
+        har (dict): HAR from a test case
+        transport_url (str): custom transport URL for server side GTM.
+            Defaults to "https://www.google-analytics.com"
 
     Returns:
-        list:
+        list: list of requests from har (located in ``har["log"]["entries"]``)
     """
+    # TODO change events to dict and add event type : [{"type":"GA4", "params":{} }]
+    # get requests
     entries = har["log"]["entries"]
-    urls = [e["request"]["url"] for e in entries]
-    return urls
+    requests = [e["request"] for e in entries]
+    # extracting events from requests to Google Analytics domain only
+    ga_requests = []
+    for r in requests:
+        if is_ga_url(r["url"], transport_url):
+            ga_requests.append(r)
+        pass
+    return ga_requests
 
 
-def get_requests_from_browser_perf_log(log: list) -> list:
+def parse_ga_request(request: dict) -> list:
+    """extract event params from GA requests (POST and GET)
+
+    Args:
+        request (dict): a request extracted from har (located in ``har["log"]["entries"]``)
+
+    Returns:
+        list: list of GA events parameters
+    """
+    events = []
+    r = request
+    params_url = parse_ga_url(r["url"])
+    if r["method"] == "GET":
+        events = [params_url]
+    if r["method"] == "POST":
+        try:
+            events = parse_postdata_events(r["postData"]["text"])
+            # must add url params (shared by all events in postData)
+            for e in events:
+                e.update(params_url)
+        except KeyError:
+            # if no postData key, get url params anyway
+            events = [params_url]
+    return events
+
+
+def parse_postdata_events(data: str) -> list:
+    """extract events params from POST data
+
+    Args:
+        data (str): data string contained in GA POST request
+
+    Returns:
+        dict: all events found in POST data
+    """
+    # sample postdata: "en=page_view\r\nen=scroll&epn.percent_scrolled=90"
+    # en=scroll
+    # en=scroll&epn.percent_scrolled=90
+    # ""
+
+    events = []
+    # events delimited by :
+    for e in data.split("\r\n"):
+        params = {}
+        # params delimited by :
+        for t in e.split("&"):
+            if t:
+                p, v = t.split("=")
+                params.update({p: v})
+            pass
+        events.append(params)
+    return format_events(events)
+
+
+def get_ga_requests_from_browser_perf_log(
+    log: list, transport_url: str = "https://www.google-analytics.com"
+) -> list:
     """returns a list of HTTP requests urls found in log
 
     Args:
         log (list): log entries from ``driver.get_log("performance")``.
+        transport_url (str): custom transport URL for server side GTM.
+            Defaults to "https://www.google-analytics.com"
 
     Returns:
         list: list of urls
@@ -72,7 +122,9 @@ def get_requests_from_browser_perf_log(log: list) -> list:
             or "Network.webSocket" in message["method"]  # same here
         ):
             try:
-                urls.append(message["params"]["request"]["url"])
+                url = message["params"]["request"]["url"]
+                if is_ga_url(url, transport_url):
+                    urls.append(url)
             except:
                 pass
     return urls
@@ -91,11 +143,11 @@ def load_dict_xor_json(d: dict, json_path: str) -> dict:
         dict : d XOR dict with json file content
 
     Raises:
-        ValueError: if zero or two arguments are given
+        DictXORJsonPathError: if zero or two arguments are given
     """
     # both arguments
     if d and json_path:
-        raise ValueError(
+        raise DictXORJsonPathError(
             "too many arguments (dict and json_path). only one argument must be given"
         )
     # dict load
@@ -107,25 +159,9 @@ def load_dict_xor_json(d: dict, json_path: str) -> dict:
         return j
     # no arguments
     else:
-        raise ValueError("arguments given are both empty (dict or JSON file path)")
-
-
-def filter_ga_urls(urls: list) -> list:
-    """gets a list of urls and returns only GA urls
-
-    Args:
-        urls (list): [description]
-
-    Returns:
-        list: [description]
-    """
-
-    ga_urls = []
-    for url in urls:
-        extract = re.search(r"https://www\.google-analytics\.com/(g/|)collect.*", url)
-        if extract:
-            ga_urls.append(extract.group(0))
-    return ga_urls
+        raise DictXORJsonPathError(
+            "arguments given are both empty (dict or JSON file path)"
+        )
 
 
 def parse_ga_url(url: str) -> dict:
@@ -135,3 +171,46 @@ def parse_ga_url(url: str) -> dict:
         f: event_params[f][0] for f in event_params
     }  # transform {f:[v]} to {f:v}
     return event_params
+
+
+def is_ga_url(
+    url: str, transport_url: str = "https://www.google-analytics.com"
+) -> bool:
+    # TODO check if rule is enough (no need of v=1 or v=2 params?)
+    # TODO return GA event type (GA or GA4)
+    # TODO no defaults for transport_url for all utils.py function?
+    # transport_url = "https://xxxx"  # transport_url for server-side
+    r = False
+    # GA
+    if re.search(transport_url + r"\/(j\/|)collect.*", url):
+        r = True
+    # GA4
+    if re.search(transport_url + r"\/g\/collect.*", url):
+        r = True
+    return r
+
+
+def get_py_version() -> Tuple[int, int]:
+    _ver = sys.version_info
+    return (_ver[0], _ver[1])
+
+
+def filter_keys(d: dict, key_filter: list) -> dict:
+    d = {k: v for (k, v) in d.items() if k in key_filter}
+    return d
+
+
+def remove_empty_values(d: dict) -> dict:
+    d = {k: v for (k, v) in d.items() if not v == ""}
+    return d
+
+
+def unquote_values(d: dict) -> dict:
+    d = {k: unquote(str(v)) for (k, v) in d.items()}
+    return d
+
+
+def format_events(events: list) -> list:
+    events = [unquote_values(e) for e in events]
+    events = [remove_empty_values(e) for e in events]
+    return events

@@ -3,6 +3,7 @@ pip-tools
 black
 pylint
 twine
+wheel
 Sphinx
 sphinx-rtd-theme
 codecov
