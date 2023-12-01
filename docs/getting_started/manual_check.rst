@@ -125,7 +125,7 @@ GAUnit lets you do that:
 
 .. code:: console
 
-   $ gaunit demo_store_add_to_cart.har demo_store_add_to_cart
+   $ ga check demo_store_add_to_cart.har demo_store_add_to_cart
 
 .. image:: ../img/print_result.jpg
 

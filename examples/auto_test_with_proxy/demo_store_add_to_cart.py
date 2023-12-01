@@ -14,7 +14,6 @@ from selenium import webdriver
 
 
 def run():
-
     # set up proxy
     server = Server()  # or add path to binary: 'Server(path="browsermob-proxy")'
     server.start()

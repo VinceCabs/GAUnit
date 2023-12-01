@@ -25,7 +25,7 @@ setuptools.setup(
     entry_points={"console_scripts": ["ga=gaunit.cli:cli"]},
     license="MIT",
     python_requires=">=3.7",
-    install_requires=["colorama==0.4.4", "gspread==3.6.0"],
+    install_requires=["colorama>=0.4.4", "gspread>=3.6.0", "click>=7.1.0"],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 3",

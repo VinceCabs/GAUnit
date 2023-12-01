@@ -230,10 +230,12 @@ class TestCase(object):
         tracking_plan (:class:`~gaunit.TrackingPlan`): Tracking plan containing expected events for this
             test case. Defaults to None
         har (dict): Actual har for this test case in dict format. Defaults to None
-        har_path (str) : Path to HAR file for this test case (standard HAR JSON).
+        har_path (str): Path to HAR file for this test case (standard HAR JSON).
             Defaults to None.
-        perf_log (list) : Browser performance log
-        actual_events (list) : List of GA events params parsed from HAR or http log
+        perf_log (list): Browser performance log
+        transport_url (str): custom transport URL for server side GTM.
+            Defaults to 'https://www.google-analytics.com'
+        actual_events (list): List of GA events params parsed from HAR or http log
             Each event is represented by a dict of params (same as `expected_events`).
             Example: ``[{"t":"pageview","dt":"home"},...]``
     """
@@ -245,12 +247,14 @@ class TestCase(object):
         har: dict = None,
         har_path: str = None,
         perf_log: list = None,
+        transport_url: str = "https://www.google-analytics.com",
     ):
         # Default empty dicts/lists for dict/lists params.
         har = {} if har is None else har
         perf_log = [] if perf_log is None else perf_log
 
         self.id = id  # test case name
+        self.transport_url = transport_url
         if isinstance(tracking_plan, TrackingPlan):
             self.expected_events = tracking_plan.get_expected_events(self.id)
         else:
@@ -270,7 +274,11 @@ class TestCase(object):
         if perf_log:
             self.load_perf_log(perf_log)
 
-    def load_har(self, har=None, har_path=None):
+    def load_har(
+        self,
+        har: dict = None,
+        har_path: str = None,
+    ):
         """Extracts and stores analytics events from a har.
 
         Updates :attr:`actual_events`.
@@ -284,7 +292,7 @@ class TestCase(object):
 
         har = load_dict_xor_json(har, har_path)
         # extract GA events
-        requests = get_ga_requests_from_har(har)
+        requests = get_ga_requests_from_har(har, self.transport_url)
         events = []
         for r in requests:
             events.extend(parse_ga_request(r))
@@ -309,9 +317,10 @@ class TestCase(object):
 
         Args:
             perf_log (list): log entries from ``driver.get_log("performance")``
+
         """
         # TODO GA4 check that there are no POST methods, otherwise throw an error or warning
-        urls = get_ga_requests_from_browser_perf_log(perf_log)
+        urls = get_ga_requests_from_browser_perf_log(perf_log, self.transport_url)
         events = [parse_ga_url(url) for url in urls]
 
         self.perf_log = perf_log
@@ -497,7 +506,7 @@ class Result(object):
         args = (
             {"sort_dicts": False} if get_py_version() >= (3, 8) else {}
         )  # preserve dict params order when printing (only for Python>=3.8)
-        for (event, check) in zip(expected, chcklst):
+        for event, check in zip(expected, chcklst):
             if not check:
                 print(80 * "=")
                 pprint.pprint(event, **args)  # pylint: disable=E1123
@@ -540,9 +549,15 @@ class Result(object):
                 % (total_found, expected_found, missing)
             )
         if False in chcklst:
-            print("\N{Cross Mark} FAILED: events missing")
+            try:
+                print("\N{Cross Mark} FAILED: events missing")
+            except UnicodeEncodeError:
+                print("FAILED: events missing")
         else:
-            print("\N{Heavy Check Mark} OK: all expected events found")
+            try:
+                print("\N{Heavy Check Mark} OK: all expected events found")
+            except UnicodeEncodeError:
+                print("OK: all expected events found")
 
     def print_actual_events(self):
         """pretty print list of analytics hits from test case
@@ -556,7 +571,7 @@ class Result(object):
         args = (
             {"sort_dicts": False} if get_py_version() >= (3, 8) else {}
         )  # preserve dict params order when printing (only for Python>=3.8)
-        for (event, check) in zip(events, chcklst):
+        for event, check in zip(events, chcklst):
             print(80 * "=")
             pprint.pprint(event, **args)  # pylint: disable=E1123
             if check:

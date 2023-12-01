@@ -7,7 +7,11 @@ from .models import Result, TestCase, TrackingPlan
 
 
 def check_har(
-    test_case_id: str, tracking_plan: TrackingPlan, har=None, har_path=None
+    test_case_id: str,
+    tracking_plan: TrackingPlan,
+    har=None,
+    har_path=None,
+    transport_url="https://www.google-analytics.com",
 ) -> Result:
     """Performs checks of a har dict or HAR JSON file against a :class:`~gaunit.TrackingPlan`.
 
@@ -27,6 +31,8 @@ def check_har(
             test case. Defaults to None
         har (dict): actual har for this test case in dict format. Defaults to None
         har_path (str) : path to HAR file for this test case (standard HAR JSON). Defaults to None
+        transport_url (str): custom transport URL for server side GTM.
+            Defaults to 'https://www.google-analytics.com'
 
     Note:
         One and one only argument must be given: ``har`` or ``har_path``
@@ -34,12 +40,21 @@ def check_har(
     Returns:
         :class:`gaunit.Result`: complete results of your test case.
     """
-    tc = TestCase(test_case_id, tracking_plan=tracking_plan, har=har, har_path=har_path)
+    tc = TestCase(
+        test_case_id,
+        tracking_plan=tracking_plan,
+        har=har,
+        har_path=har_path,
+        transport_url=transport_url,
+    )
     return tc.result()
 
 
 def check_perf_log(
-    test_case_id: str, tracking_plan: TrackingPlan, perf_log: list
+    test_case_id: str,
+    tracking_plan: TrackingPlan,
+    perf_log: list,
+    transport_url="https://www.google-analytics.com",
 ) -> Result:
     """Performs checks of a Performance log against a :class:`~gaunit.TrackingPlan`.
 
@@ -58,9 +73,16 @@ def check_perf_log(
         tracking_plan (:class:`~gaunit.TrackingPlan`): tracking plan containing expected events for this
             test case. Defaults to None
         perf_log (list): log entries from driver
+        transport_url (str): custom transport URL for server side GTM.
+            Defaults to 'https://www.google-analytics.com'
 
     Returns:
         :class:`gaunit.Result`: complete results of your test case.
     """
-    tc = TestCase(test_case_id, tracking_plan=tracking_plan, perf_log=perf_log)
+    tc = TestCase(
+        test_case_id,
+        tracking_plan=tracking_plan,
+        perf_log=perf_log,
+        transport_url=transport_url,
+    )
     return tc.result()

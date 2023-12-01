@@ -20,11 +20,15 @@ def open_json(json_path) -> dict:
     return content
 
 
-def get_ga_requests_from_har(har: dict) -> list:
+def get_ga_requests_from_har(
+    har: dict, transport_url: str = "https://www.google-analytics.com"
+) -> list:
     """extract HAR requests from GA
 
     Args:
         har (dict): HAR from a test case
+        transport_url (str): custom transport URL for server side GTM.
+            Defaults to "https://www.google-analytics.com"
 
     Returns:
         list: list of requests from har (located in ``har["log"]["entries"]``)
@@ -36,7 +40,7 @@ def get_ga_requests_from_har(har: dict) -> list:
     # extracting events from requests to Google Analytics domain only
     ga_requests = []
     for r in requests:
-        if is_ga_url(r["url"]):
+        if is_ga_url(r["url"], transport_url):
             ga_requests.append(r)
         pass
     return ga_requests
@@ -96,11 +100,15 @@ def parse_postdata_events(data: str) -> list:
     return format_events(events)
 
 
-def get_ga_requests_from_browser_perf_log(log: list) -> list:
+def get_ga_requests_from_browser_perf_log(
+    log: list, transport_url: str = "https://www.google-analytics.com"
+) -> list:
     """returns a list of HTTP requests urls found in log
 
     Args:
         log (list): log entries from ``driver.get_log("performance")``.
+        transport_url (str): custom transport URL for server side GTM.
+            Defaults to "https://www.google-analytics.com"
 
     Returns:
         list: list of urls
@@ -115,7 +123,7 @@ def get_ga_requests_from_browser_perf_log(log: list) -> list:
         ):
             try:
                 url = message["params"]["request"]["url"]
-                if is_ga_url(url):
+                if is_ga_url(url, transport_url):
                     urls.append(url)
             except:
                 pass
@@ -165,15 +173,19 @@ def parse_ga_url(url: str) -> dict:
     return event_params
 
 
-def is_ga_url(url: str) -> bool:
+def is_ga_url(
+    url: str, transport_url: str = "https://www.google-analytics.com"
+) -> bool:
     # TODO check if rule is enough (no need of v=1 or v=2 params?)
     # TODO return GA event type (GA or GA4)
+    # TODO no defaults for transport_url for all utils.py function?
+    # transport_url = "https://xxxx"  # transport_url for server-side
     r = False
     # GA
-    if re.search(r"www\.google-analytics\.com\/(j\/|)collect.*", url):
+    if re.search(transport_url + r"\/(j\/|)collect.*", url):
         r = True
     # GA4
-    if re.search(r"www\.google-analytics\.com\/g\/collect.*", url):
+    if re.search(transport_url + r"\/g\/collect.*", url):
         r = True
     return r
 
