@@ -148,8 +148,8 @@ help() {  ## print this help
 	echo "$0 <task> <args>"
 	grep -E '^([a-zA-Z_-]+\(\) {.*?## .*|######* .+)$$' $0 \
 		| sed 's/######* \(.*\)/\n               \1/g' \
+		| sed 's/\([a-zA-Z-]\+\)()/\1/' \
 		| awk 'BEGIN {FS = "{.*?## "}; {printf "\033[93m%-30s\033[0m %s\033[0m\n", $1, $2}'
-		# | sed 's/[a-zA-Z_-]+(\(\)*)/  /g' \  # TODO remove "()"
 }
 
 default() {
